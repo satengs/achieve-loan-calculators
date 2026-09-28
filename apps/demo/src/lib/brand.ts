@@ -58,3 +58,30 @@ export function withBrandQuery(href: string, brand: ProjectName): string {
   params.set(BRAND_QUERY_KEY, brand);
   return `${path}?${params.toString()}${hash}`;
 }
+
+
+/** Landing chrome copy that follows the selected brand. */
+export const BRAND_LANDING_CHROME: Record<
+  ProjectName,
+  { eyebrow: string; footerNote: string }
+> = {
+  achieve: {
+    eyebrow: "Achieve-style demos",
+    footerNote:
+      "Styled to resemble public Achieve.com visual patterns. Next.js demo hosted on Vercel. CTAs inside each calculator are placeholders (not live applications).",
+  },
+  fdr: {
+    eyebrow: "FDR-style demos",
+    footerNote:
+      "Styled to resemble Freedom Debt Relief (FDR)–style visual patterns (illustrative only — not an official FDR product). Next.js demo hosted on Vercel. CTAs inside each calculator are placeholders (not live applications).",
+  },
+  bills: {
+    eyebrow: "bills.com-style demos",
+    footerNote:
+      "Styled to resemble bills.com–style visual patterns (illustrative only — not an official bills.com product). Next.js demo hosted on Vercel. CTAs inside each calculator are placeholders (not live applications).",
+  },
+};
+
+export function landingChromeFor(brand: ProjectName) {
+  return BRAND_LANDING_CHROME[brand] ?? BRAND_LANDING_CHROME.achieve;
+}

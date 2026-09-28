@@ -14,6 +14,7 @@ export {
   resolveProjectName,
   BRAND_TOKENS,
   BrandTheme,
+  adaptBrandChromeNote,
 } from "./brand";
 export type { BrandTokens, BrandThemeProps } from "./brand";
 

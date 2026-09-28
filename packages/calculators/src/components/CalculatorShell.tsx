@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BrandTheme } from "../brand/BrandTheme";
+import { adaptBrandChromeNote } from "../brand/chromeCopy";
 import type { ProjectName } from "../brand/types";
 import { DemoBanner } from "./DemoBanner";
 
@@ -26,6 +27,7 @@ export function CalculatorShell({
   footerNote,
   children,
 }: CalculatorShellProps) {
+  const adaptedFooter = adaptBrandChromeNote(footerNote, projectName);
   return (
     <BrandTheme projectName={projectName}>
       <div className="lc-page">
@@ -36,7 +38,7 @@ export function CalculatorShell({
         </header>
         <DemoBanner icon={banner.icon} strong={banner.strong} body={banner.body} />
         {children}
-        <p className="lc-footer-note">{footerNote}</p>
+        <p className="lc-footer-note">{adaptedFooter}</p>
       </div>
     </BrandTheme>
   );

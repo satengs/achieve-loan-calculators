@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { DemoBanner, getSiteContent } from "@loan-calculators/core";
-import { withBrandQuery } from "@/lib/brand";
+import { landingChromeFor, withBrandQuery } from "@/lib/brand";
 import { useBrand } from "./BrandProvider";
 
 export function HomePageClient() {
   const { brand } = useBrand();
   const site = getSiteContent();
+  const chrome = landingChromeFor(brand);
 
   return (
     <main className="lc-page">
       <header className="lc-header">
-        <span className="lc-eyebrow">{site.header.eyebrow}</span>
+        <span className="lc-eyebrow">{chrome.eyebrow}</span>
         <h1>{site.header.title}</h1>
         <p>{site.header.intro}</p>
       </header>
@@ -39,7 +40,7 @@ export function HomePageClient() {
         ))}
       </div>
 
-      <p className="lc-footer-note">{site.footer.note}</p>
+      <p className="lc-footer-note">{chrome.footerNote}</p>
     </main>
   );
 }

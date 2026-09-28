@@ -15,6 +15,11 @@ body {
   background: var(--lc-bg, #f8f9fc);
 }
 
+/* Offset for sticky estimate bar sitting under the brand switcher */
+:root {
+  --lc-brand-bar-offset: 3.25rem;
+}
+
 /* ── Brand switcher top bar (shared demo chrome) ── */
 .lc-brand-bar {
   position: sticky;
@@ -23,6 +28,8 @@ body {
   border-bottom: 1px solid var(--lc-border, #e7ecf3);
   background: var(--lc-surface, #fff);
   padding: 0.55rem 1rem;
+  /* Keep estimate sticky offset in sync with this bar */
+  --lc-brand-bar-offset: 3.25rem;
 }
 
 .lc-brand-bar-inner {

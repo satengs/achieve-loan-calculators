@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Loan Calculators | Achieve-style demos",
+    "title": "Loan Calculators | Multi-brand demos",
     "description": "Self-contained personal loan, mortgage, HELOC, and life insurance coverage calculators. Sample rates are illustrative only — not offers."
   },
   "header": {
-    "eyebrow": "Achieve-style demos",
+    "eyebrow": "Multi-brand demos",
     "title": "Loan & coverage calculators",
     "intro": "Self-contained prototypes for UX and product exploration. Sample rates and defaults are illustrative only — not offers, quotes, or guarantees."
   },
@@ -48,6 +48,6 @@
     }
   ],
   "footer": {
-    "note": "Styled to resemble public Achieve.com visual patterns. Next.js demo hosted on Vercel. CTAs inside each calculator are placeholders (not live applications)."
+    "note": "Multi-brand calculator demos hosted on Vercel (Next.js). Visual patterns are illustrative only. CTAs inside each calculator are placeholders (not live applications)."
   }
 }
