@@ -1,0 +1,97 @@
+"use client";
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { isProjectName, type ProjectName } from "@loan-calculators/core";
+import {
+  BRAND_QUERY_KEY,
+  DEFAULT_BRAND,
+  parseBrand,
+  readStoredBrand,
+  writeStoredBrand,
+} from "@/lib/brand";
+
+type BrandContextValue = {
+  brand: ProjectName;
+  setBrand: (next: ProjectName) => void;
+};
+
+const BrandContext = createContext<BrandContextValue>({
+  brand: DEFAULT_BRAND,
+  setBrand: () => {},
+});
+
+export function useBrand(): BrandContextValue {
+  return useContext(BrandContext);
+}
+
+/** Static provider for Suspense fallback / SSR shell (Achieve default). */
+export function DefaultBrandProvider({ children }: { children: ReactNode }) {
+  const value = useMemo<BrandContextValue>(
+    () => ({ brand: DEFAULT_BRAND, setBrand: () => {} }),
+    [],
+  );
+  return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
+}
+
+/**
+ * Resolve order: valid ?brand= → localStorage → Achieve.
+ * On setBrand: write localStorage + router.replace keeping path, updating brand query.
+ */
+export function BrandProvider({ children }: { children: ReactNode }) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const queryRaw = searchParams.get(BRAND_QUERY_KEY);
+  const queryBrand = isProjectName(queryRaw) ? queryRaw : null;
+
+  const [brand, setBrandState] = useState<ProjectName>(queryBrand ?? DEFAULT_BRAND);
+
+  useEffect(() => {
+    if (queryBrand) {
+      setBrandState(queryBrand);
+      writeStoredBrand(queryBrand);
+      return;
+    }
+
+    const stored = readStoredBrand();
+    const resolved = stored ?? DEFAULT_BRAND;
+    setBrandState(resolved);
+    writeStoredBrand(resolved);
+
+    const params = new URLSearchParams(searchParams.toString());
+    if (queryRaw !== null && !isProjectName(queryRaw)) {
+      params.delete(BRAND_QUERY_KEY);
+    }
+    if (params.get(BRAND_QUERY_KEY) !== resolved) {
+      params.set(BRAND_QUERY_KEY, resolved);
+      const qs = params.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    }
+  }, [queryBrand, queryRaw, pathname, router, searchParams]);
+
+  const setBrand = useCallback(
+    (next: ProjectName) => {
+      const resolved = parseBrand(next);
+      setBrandState(resolved);
+      writeStoredBrand(resolved);
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(BRAND_QUERY_KEY, resolved);
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [pathname, router, searchParams],
+  );
+
+  const value = useMemo(() => ({ brand, setBrand }), [brand, setBrand]);
+
+  return <BrandContext.Provider value={value}>{children}</BrandContext.Provider>;
+}

@@ -1,6 +1,4 @@
-import { LifeInsuranceCalculator } from "@loan-calculators/core";
-
-const BRAND = process.env.NEXT_PUBLIC_BRAND || "achieve";
+import { BrandedLifeInsurance } from "@/components/BrandedCalculators";
 
 export const metadata = {
   title: "Life Insurance Coverage Estimator",
@@ -8,5 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <LifeInsuranceCalculator projectName={BRAND} />;
+  return <BrandedLifeInsurance />;
 }

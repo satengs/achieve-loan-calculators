@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import { DemoShell } from "@/components/DemoShell";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -25,7 +26,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={dmSans.variable}>
-      <body style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}>{children}</body>
+      <body style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}>
+        <DemoShell>{children}</DemoShell>
+      </body>
     </html>
   );
 }

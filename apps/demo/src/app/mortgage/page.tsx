@@ -1,6 +1,4 @@
-import { MortgageCalculator } from "@loan-calculators/core";
-
-const BRAND = process.env.NEXT_PUBLIC_BRAND || "achieve";
+import { BrandedMortgage } from "@/components/BrandedCalculators";
 
 export const metadata = {
   title: "Mortgage Calculator",
@@ -8,5 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <MortgageCalculator projectName={BRAND} />;
+  return <BrandedMortgage />;
 }

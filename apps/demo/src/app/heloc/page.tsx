@@ -1,6 +1,4 @@
-import { HelocCalculator } from "@loan-calculators/core";
-
-const BRAND = process.env.NEXT_PUBLIC_BRAND || "achieve";
+import { BrandedHeloc } from "@/components/BrandedCalculators";
 
 export const metadata = {
   title: "HELOC Calculator",
@@ -8,5 +6,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <HelocCalculator projectName={BRAND} />;
+  return <BrandedHeloc />;
 }
