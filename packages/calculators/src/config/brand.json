@@ -1,0 +1,5 @@
+{
+  "defaultBrand": "achieve",
+  "brands": ["achieve", "fdr", "bills"],
+  "note": "Override with NEXT_PUBLIC_BRAND=achieve|fdr|bills. Theme tokens live in src/lib/brand/tokens.ts and globals.css."
+}

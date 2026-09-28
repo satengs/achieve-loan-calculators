@@ -1,0 +1,30 @@
+{
+  "id": "personal-loan",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "loanAmount": 15000,
+    "apr": 11.99,
+    "termValue": 36,
+    "termUnit": "months",
+    "originationFeePercent": 0,
+    "termPreset": "36"
+  },
+  "validation": {
+    "loanAmount": { "min": 1, "max": 1000000, "label": "Loan amount" },
+    "apr": { "min": 0, "max": 100, "label": "APR", "allowZero": true },
+    "termMonths": { "min": 1, "max": 480 },
+    "originationFeePercent": { "min": 0, "max": 100, "label": "Origination fee", "allowZero": true }
+  },
+  "termPresets": [24, 36, 48, 60],
+  "features": {
+    "showAmortization": true,
+    "showOriginationFee": true,
+    "termUnits": ["months", "years"],
+    "originationFeeMode": "financed"
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

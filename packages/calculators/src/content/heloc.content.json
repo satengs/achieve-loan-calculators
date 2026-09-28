@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "title": "HELOC Calculator | Achieve-style demo",
+    "description": "Estimate available equity, monthly interest or amortizing payment on a draw, remaining equity, and LTV / CLTV. Sample rates are illustrative only."
+  },
+  "header": {
+    "eyebrow": "Home equity",
+    "title": "HELOC calculator",
+    "intro": "Estimate available equity, monthly interest or amortizing payment on a draw, remaining equity, and LTV / CLTV. Variable-rate APR is labeled illustrative only."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample / demo only — not an offer.",
+    "body": "Rates and limits are illustrative estimates for education and UX prototyping. Actual HELOC APRs are often variable; eligibility, credit limits, and payments depend on lender underwriting."
+  },
+  "form": {
+    "heading": "Property & draw details",
+    "fields": {
+      "homeValue": {
+        "label": "Home value",
+        "prefix": "$"
+      },
+      "mortgageBalance": {
+        "label": "Mortgage balance (optional)",
+        "hint": "Current first-lien balance. Leave 0 if none.",
+        "prefix": "$"
+      },
+      "maxCltv": {
+        "label": "Max combined LTV for credit limit",
+        "hint": "Demo default 85% CLTV cap used to derive available equity / credit limit.",
+        "suffix": "%"
+      },
+      "creditLimit": {
+        "label": "Available equity / credit limit",
+        "derivedTag": "Derived (editable)",
+        "hint": "Derived as max(0, home value × max CLTV − mortgage). Edit to override until home / mortgage / CLTV change.",
+        "prefix": "$"
+      },
+      "drawAmount": {
+        "label": "Draw amount",
+        "hint": "Amount drawn from the HELOC line for this estimate.",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "APR (variable-rate, illustrative)",
+        "hint": "Sample / demo only — not an offer. Real HELOC rates are often variable.",
+        "suffix": "%"
+      },
+      "payMode": {
+        "legend": "Payment style",
+        "ariaLabel": "Interest-only or amortizing",
+        "modes": {
+          "interest-only": "Interest-only",
+          "amortizing": "Amortizing"
+        },
+        "hint": "Interest-only: monthly interest on the draw. Amortizing: fixed P&I over the term below."
+      },
+      "term": {
+        "labelInterestOnly": "Interest-only / draw period",
+        "labelAmortizing": "Amortization term",
+        "hintInterestOnly": "Shown for context on interest-only; monthly payment is interest on the draw only.",
+        "hintAmortizing": "Fixed principal & interest over this many years on the draw amount.",
+        "suffix": "yr"
+      }
+    }
+  },
+  "results": {
+    "heading": "Your estimate",
+    "paymentLabelInterestOnly": "Estimated monthly interest",
+    "paymentLabelAmortizing": "Estimated monthly payment",
+    "labels": {
+      "creditLimit": "Credit limit",
+      "remainingEquity": "Remaining equity",
+      "ltv": "LTV",
+      "cltv": "CLTV (after draw)",
+      "grossEquity": "Home equity (value − mortgage)",
+      "drawAmount": "Draw amount",
+      "unusedLine": "Unused line (limit − draw)",
+      "mode": "Mode"
+    },
+    "modeLabels": {
+      "interestOnly": "Interest-only on draw",
+      "amortizing": "Amortizing P&I ({{years}} yr)"
+    },
+    "emptyPlaceholder": "—",
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "unableMessage": "Unable to calculate with these inputs.",
+    "summaryInterestOnly": "Sample / demo only — not an offer. {{modeLabel}} · IO period {{years}} yr (context){{limitNote}}",
+    "summaryAmortizing": "Sample / demo only — not an offer. {{modeLabel}} · {{months}} payments{{limitNote}}",
+    "limitNoteManual": " · credit limit manually set",
+    "limitNoteDerived": " · limit derived at {{maxCltv}} max CLTV (≈ {{derivedLimit}})"
+  },
+  "cta": {
+    "label": "Explore home equity options",
+    "href": "#",
+    "note": "Placeholder CTA — not a live application or rate quote."
+  },
+  "footer": {
+    "note": "HELOC estimates are demo-only. LTV = mortgage ÷ home value; CLTV = (mortgage + draw) ÷ home value. Remaining equity here = home value − mortgage − draw (simplified). Not a loan offer or compliance guarantee."
+  },
+  "validationMessages": {
+    "drawExceedsLimit": "Draw amount cannot exceed the credit limit.",
+    "mortgageExceedsHome": "Mortgage balance cannot exceed home value."
+  }
+}

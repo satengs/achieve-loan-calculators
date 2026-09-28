@@ -1,0 +1,33 @@
+{
+  "id": "heloc",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "homeValue": 450000,
+    "mortgageBalance": 280000,
+    "maxCltv": 85,
+    "creditLimit": 102500,
+    "drawAmount": 50000,
+    "apr": 8.5,
+    "payMode": "interest-only",
+    "termYears": 10
+  },
+  "validation": {
+    "homeValue": { "min": 1, "max": 100000000, "label": "Home value" },
+    "mortgageBalance": { "min": 0, "max": 100000000, "label": "Mortgage balance", "allowZero": true },
+    "maxCltv": { "min": 1, "max": 100, "label": "Max CLTV" },
+    "creditLimit": { "min": 0, "max": 100000000, "label": "Credit limit", "allowZero": true },
+    "drawAmount": { "min": 1, "max": 100000000, "label": "Draw amount" },
+    "apr": { "min": 0, "max": 100, "label": "APR", "allowZero": true },
+    "termYears": { "min": 1, "max": 40, "label": "Term (years)" }
+  },
+  "features": {
+    "payModes": ["interest-only", "amortizing"],
+    "deriveCreditLimit": true,
+    "allowLimitOverride": true
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

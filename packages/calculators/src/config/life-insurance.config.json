@@ -1,0 +1,33 @@
+{
+  "id": "life-insurance",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "annualIncome": 75000,
+    "yearsReplace": 10,
+    "totalDebts": 250000,
+    "finalExpenses": 15000,
+    "educationFund": 50000,
+    "existingCoverage": 100000,
+    "liquidAssets": 25000,
+    "termYears": 20
+  },
+  "validation": {
+    "annualIncome": { "min": 0, "max": 100000000, "label": "Annual income", "allowZero": true },
+    "yearsReplace": { "min": 0, "max": 50, "label": "Years to replace", "allowZero": true },
+    "totalDebts": { "min": 0, "max": 1000000000, "label": "Total debts", "allowZero": true },
+    "finalExpenses": { "min": 0, "max": 10000000, "label": "Final expenses", "allowZero": true },
+    "educationFund": { "min": 0, "max": 100000000, "label": "Education fund", "allowZero": true },
+    "existingCoverage": { "min": 0, "max": 1000000000, "label": "Existing coverage", "allowZero": true },
+    "liquidAssets": { "min": 0, "max": 1000000000, "label": "Liquid assets", "allowZero": true }
+  },
+  "termPresets": [10, 20, 30],
+  "features": {
+    "currencyRoundToWhole": true,
+    "termAffectsNeed": false
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

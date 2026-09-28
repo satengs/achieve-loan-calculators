@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Personal Loan Calculator | Achieve-style demo",
+    "description": "Estimate monthly payments, total interest, and total cost for an amortizing personal loan. Sample rates are illustrative only."
+  },
+  "header": {
+    "eyebrow": "Personal loan",
+    "title": "Personal loan calculator",
+    "intro": "Estimate monthly payments, total interest, and total cost for an amortizing personal loan. Adjust amount, APR, term, and optional origination fee."
+  },
+  "demoBanner": {
+    "icon": "\u2139\ufe0f",
+    "strong": "Sample rates for demo only \u2014 not an offer.",
+    "body": "Figures are illustrative estimates for education and UX prototyping. Actual rates, fees, and eligibility depend on credit review and lender terms."
+  },
+  "form": {
+    "heading": "Loan details",
+    "fields": {
+      "loanAmount": {
+        "label": "Loan amount",
+        "hint": "Amount you want to borrow (before fee).",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "APR",
+        "hint": "Illustrative sample APR for demo (mid-single to low-teens range).",
+        "suffix": "%"
+      },
+      "term": {
+        "legend": "Term",
+        "unitAriaLabel": "Term unit",
+        "units": {
+          "months": "Months",
+          "years": "Years"
+        },
+        "presetsAriaLabel": "Common terms",
+        "presetLabels": {
+          "24": "24 mo",
+          "36": "36 mo",
+          "48": "48 mo",
+          "60": "60 mo"
+        },
+        "hint": "Typical personal loan terms: 24\u201360 months."
+      },
+      "originationFee": {
+        "label": "Origination fee (optional)",
+        "suffix": "%",
+        "hint": "Fee is financed into principal by default (you receive the loan amount; payments amortize principal + fee). See results for cash received and financed balance."
+      }
+    }
+  },
+  "results": {
+    "heading": "Your estimate",
+    "monthlyLabel": "Estimated monthly payment",
+    "labels": {
+      "totalInterest": "Total interest",
+      "totalCost": "Total cost",
+      "financedPrincipal": "Financed principal",
+      "cashReceived": "Cash received",
+      "firstPayment": "First payment (P / I)",
+      "lastPayment": "Last payment (P / I)",
+      "originationFeeAmount": "Origination fee amount"
+    },
+    "emptyPlaceholder": "\u2014",
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "unableMessage": "Unable to calculate with these inputs.",
+    "summaryTemplate": "{{months}} payments \u00b7 fee mode: financed into principal{{feeNote}}",
+    "feeNoteWithFee": " (fee {{feeAmount}} added to balance)",
+    "feeNoteNoFee": " (no fee)"
+  },
+  "cta": {
+    "label": "Check your rate",
+    "href": "#",
+    "note": "Placeholder CTA \u2014 not a live application. Checking a rate may use a soft inquiry depending on the lender."
+  },
+  "amortization": {
+    "heading": "Amortization snapshot",
+    "intro": "First 3 and last payment rows (illustrative).",
+    "columns": [
+      "Month",
+      "Payment",
+      "Principal",
+      "Interest",
+      "Balance"
+    ],
+    "emptyRow": "Enter valid inputs to see schedule.",
+    "noScheduleRow": "No schedule."
+  },
+  "footer": {
+    "note": "This calculator is a self-contained demo styled to resemble public Achieve.com visual patterns. It does not constitute a loan offer, quote, or guarantee of savings or approval. Sample default APR is for demonstration only."
+  },
+  "validationMessages": {
+    "termMin": "Term must be at least 1 month.",
+    "termMax": "Term must be at most 480 months."
+  }
+}

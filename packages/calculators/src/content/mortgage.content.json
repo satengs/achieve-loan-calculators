@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "Mortgage Calculator | Achieve-style demo",
+    "description": "Estimate principal & interest, optional PITI, total interest, and loan amount. Sample rates are illustrative only."
+  },
+  "header": {
+    "eyebrow": "Home loan",
+    "title": "Mortgage calculator",
+    "intro": "Estimate principal & interest, optional PITI, total interest, and loan amount. Layout inspired by common calculator-widget patterns (inputs + sticky results)."
+  },
+  "demoBanner": {
+    "icon": "\u2139\ufe0f",
+    "strong": "Sample rate for demo only \u2014 not an offer.",
+    "body": "Property tax, insurance, and HOA fields produce an estimated PITI only. This is not a commitment to lend or a rate lock."
+  },
+  "form": {
+    "heading": "Home & loan details",
+    "fields": {
+      "homePrice": {
+        "label": "Home price",
+        "prefix": "$"
+      },
+      "downPayment": {
+        "legend": "Down payment",
+        "modeAriaLabel": "Down payment mode",
+        "modes": {
+          "percent": "Percent",
+          "dollars": "Dollars"
+        },
+        "hint": "Down payment amount updates the loan amount below.",
+        "prefix": "$",
+        "suffix": "%"
+      },
+      "loanAmount": {
+        "label": "Loan amount",
+        "derivedTag": "Derived from price \u2212 down",
+        "hint": "Editable \u2014 changing this overrides the derived amount until price/down change again.",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "APR",
+        "hint": "Illustrative mid-single-digit sample APR for demo only.",
+        "suffix": "%"
+      },
+      "term": {
+        "legend": "Loan term",
+        "presetsAriaLabel": "Term presets",
+        "presetLabels": {
+          "15": "15 yr",
+          "20": "20 yr",
+          "30": "30 yr",
+          "custom": "Custom"
+        },
+        "suffix": "yr"
+      },
+      "piti": {
+        "legend": "Optional monthly costs (for PITI estimate)",
+        "intro": "These are estimates you enter \u2014 not pulled from tax records.",
+        "taxMonthly": {
+          "label": "Property tax / mo",
+          "prefix": "$"
+        },
+        "insMonthly": {
+          "label": "Home insurance / mo",
+          "prefix": "$"
+        },
+        "hoaMonthly": {
+          "label": "HOA / mo",
+          "prefix": "$"
+        }
+      }
+    }
+  },
+  "results": {
+    "heading": "Your estimate",
+    "primaryLabel": "Monthly principal & interest",
+    "labels": {
+      "piti": "Est. PITI / mo",
+      "loanAmount": "Loan amount",
+      "totalInterest": "Total interest",
+      "downPayment": "Down payment",
+      "breakdownPi": "P&I",
+      "breakdownTax": "Property tax",
+      "breakdownIns": "Insurance",
+      "breakdownHoa": "HOA"
+    },
+    "emptyPlaceholder": "\u2014",
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "unableMessage": "Unable to calculate with these inputs.",
+    "zeroLoanMessage": "Down payment covers the full price \u2014 no loan to amortize.",
+    "summaryTemplate": "{{years}}-year term \u00b7 {{months}} payments \u00b7 estimated PITI includes your tax/insurance/HOA entries"
+  },
+  "cta": {
+    "label": "Explore home loan options",
+    "href": "#",
+    "note": "Placeholder CTA \u2014 not a live application or rate lock."
+  },
+  "footer": {
+    "note": "PITI = Principal, Interest, Taxes, and Insurance (plus HOA if entered). Tax/insurance/HOA are user-entered estimates. This demo does not include PMI, closing costs, or escrow nuances. Not a loan offer."
+  },
+  "validationMessages": {
+    "downNegative": "Down payment cannot be negative and must be a number.",
+    "downPercentMax": "Down payment percent cannot exceed 100%.",
+    "downExceedsPrice": "Down payment cannot exceed home price.",
+    "loanZero": "Loan amount must be greater than zero."
+  }
+}

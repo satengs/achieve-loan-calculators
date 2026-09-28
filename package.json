@@ -1,0 +1,19 @@
+{
+  "name": "loan-calculators-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @loan-calculators/demo",
+    "build": "npm run build -w @loan-calculators/core && npm run build -w @loan-calculators/demo",
+    "build:demo": "npm run build -w @loan-calculators/demo",
+    "test": "npm run test -w @loan-calculators/core",
+    "typecheck": "npm run typecheck -w @loan-calculators/core && npm run typecheck -w @loan-calculators/demo",
+    "lint": "npm run lint -w @loan-calculators/demo"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

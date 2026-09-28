@@ -1,0 +1,67 @@
+{
+  "meta": {
+    "title": "Life Insurance Coverage Estimator | Achieve-style demo",
+    "description": "Illustrative DIME-style estimate of term life coverage need. Not a quote, offer, or recommendation."
+  },
+  "header": {
+    "eyebrow": "Life insurance",
+    "title": "Coverage need estimator",
+    "intro": "Illustrative estimate of how much term life coverage you might consider based on income replacement, debts, final expenses, and existing coverage. This is not a quote, offer, or recommendation."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Illustrative only — not a quote or underwriting decision.",
+    "body": "Uses a simple DIME-style heuristic (Debt, Income, Mortgage/debts, Education + final expenses − assets/existing cover). Actual needs and premiums vary widely; talk to a licensed professional for advice."
+  },
+  "form": {
+    "heading": "Your inputs",
+    "fields": {
+      "annualIncome": { "label": "Annual income", "prefix": "$" },
+      "yearsReplace": {
+        "label": "Years of income to replace",
+        "hint": "Common planning ranges: 5–15 years (demo default 10).",
+        "suffix": "yr"
+      },
+      "totalDebts": { "label": "Total debts (incl. mortgage balance)", "prefix": "$" },
+      "finalExpenses": {
+        "label": "Final expenses estimate",
+        "hint": "Funeral, immediate costs — illustrative default.",
+        "prefix": "$"
+      },
+      "educationFund": { "label": "Education / other goals fund", "prefix": "$" },
+      "existingCoverage": { "label": "Existing life coverage", "prefix": "$" },
+      "liquidAssets": { "label": "Liquid assets available to survivors", "prefix": "$" },
+      "termYears": {
+        "label": "Preferred term length (informational)",
+        "ariaLabel": "Term length",
+        "presetLabels": { "10": "10 yr", "20": "20 yr", "30": "30 yr" },
+        "hint": "Term length does not change the coverage-need math in this demo; it is shown for planning context only."
+      }
+    }
+  },
+  "results": {
+    "heading": "Estimated coverage need",
+    "primaryLabel": "Additional coverage to consider",
+    "labels": {
+      "grossNeed": "Gross need",
+      "incomeReplacement": "Income replacement",
+      "debts": "Debts",
+      "offset": "Less existing + assets",
+      "finalExpenses": "Final expenses",
+      "education": "Education / goals",
+      "selectedTerm": "Selected term (context)"
+    },
+    "termDisplay": "{{years}} years",
+    "emptyPlaceholder": "—",
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "summaryMessage": "Heuristic only. Rounded for readability. Not a premium quote or guarantee of coverage."
+  },
+  "cta": {
+    "label": "Learn about coverage options",
+    "href": "#",
+    "note": "Placeholder CTA — not a quote, application, or guarantee of insurability."
+  },
+  "footer": {
+    "note": "This tool does not sell insurance, calculate premiums, or guarantee issue. Achieve-styled demo for product exploration only."
+  }
+}

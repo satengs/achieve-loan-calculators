@@ -1,0 +1,36 @@
+{
+  "id": "mortgage",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "homePrice": 400000,
+    "downPaymentMode": "percent",
+    "downPayment": 20,
+    "loanAmount": 320000,
+    "apr": 6.5,
+    "termYears": 30,
+    "termPreset": "30",
+    "taxMonthly": 350,
+    "insMonthly": 150,
+    "hoaMonthly": 0
+  },
+  "validation": {
+    "homePrice": { "min": 1, "max": 100000000, "label": "Home price" },
+    "loanAmount": { "min": 1, "max": 100000000, "label": "Loan amount" },
+    "apr": { "min": 0, "max": 100, "label": "APR", "allowZero": true },
+    "termYears": { "min": 1, "max": 50, "label": "Term (years)" },
+    "taxMonthly": { "min": 0, "max": 100000, "label": "Property tax", "allowZero": true },
+    "insMonthly": { "min": 0, "max": 100000, "label": "Insurance", "allowZero": true },
+    "hoaMonthly": { "min": 0, "max": 100000, "label": "HOA", "allowZero": true }
+  },
+  "termPresets": [15, 20, 30],
+  "features": {
+    "showPiti": true,
+    "downPaymentModes": ["percent", "dollars"],
+    "allowLoanOverride": true
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

@@ -1,0 +1,439 @@
+/**
+ * @loan-calculators/core base styles.
+ * Brand colors come from BrandTheme CSS variables (--lc-*).
+ * Import in consumer: import '@loan-calculators/core/styles.css'
+ */
+
+.lc-root {
+  font-family: var(--lc-font, system-ui, sans-serif);
+  color: var(--lc-text, #1d252f);
+  background: var(--lc-bg, #f8f9fc);
+  box-sizing: border-box;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.lc-root *,
+.lc-root *::before,
+.lc-root *::after {
+  box-sizing: border-box;
+}
+
+.lc-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.lc-header {
+  margin-bottom: 1.25rem;
+}
+
+.lc-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lc-primary);
+  margin-bottom: 0.5rem;
+}
+
+.lc-header h1 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--lc-primary-dark);
+}
+
+.lc-header p {
+  margin: 0;
+  color: var(--lc-text-secondary);
+  max-width: 42rem;
+}
+
+.lc-demo-banner {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--lc-bg-tint);
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-lg);
+  font-size: 0.875rem;
+  color: var(--lc-text-secondary);
+}
+
+.lc-demo-banner strong {
+  color: var(--lc-text);
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+.lc-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 860px) {
+  .lc-layout {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: start;
+  }
+}
+
+.lc-card {
+  background: var(--lc-surface);
+  border: 1px solid var(--lc-border);
+  border-radius: var(--lc-radius-lg);
+  box-shadow: var(--lc-shadow);
+  padding: 1.25rem;
+}
+
+.lc-form h2,
+.lc-results h2 {
+  font-size: 1.125rem;
+  margin: 0 0 1rem;
+  color: var(--lc-text);
+}
+
+.lc-field {
+  margin-bottom: 1.15rem;
+}
+
+.lc-field label,
+.lc-fieldset-legend {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--lc-text);
+}
+
+.lc-label-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.lc-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--lc-text-muted);
+}
+
+.lc-error-text {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--lc-error);
+  min-height: 1.1em;
+}
+
+.lc-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lc-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 0.875rem;
+  border: 1px solid var(--lc-border-strong);
+  border-radius: var(--lc-radius);
+  font: inherit;
+  font-size: 1rem;
+  color: var(--lc-text);
+  background: var(--lc-surface);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.lc-input.has-prefix {
+  padding-left: 1.75rem;
+}
+
+.lc-input.has-suffix {
+  padding-right: 2.25rem;
+}
+
+.lc-input:focus {
+  border-color: var(--lc-primary);
+  box-shadow: 0 0 0 3px var(--lc-focus-ring);
+}
+
+.lc-input[aria-invalid="true"] {
+  border-color: var(--lc-error);
+}
+
+.lc-input-prefix,
+.lc-input-suffix {
+  position: absolute;
+  color: var(--lc-text-muted);
+  font-size: 0.9375rem;
+  pointer-events: none;
+}
+
+.lc-input-prefix {
+  left: 0.65rem;
+}
+
+.lc-input-suffix {
+  right: 0.65rem;
+}
+
+.lc-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.15rem;
+}
+
+.lc-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid var(--lc-border-strong);
+  border-radius: var(--lc-radius);
+  overflow: hidden;
+  background: var(--lc-bg);
+}
+
+.lc-segmented label {
+  margin: 0;
+  cursor: pointer;
+}
+
+.lc-segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lc-segmented span {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--lc-text-secondary);
+  background: transparent;
+  border-right: 1px solid var(--lc-border);
+}
+
+.lc-segmented label:last-child span {
+  border-right: none;
+}
+
+.lc-segmented input:checked + span {
+  background: var(--lc-primary);
+  color: #fff;
+}
+
+.lc-segmented input:focus-visible + span {
+  box-shadow: inset 0 0 0 2px var(--lc-focus-ring);
+}
+
+.lc-results {
+  background: var(--lc-primary-dark);
+  color: #fff;
+  border-color: transparent;
+}
+
+.lc-results h2 {
+  color: #fff;
+}
+
+.lc-result-primary {
+  margin-bottom: 1rem;
+}
+
+.lc-result-label {
+  font-size: 0.8125rem;
+  opacity: 0.85;
+  margin-bottom: 0.25rem;
+}
+
+.lc-result-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lc-result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.lc-result-item .lc-result-value {
+  font-size: 1.1rem;
+}
+
+.lc-summary {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.lc-summary li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  font-size: 0.875rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lc-note {
+  font-size: 0.8125rem;
+  opacity: 0.9;
+  margin: 0 0 1rem;
+}
+
+.lc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--lc-radius);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--lc-primary);
+  color: #fff;
+  transition: background 0.15s;
+}
+
+.lc-btn:hover {
+  background: var(--lc-primary-hover);
+}
+
+.lc-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--lc-focus-ring);
+}
+
+.lc-cta-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.lc-footer-note {
+  margin-top: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--lc-text-muted);
+}
+
+.lc-table-wrap {
+  overflow-x: auto;
+}
+
+.lc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.lc-table th,
+.lc-table td {
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid var(--lc-border);
+}
+
+.lc-table th {
+  color: var(--lc-text-muted);
+  font-weight: 600;
+}
+
+.lc-amort-card {
+  margin-top: 1.5rem;
+}
+
+.lc-amort-card h2 {
+  font-size: 1.125rem;
+  margin: 0 0 0.5rem;
+}
+
+.lc-landing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .lc-landing-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.lc-landing-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.lc-landing-card:hover,
+.lc-landing-card:focus-visible {
+  box-shadow: var(--lc-shadow);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.lc-landing-card h2 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--lc-primary-dark);
+}
+
+.lc-landing-card p {
+  margin: 0;
+  color: var(--lc-text-secondary);
+  flex: 1;
+}
+
+.lc-link-label {
+  font-weight: 600;
+  color: var(--lc-primary);
+  font-size: 0.875rem;
+}
+
+.lc-term-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 560px) {
+  .lc-term-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.lc-piti-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 560px) {
+  .lc-piti-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}

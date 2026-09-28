@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "@loan-calculators/core/styles.css";
+
+/* Scan package source for Tailwind class usage if any */
+@source "../../../../packages/calculators/src";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--lc-bg, #f8f9fc);
+}
