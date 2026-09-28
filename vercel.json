@@ -1,4 +1,4 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npm run build -w @loan-calculators/demo"
+  "framework": "nextjs",
+  "installCommand": "npm install"
 }
