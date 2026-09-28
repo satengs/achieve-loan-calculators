@@ -50,3 +50,20 @@ export function equityRatios(
     remainingEquity: homeValue - mort - draw,
   };
 }
+
+/** Convert a down-payment display value when toggling percent ↔ dollars. */
+export function convertDownPaymentMode(
+  homePrice: number,
+  downRaw: number,
+  toMode: "percent" | "dollars",
+): number | null {
+  if (!Number.isFinite(homePrice) || homePrice <= 0 || !Number.isFinite(downRaw)) {
+    return null;
+  }
+  if (toMode === "dollars") {
+    // from percent → dollars
+    return Math.round(homePrice * (downRaw / 100) * 100) / 100;
+  }
+  // from dollars → percent
+  return Math.round((downRaw / homePrice) * 10000) / 100;
+}

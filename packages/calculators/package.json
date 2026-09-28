@@ -12,11 +12,13 @@
   },
   "files": [
     "src",
-    "styles"
+    "styles",
+    "dist"
   ],
   "scripts": {
     "test": "node --import tsx --test src/calc/amortize.test.ts",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

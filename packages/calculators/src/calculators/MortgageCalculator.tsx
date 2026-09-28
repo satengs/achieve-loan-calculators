@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { amortize, downPaymentAndLoan, validateRange } from "../calc";
+import { amortize, convertDownPaymentMode, downPaymentAndLoan, validateRange } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
 import { CTA } from "../components/CTA";
@@ -146,13 +146,13 @@ export function MortgageCalculator({ projectName = "achieve" }: MortgageCalculat
               onChange={(mode) => {
                 const price = Number(String(homePrice).replace(/[$,%\s,]/g, ""));
                 const raw = Number(String(downPayment).replace(/[$,%\s,]/g, ""));
-                if (Number.isFinite(price) && price > 0 && Number.isFinite(raw)) {
-                  if (mode === "dollars") setDownPayment(String(Math.round(price * (raw / 100) * 100) / 100));
-                  else setDownPayment(String(Math.round((raw / price) * 10000) / 100));
-                }
+                const nextMode = mode === "dollars" ? "dollars" : "percent";
+                const converted = convertDownPaymentMode(price, raw, nextMode);
+                const nextDown = converted == null ? downPayment : String(converted);
+                setDownPayment(nextDown);
                 setDpMode(mode);
                 setLoanManual(false);
-                syncLoan(homePrice, downPayment, mode);
+                syncLoan(homePrice, nextDown, mode);
               }}
               options={[
                 { value: "percent", label: fields.downPayment?.modes?.percent || "Percent" },

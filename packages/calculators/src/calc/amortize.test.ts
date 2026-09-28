@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { amortize, monthlyPayment, interestOnlyMonthly, toMonths } from "./amortize";
 import { applyOriginationFee } from "./fees";
 import { validateRange } from "./validate";
-import { downPaymentAndLoan, derivedCreditLimit, equityRatios } from "./equity";
+import { convertDownPaymentMode, downPaymentAndLoan, derivedCreditLimit, equityRatios } from "./equity";
 import { lifeCoverageEstimate } from "./life";
 import { interpolate } from "./format";
 
@@ -45,6 +45,19 @@ describe("fees / equity / life", () => {
     assert.equal(d.loanAmount, 320000);
     const limit = derivedCreditLimit(450000, 280000, 85);
     assert.equal(limit, 102500);
+  });
+
+  it("converts down payment percent↔dollars without stale state", () => {
+    // 20% of $400k → $80,000; loan must be $320k (not ~$399,980 from stale 20-as-dollars)
+    const dollars = convertDownPaymentMode(400000, 20, "dollars");
+    assert.equal(dollars, 80000);
+    const loanFromConverted = downPaymentAndLoan(400000, dollars!, "dollars");
+    assert.equal(loanFromConverted.loanAmount, 320000);
+
+    const pct = convertDownPaymentMode(400000, 80000, "percent");
+    assert.equal(pct, 20);
+    assert.equal(convertDownPaymentMode(0, 20, "dollars"), null);
+    assert.equal(convertDownPaymentMode(400000, NaN, "dollars"), null);
   });
 
   it("guards LTV division by zero", () => {
