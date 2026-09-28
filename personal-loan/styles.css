@@ -1,0 +1,38 @@
+/* Personal loan page-specific tweaks (tokens live in shared/achieve-tokens.css) */
+
+.ach-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--ach-space-5);
+}
+
+.ach-fieldset-legend {
+  padding: 0;
+  margin-bottom: var(--ach-space-2);
+}
+
+.ach-term-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ach-space-3);
+  margin-top: var(--ach-space-3);
+}
+
+.ach-term-row .ach-input-wrap {
+  max-width: 10rem;
+}
+
+.ach-term-presets {
+  width: 100%;
+}
+
+.ach-amort-card {
+  overflow: hidden;
+}
+
+@media (min-width: 560px) {
+  .ach-term-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}

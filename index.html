@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loan Calculators | Achieve-style demos</title>
+  <link rel="stylesheet" href="shared/achieve-tokens.css" />
+  <style>
+    .ach-landing-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--ach-space-5);
+      margin-top: var(--ach-space-6);
+    }
+    @media (min-width: 640px) {
+      .ach-landing-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .ach-landing-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ach-space-3);
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .ach-landing-card:hover,
+    .ach-landing-card:focus-visible {
+      box-shadow: var(--ach-shadow);
+      transform: translateY(-2px);
+      outline: none;
+    }
+    .ach-landing-card:focus-visible {
+      box-shadow: 0 0 0 3px var(--ach-focus-ring), var(--ach-shadow);
+    }
+    .ach-landing-card h2 {
+      font-size: var(--ach-font-size-xl);
+      margin: 0;
+      color: var(--ach-primary-dark);
+    }
+    .ach-landing-card p {
+      margin: 0;
+      color: var(--ach-text-secondary);
+      flex: 1;
+    }
+    .ach-landing-card .ach-link-label {
+      font-weight: var(--ach-font-weight-semibold);
+      color: var(--ach-primary);
+      font-size: var(--ach-font-size-sm);
+    }
+    .ach-nav-home {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="ach-page">
+    <header class="ach-header">
+      <span class="ach-eyebrow">Achieve-style demos</span>
+      <h1>Loan &amp; coverage calculators</h1>
+      <p>
+        Self-contained prototypes for UX and product exploration.
+        Sample rates and defaults are <strong>illustrative only — not offers, quotes, or guarantees</strong>.
+      </p>
+    </header>
+
+    <div class="ach-demo-banner" role="note">
+      <span aria-hidden="true">ℹ️</span>
+      <div>
+        <strong>Sample / demo only — not an offer.</strong>
+        These tools do not constitute loan offers, rate locks, insurance quotes, or compliance guarantees.
+      </div>
+    </div>
+
+    <div class="ach-landing-grid" role="list">
+      <a class="ach-card ach-landing-card" href="personal-loan/" role="listitem">
+        <span class="ach-eyebrow">Personal loan</span>
+        <h2>Personal loan calculator</h2>
+        <p>Estimate monthly payments, total interest, and total cost with optional origination fee (financed).</p>
+        <span class="ach-link-label">Open calculator →</span>
+      </a>
+
+      <a class="ach-card ach-landing-card" href="mortgage/" role="listitem">
+        <span class="ach-eyebrow">Home loan</span>
+        <h2>Mortgage calculator</h2>
+        <p>Estimate principal &amp; interest, optional PITI, total interest, and loan amount from price and down payment.</p>
+        <span class="ach-link-label">Open calculator →</span>
+      </a>
+
+      <a class="ach-card ach-landing-card" href="heloc/" role="listitem">
+        <span class="ach-eyebrow">Home equity</span>
+        <h2>HELOC calculator</h2>
+        <p>Estimate available equity, interest-only or amortizing payment on a draw, remaining equity, and LTV / CLTV.</p>
+        <span class="ach-link-label">Open calculator →</span>
+      </a>
+
+      <a class="ach-card ach-landing-card" href="life-insurance/" role="listitem">
+        <span class="ach-eyebrow">Life insurance</span>
+        <h2>Coverage need estimator</h2>
+        <p>Illustrative DIME-style estimate of term coverage need from income, debts, expenses, and existing cover.</p>
+        <span class="ach-link-label">Open estimator →</span>
+      </a>
+    </div>
+
+    <p class="ach-footer-note">
+      Styled to resemble public Achieve.com visual patterns. No build step — static HTML/CSS/JS.
+      CTAs inside each calculator are placeholders (not live applications).
+    </p>
+  </main>
+</body>
+</html>

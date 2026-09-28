@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HELOC Calculator | Achieve-style demo</title>
+  <link rel="stylesheet" href="../shared/achieve-tokens.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="ach-page">
+    <header class="ach-header">
+      <span class="ach-eyebrow">Home equity</span>
+      <h1>HELOC calculator</h1>
+      <p>
+        Estimate available equity, monthly interest or amortizing payment on a draw,
+        remaining equity, and LTV / CLTV. Variable-rate APR is labeled illustrative only.
+      </p>
+    </header>
+
+    <div class="ach-demo-banner" role="note">
+      <span aria-hidden="true">ℹ️</span>
+      <div>
+        <strong>Sample / demo only — not an offer.</strong>
+        Rates and limits are illustrative estimates for education and UX prototyping.
+        Actual HELOC APRs are often variable; eligibility, credit limits, and payments depend on lender underwriting.
+      </div>
+    </div>
+
+    <div class="ach-layout">
+      <section class="ach-card ach-form" aria-labelledby="inputs-heading">
+        <h2 id="inputs-heading">Property &amp; draw details</h2>
+
+        <div class="ach-field">
+          <label for="home-value">Home value</label>
+          <div class="ach-input-wrap">
+            <span class="ach-input-prefix" aria-hidden="true">$</span>
+            <input class="ach-input has-prefix" type="text" inputmode="decimal" id="home-value" value="450000" autocomplete="off" aria-describedby="home-value-error" />
+          </div>
+          <p class="ach-error-text" id="home-value-error" role="alert"></p>
+        </div>
+
+        <div class="ach-field">
+          <div class="ach-label-row">
+            <label for="mortgage-balance">Mortgage balance (optional)</label>
+          </div>
+          <div class="ach-input-wrap">
+            <span class="ach-input-prefix" aria-hidden="true">$</span>
+            <input class="ach-input has-prefix" type="text" inputmode="decimal" id="mortgage-balance" value="280000" autocomplete="off" aria-describedby="mortgage-hint mortgage-error" />
+          </div>
+          <p class="ach-hint" id="mortgage-hint">Current first-lien balance. Leave 0 if none.</p>
+          <p class="ach-error-text" id="mortgage-error" role="alert"></p>
+        </div>
+
+        <div class="ach-field">
+          <div class="ach-label-row">
+            <label for="max-cltv">Max combined LTV for credit limit</label>
+          </div>
+          <div class="ach-input-wrap">
+            <input class="ach-input has-suffix" type="text" inputmode="decimal" id="max-cltv" value="85" autocomplete="off" aria-describedby="max-cltv-hint max-cltv-error" />
+            <span class="ach-input-suffix" aria-hidden="true">%</span>
+          </div>
+          <p class="ach-hint" id="max-cltv-hint">Demo default 85% CLTV cap used to derive available equity / credit limit.</p>
+          <p class="ach-error-text" id="max-cltv-error" role="alert"></p>
+        </div>
+
+        <div class="ach-field">
+          <div class="ach-label-row">
+            <label for="credit-limit">Available equity / credit limit</label>
+            <span class="ach-hint" id="limit-derived-tag">Derived (editable)</span>
+          </div>
+          <div class="ach-input-wrap">
+            <span class="ach-input-prefix" aria-hidden="true">$</span>
+            <input class="ach-input has-prefix" type="text" inputmode="decimal" id="credit-limit" value="102500" autocomplete="off" aria-describedby="credit-limit-hint credit-limit-error" />
+          </div>
+          <p class="ach-hint" id="credit-limit-hint">
+            Derived as max(0, home value × max CLTV − mortgage). Edit to override until home / mortgage / CLTV change.
+          </p>
+          <p class="ach-error-text" id="credit-limit-error" role="alert"></p>
+        </div>
+
+        <div class="ach-field">
+          <label for="draw-amount">Draw amount</label>
+          <div class="ach-input-wrap">
+            <span class="ach-input-prefix" aria-hidden="true">$</span>
+            <input class="ach-input has-prefix" type="text" inputmode="decimal" id="draw-amount" value="50000" autocomplete="off" aria-describedby="draw-hint draw-error" />
+          </div>
+          <p class="ach-hint" id="draw-hint">Amount drawn from the HELOC line for this estimate.</p>
+          <p class="ach-error-text" id="draw-error" role="alert"></p>
+        </div>
+
+        <div class="ach-field">
+          <div class="ach-label-row">
+            <label for="apr">APR (variable-rate, illustrative)</label>
+          </div>
+          <div class="ach-input-wrap">
+            <input class="ach-input has-suffix" type="text" inputmode="decimal" id="apr" value="8.50" autocomplete="off" aria-describedby="apr-hint apr-error" />
+            <span class="ach-input-suffix" aria-hidden="true">%</span>
+          </div>
+          <p class="ach-hint" id="apr-hint">Sample / demo only — not an offer. Real HELOC rates are often variable.</p>
+          <p class="ach-error-text" id="apr-error" role="alert"></p>
+        </div>
+
+        <fieldset class="ach-field ach-fieldset">
+          <legend class="ach-fieldset-legend">Payment style</legend>
+          <div class="ach-segmented" role="group" aria-label="Interest-only or amortizing">
+            <label>
+              <input type="radio" name="pay-mode" value="interest-only" checked />
+              <span>Interest-only</span>
+            </label>
+            <label>
+              <input type="radio" name="pay-mode" value="amortizing" />
+              <span>Amortizing</span>
+            </label>
+          </div>
+          <p class="ach-hint" id="pay-mode-hint" style="margin-top: 0.75rem;">
+            Interest-only: monthly interest on the draw. Amortizing: fixed P&amp;I over the term below.
+          </p>
+        </fieldset>
+
+        <div class="ach-field" id="term-field">
+          <div class="ach-label-row">
+            <label for="term-years" id="term-label">Interest-only / draw period</label>
+          </div>
+          <div class="ach-input-wrap" style="max-width: 10rem;">
+            <input class="ach-input has-suffix" type="text" inputmode="numeric" id="term-years" value="10" autocomplete="off" aria-describedby="term-hint term-error" />
+            <span class="ach-input-suffix" aria-hidden="true">yr</span>
+          </div>
+          <p class="ach-hint" id="term-hint">Shown for context on interest-only; used as amortization term when amortizing is selected.</p>
+          <p class="ach-error-text" id="term-error" role="alert"></p>
+        </div>
+      </section>
+
+      <section
+        class="ach-card ach-results"
+        aria-labelledby="results-heading"
+        aria-live="polite"
+        aria-atomic="true"
+        id="results-panel"
+      >
+        <h2 id="results-heading">Your estimate</h2>
+
+        <div class="ach-result-primary">
+          <div class="ach-result-label" id="out-payment-label">Estimated monthly interest</div>
+          <div class="ach-result-value" id="out-payment">—</div>
+        </div>
+
+        <div class="ach-result-grid">
+          <div class="ach-result-item">
+            <div class="ach-result-label">Credit limit</div>
+            <div class="ach-result-value" id="out-limit">—</div>
+          </div>
+          <div class="ach-result-item">
+            <div class="ach-result-label">Remaining equity</div>
+            <div class="ach-result-value" id="out-equity">—</div>
+          </div>
+          <div class="ach-result-item">
+            <div class="ach-result-label">LTV</div>
+            <div class="ach-result-value" id="out-ltv">—</div>
+          </div>
+          <div class="ach-result-item">
+            <div class="ach-result-label">CLTV (after draw)</div>
+            <div class="ach-result-value" id="out-cltv">—</div>
+          </div>
+        </div>
+
+        <ul class="ach-amort-summary" id="detail-summary">
+          <li><span>Home equity (value − mortgage)</span><span id="out-gross-equity">—</span></li>
+          <li><span>Draw amount</span><span id="out-draw">—</span></li>
+          <li><span>Unused line (limit − draw)</span><span id="out-unused">—</span></li>
+          <li><span>Mode</span><span id="out-mode">—</span></li>
+        </ul>
+        <p class="ach-amort-note" id="results-message"></p>
+
+        <div class="ach-cta">
+          <a class="ach-btn ach-btn-primary" href="#" id="cta-primary" role="button">Explore home equity options</a>
+          <p class="ach-cta-note">Placeholder CTA — not a live application or rate quote.</p>
+        </div>
+      </section>
+    </div>
+
+    <p class="ach-footer-note">
+      HELOC estimates are demo-only. LTV = mortgage ÷ home value; CLTV = (mortgage + draw) ÷ home value.
+      Remaining equity here = home value − mortgage − draw (simplified). Not a loan offer or compliance guarantee.
+    </p>
+  </main>
+  <script src="../shared/calc-utils.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
