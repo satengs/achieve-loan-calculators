@@ -1,16 +1,16 @@
 {
   "meta": {
     "title": "Loan Calculators | Achieve-style demos",
-    "description": "Self-contained personal loan, mortgage, HELOC, and life insurance coverage calculators. Sample rates are illustrative only \u2014 not offers."
+    "description": "Self-contained personal loan, mortgage, HELOC, and life insurance coverage calculators. Sample rates are illustrative only — not offers."
   },
   "header": {
     "eyebrow": "Achieve-style demos",
     "title": "Loan & coverage calculators",
-    "intro": "Self-contained prototypes for UX and product exploration. Sample rates and defaults are illustrative only \u2014 not offers, quotes, or guarantees."
+    "intro": "Self-contained prototypes for UX and product exploration. Sample rates and defaults are illustrative only — not offers, quotes, or guarantees."
   },
   "demoBanner": {
-    "icon": "\u2139\ufe0f",
-    "strong": "Sample / demo only \u2014 not an offer.",
+    "icon": "ℹ️",
+    "strong": "Sample / demo only — not an offer.",
     "body": "These tools do not constitute loan offers, rate locks, insurance quotes, or compliance guarantees."
   },
   "cards": [
@@ -20,7 +20,7 @@
       "eyebrow": "Personal loan",
       "title": "Personal loan calculator",
       "description": "Estimate monthly payments, total interest, and total cost with optional origination fee (financed).",
-      "linkLabel": "Open calculator \u2192"
+      "linkLabel": "Open calculator →"
     },
     {
       "id": "mortgage",
@@ -28,7 +28,7 @@
       "eyebrow": "Home loan",
       "title": "Mortgage calculator",
       "description": "Estimate principal & interest, optional PITI, total interest, and loan amount from price and down payment.",
-      "linkLabel": "Open calculator \u2192"
+      "linkLabel": "Open calculator →"
     },
     {
       "id": "heloc",
@@ -36,7 +36,7 @@
       "eyebrow": "Home equity",
       "title": "HELOC calculator",
       "description": "Estimate available equity, interest-only or amortizing payment on a draw, remaining equity, and LTV / CLTV.",
-      "linkLabel": "Open calculator \u2192"
+      "linkLabel": "Open calculator →"
     },
     {
       "id": "life-insurance",
@@ -44,10 +44,10 @@
       "eyebrow": "Life insurance",
       "title": "Coverage need estimator",
       "description": "Illustrative DIME-style estimate of term coverage need from income, debts, expenses, and existing cover.",
-      "linkLabel": "Open estimator \u2192"
+      "linkLabel": "Open estimator →"
     }
   ],
   "footer": {
-    "note": "Styled to resemble public Achieve.com visual patterns. No build step \u2014 static HTML/CSS/JS. CTAs inside each calculator are placeholders (not live applications)."
+    "note": "Styled to resemble public Achieve.com visual patterns. Next.js demo hosted on Vercel. CTAs inside each calculator are placeholders (not live applications)."
   }
 }

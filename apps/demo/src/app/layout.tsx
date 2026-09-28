@@ -12,6 +12,14 @@ export const metadata: Metadata = {
   title: "Loan Calculators | Multi-brand demos",
   description:
     "Personal loan, mortgage, HELOC, and life insurance calculators. Sample rates are illustrative only — not offers.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
