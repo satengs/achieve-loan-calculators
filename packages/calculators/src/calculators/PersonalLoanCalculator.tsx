@@ -228,7 +228,7 @@ export function PersonalLoanCalculator({ projectName = "achieve" }: PersonalLoan
         <div className="lc-card lc-amort-card">
           <h2>{amort.heading || "Amortization snapshot"}</h2>
           {amort.intro ? <p className="lc-hint">{amort.intro}</p> : null}
-          <div className="lc-table-wrap">
+          <div className="lc-table-wrap lc-amort-desktop">
             <table className="lc-table">
               <thead>
                 <tr>
@@ -276,6 +276,51 @@ export function PersonalLoanCalculator({ projectName = "achieve" }: PersonalLoan
               </tbody>
             </table>
           </div>
+          <ul className="lc-amort-stack" aria-label="Amortization snapshot">
+            {!out || computed.schedule.length === 0 ? (
+              <li className="lc-amort-stack-item">
+                <strong>{amort.emptyRow || "Enter valid inputs to see schedule."}</strong>
+              </li>
+            ) : (
+              <>
+                {computed.schedule.slice(0, 3).map((row) => (
+                  <li className="lc-amort-stack-item" key={row.month}>
+                    <strong>Month {row.month}</strong>
+                    <dl>
+                      <dt>Payment</dt>
+                      <dd>{money(row.payment)}</dd>
+                      <dt>Principal</dt>
+                      <dd>{money(row.principal)}</dd>
+                      <dt>Interest</dt>
+                      <dd>{money(row.interest)}</dd>
+                      <dt>Balance</dt>
+                      <dd>{money(row.balance)}</dd>
+                    </dl>
+                  </li>
+                ))}
+                {computed.schedule.length > 4 ? (
+                  <li className="lc-amort-stack-item" aria-hidden="true" style={{ textAlign: "center", color: "var(--lc-text-muted)" }}>
+                    …
+                  </li>
+                ) : null}
+                {computed.schedule.length > 3 ? (
+                  <li className="lc-amort-stack-item" key="last">
+                    <strong>Month {computed.schedule[computed.schedule.length - 1].month}</strong>
+                    <dl>
+                      <dt>Payment</dt>
+                      <dd>{money(computed.schedule[computed.schedule.length - 1].payment)}</dd>
+                      <dt>Principal</dt>
+                      <dd>{money(computed.schedule[computed.schedule.length - 1].principal)}</dd>
+                      <dt>Interest</dt>
+                      <dd>{money(computed.schedule[computed.schedule.length - 1].interest)}</dd>
+                      <dt>Balance</dt>
+                      <dd>{money(computed.schedule[computed.schedule.length - 1].balance)}</dd>
+                    </dl>
+                  </li>
+                ) : null}
+              </>
+            )}
+          </ul>
         </div>
       ) : null}
     </CalculatorShell>

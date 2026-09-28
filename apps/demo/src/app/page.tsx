@@ -22,11 +22,6 @@ export default function HomePage() {
           body={site.demoBanner.body}
         />
 
-        <p className="lc-hint" style={{ marginBottom: "1rem" }}>
-          Brand theme: <strong>{BRAND}</strong> (set NEXT_PUBLIC_BRAND=achieve|fdr|bills). Calculators accept{" "}
-          <code>projectName</code> prop.
-        </p>
-
         <div className="lc-landing-grid" role="list">
           {site.cards.map((card) => (
             <Link key={card.id} href={card.href} className="lc-card lc-landing-card" role="listitem">

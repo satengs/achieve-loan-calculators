@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   amortize,
   derivedCreditLimit,
@@ -40,6 +40,15 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
   const [apr, setApr] = useState(String(config.defaults.apr ?? 8.5));
   const [payMode, setPayMode] = useState(String(config.defaults.payMode ?? "interest-only"));
   const [termYears, setTermYears] = useState(String(config.defaults.termYears ?? 10));
+  const [advancedOpen, setAdvancedOpen] = useState(true);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 641px)");
+    const sync = () => setAdvancedOpen(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const syncLimit = (home: string, mort: string, cltv: string) => {
     const h = Number(String(home).replace(/[$,%\s,]/g, ""));
@@ -191,67 +200,83 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
             }}
             error={err.home}
           />
-          <Field
-            id="mortgage"
-            label={fields.mortgageBalance?.label || "Mortgage balance"}
-            hint={fields.mortgageBalance?.hint}
-            prefix="$"
-            value={mortgage}
-            onChange={(v) => {
-              setMortgage(v);
-              if (!limitManual) syncLimit(homeValue, v, maxCltv);
-            }}
-            error={err.mort}
-          />
-          <Field
-            id="max-cltv"
-            label={fields.maxCltv?.label || "Max CLTV"}
-            hint={fields.maxCltv?.hint}
-            suffix="%"
-            value={maxCltv}
-            onChange={(v) => {
-              setMaxCltv(v);
-              if (!limitManual) syncLimit(homeValue, mortgage, v);
-            }}
-            error={err.maxCltv}
-          />
-          <Field
-            id="credit-limit"
-            label={fields.creditLimit?.label || "Credit limit"}
-            hint={fields.creditLimit?.hint}
-            prefix="$"
-            value={creditLimit}
-            onChange={(v) => {
-              setLimitManual(true);
-              setCreditLimit(v);
-            }}
-            error={err.limit}
-          />
           <Field id="draw" label={fields.drawAmount?.label || "Draw amount"} hint={fields.drawAmount?.hint} prefix="$" value={draw} onChange={setDraw} error={err.draw} />
           <Field id="apr" label={fields.apr?.label || "APR"} hint={fields.apr?.hint} suffix="%" value={apr} onChange={setApr} error={err.apr} />
-          <Fieldset legend={fields.payMode?.legend || "Payment style"}>
-            <Segmented
-              name="pay-mode"
-              ariaLabel={fields.payMode?.ariaLabel || "Payment mode"}
-              value={payMode}
-              onChange={setPayMode}
-              options={[
-                { value: "interest-only", label: fields.payMode?.modes?.["interest-only"] || "Interest-only" },
-                { value: "amortizing", label: fields.payMode?.modes?.amortizing || "Amortizing" },
-              ]}
-            />
-            {fields.payMode?.hint ? <p className="lc-hint">{fields.payMode.hint}</p> : null}
-          </Fieldset>
-          <Field
-            id="term-years"
-            label={termLabel}
-            hint={termHint}
-            suffix="yr"
-            value={termYears}
-            onChange={setTermYears}
-            inputMode="numeric"
-            error={err.term}
-          />
+          <details
+            className="lc-advanced"
+            open={advancedOpen}
+            onToggle={(e) => {
+              if (window.matchMedia("(min-width: 641px)").matches) {
+                e.currentTarget.open = true;
+                setAdvancedOpen(true);
+                return;
+              }
+              setAdvancedOpen(e.currentTarget.open);
+            }}
+          >
+            <summary>More options</summary>
+            <div className="lc-advanced-body">
+              <Field
+                id="mortgage"
+                label={fields.mortgageBalance?.label || "Mortgage balance"}
+                hint={fields.mortgageBalance?.hint}
+                prefix="$"
+                value={mortgage}
+                onChange={(v) => {
+                  setMortgage(v);
+                  if (!limitManual) syncLimit(homeValue, v, maxCltv);
+                }}
+                error={err.mort}
+              />
+              <Field
+                id="max-cltv"
+                label={fields.maxCltv?.label || "Max CLTV"}
+                hint={fields.maxCltv?.hint}
+                suffix="%"
+                value={maxCltv}
+                onChange={(v) => {
+                  setMaxCltv(v);
+                  if (!limitManual) syncLimit(homeValue, mortgage, v);
+                }}
+                error={err.maxCltv}
+              />
+              <Field
+                id="credit-limit"
+                label={fields.creditLimit?.label || "Credit limit"}
+                hint={fields.creditLimit?.hint}
+                prefix="$"
+                value={creditLimit}
+                onChange={(v) => {
+                  setLimitManual(true);
+                  setCreditLimit(v);
+                }}
+                error={err.limit}
+              />
+              <Fieldset legend={fields.payMode?.legend || "Payment style"}>
+                <Segmented
+                  name="pay-mode"
+                  ariaLabel={fields.payMode?.ariaLabel || "Payment mode"}
+                  value={payMode}
+                  onChange={setPayMode}
+                  options={[
+                    { value: "interest-only", label: fields.payMode?.modes?.["interest-only"] || "Interest-only" },
+                    { value: "amortizing", label: fields.payMode?.modes?.amortizing || "Amortizing" },
+                  ]}
+                />
+                {fields.payMode?.hint ? <p className="lc-hint">{fields.payMode.hint}</p> : null}
+              </Fieldset>
+              <Field
+                id="term-years"
+                label={termLabel}
+                hint={termHint}
+                suffix="yr"
+                value={termYears}
+                onChange={setTermYears}
+                inputMode="numeric"
+                error={err.term}
+              />
+            </div>
+          </details>
         </section>
 
         <ResultsPanel

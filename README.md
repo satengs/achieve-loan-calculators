@@ -56,6 +56,8 @@ docs/
 ## Brand switch
 
 See [docs/BRANDS.md](docs/BRANDS.md). Demo uses `NEXT_PUBLIC_BRAND` (default `achieve`).
+This env/theme switch is for local/devtools only — it is not shown on the public landing UI.
+Pass `projectName` on each calculator component when embedding.
 
 ## CMS later
 
