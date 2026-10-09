@@ -13,6 +13,7 @@ export {
   isProjectName,
   resolveProjectName,
   BRAND_TOKENS,
+  tokensToCssVars,
   BrandTheme,
   adaptBrandChromeNote,
 } from "./brand";

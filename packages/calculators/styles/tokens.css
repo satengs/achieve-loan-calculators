@@ -43,7 +43,7 @@
   font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 700;
   margin: 0 0 0.5rem;
-  color: var(--lc-primary-dark);
+  color: var(--lc-heading, var(--lc-primary-dark));
 }
 
 .lc-header p {
@@ -369,13 +369,13 @@
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  background: var(--lc-primary);
-  color: #fff;
+  background: var(--lc-cta, var(--lc-primary));
+  color: var(--lc-cta-text, #fff);
   transition: background 0.15s;
 }
 
 .lc-btn:hover {
-  background: var(--lc-primary-hover);
+  background: var(--lc-cta-hover, var(--lc-primary-hover));
 }
 
 .lc-btn:focus-visible {
@@ -575,7 +575,7 @@
 .lc-landing-card .lc-landing-card-title {
   font-size: 1.25rem;
   margin: 0;
-  color: var(--lc-primary-dark);
+  color: var(--lc-heading, var(--lc-primary-dark));
 }
 
 .lc-landing-card p {
@@ -650,7 +650,7 @@
 }
 
 .lc-rate-note a {
-  color: var(--lc-primary);
+  color: var(--lc-link, var(--lc-primary));
   font-weight: 600;
 }
 
@@ -709,4 +709,56 @@
 .lc-landing-card .lc-brand-fit {
   font-size: 0.75rem;
   color: var(--lc-text-muted);
+}
+
+/* ── FDR (freedomdebtrelief.com) brand-scoped treatments ──
+ * Values sourced from FDR computed styles; see docs/BRANDS.md. Achieve/bills untouched. */
+[data-project="fdr"] .lc-header h1 {
+  font-weight: 500; /* FDR h2 "Get rid of debt": font-medium, tracking -0.01em */
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+[data-project="fdr"] .lc-eyebrow {
+  /* "DEBT RELIEF THAT WORKS": 14px bold uppercase, tracking .25em, content-secondary */
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--lc-text-muted);
+}
+
+[data-project="fdr"] .lc-form h2,
+[data-project="fdr"] .lc-results h2,
+[data-project="fdr"] .lc-landing-section > h2 {
+  font-weight: 500; /* "How much do you owe?" font-medium */
+}
+
+[data-project="fdr"] .lc-card {
+  /* FDR tool cards: white, 8px, soft shadow, no visible border */
+  border-color: transparent;
+}
+
+[data-project="fdr"] .lc-btn {
+  /* Hero "Continue": h-12, rounded-lg, 18px bold, tracking -0.02em */
+  min-height: 48px;
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+}
+
+[data-project="fdr"] .lc-input:focus {
+  /* select.outline-blue-accent */
+  border-color: var(--lc-primary);
+}
+
+[data-project="fdr"] .lc-result-value {
+  color: var(--lc-primary-dark);
+}
+
+[data-project="fdr"] .lc-link-label {
+  color: var(--lc-link);
+}
+
+[data-project="fdr"] .lc-segmented input:checked + span {
+  background: var(--lc-primary);
 }
