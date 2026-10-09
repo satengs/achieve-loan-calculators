@@ -109,7 +109,7 @@ body {
   font-family: var(--lc-font, system-ui, sans-serif);
 }
 
-/* Tab row: segmented control (left) + static helper (right). Fixed height in every state
+/* Tab row: segmented control. Fixed height in every state
    (SSR, Suspense fallback, hydrated, either tab active) so nothing below it ever moves. */
 .lc-demo-tabs {
   box-sizing: border-box;
@@ -192,39 +192,10 @@ body {
   background: color-mix(in srgb, var(--lc-primary, #3300ff) 12%, #fff);
 }
 
-.lc-demo-tabs-hint {
-  margin: 0 0 0 auto;
-  min-width: 0;
-  font-size: 0.875rem;
-  white-space: nowrap;
-}
-
-.lc-demo-tabs-hint-link {
-  appearance: none;
-  border: none;
-  background: none;
-  padding: 0.35rem 0;
-  font: inherit;
-  font-weight: 600;
-  color: var(--lc-link, var(--lc-primary, #3300ff));
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.lc-demo-tabs-hint-link:hover {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.lc-demo-tabs-hint-link:focus-visible {
-  outline: 2px solid var(--lc-primary, #3300ff);
-  outline-offset: 2px;
-}
-
 @media (max-width: 640px) {
-  /* Mobile: control on top, compact helper line below — still a fixed total height. */
+  /* Mobile: full-width segmented control, fixed height. */
   .lc-demo-tabs {
-    height: 94px; /* 12 + 44 + 6 + 20 + 11 + 1 */
+    height: 68px; /* 12 + 44 + 11 + 1 */
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
@@ -244,20 +215,9 @@ body {
   }
 
   .lc-demo-tab-badge {
-    display: none; /* no room at 390px; the </> icon + helper line carry it */
+    display: none; /* no room at 390px; the </> icon carries it */
   }
 
-  .lc-demo-tabs-hint {
-    margin: 0;
-    height: 20px;
-    font-size: 0.8125rem;
-    line-height: 20px;
-  }
-
-  .lc-demo-tabs-hint-link {
-    padding: 0;
-    line-height: 20px;
-  }
 }
 
 /* ── Landing: reviewer callout (above the fold) + per-card Technical details link ── */

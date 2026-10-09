@@ -128,18 +128,6 @@ function TabsView({
             );
           })}
         </div>
-        {/* Static helper (no popup): tells first-time visitors the second view exists. */}
-        <p className="lc-demo-tabs-hint">
-          {active === "calc" ? (
-            <button type="button" className="lc-demo-tabs-hint-link" onClick={() => select("tech", true)}>
-              See how this calculator works <span aria-hidden="true">→</span>
-            </button>
-          ) : (
-            <button type="button" className="lc-demo-tabs-hint-link" onClick={() => select("calc", true)}>
-              <span aria-hidden="true">←</span> Back to the calculator
-            </button>
-          )}
-        </p>
       </div>
       <div
         role="tabpanel"
