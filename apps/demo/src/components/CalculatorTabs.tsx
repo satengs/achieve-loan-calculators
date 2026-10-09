@@ -7,6 +7,7 @@ import type { TechEntry, TechRateRow } from "@/lib/tech";
 import { TechnicalDetails } from "./TechnicalDetails";
 import { CalculatorBreadcrumb } from "./CalculatorBreadcrumb";
 import { useRequestHints } from "./RequestHints";
+import { CalcIcon, CodeIcon } from "./TechIcons";
 
 export const TAB_QUERY_KEY = "tab";
 const TABS = [
@@ -95,29 +96,50 @@ function TabsView({
 
   return (
     <div className="lc-demo-tabs-wrap">
-      <div className="lc-demo-tabs" role="tablist" aria-label={`${tech.title} calculator views`}>
-        {TABS.map((t, i) => {
-          const selected = active === t.id;
-          return (
-            <button
-              key={t.id}
-              ref={(el) => {
-                tabRefs.current[i] = el;
-              }}
-              type="button"
-              role="tab"
-              id={`${baseId}-tab-${t.id}`}
-              aria-selected={selected}
-              aria-controls={`${baseId}-panel-${t.id}`}
-              tabIndex={selected ? 0 : -1}
-              className={selected ? "lc-demo-tab lc-demo-tab-active" : "lc-demo-tab"}
-              onClick={() => select(t.id)}
-              onKeyDown={(e) => onKeyDown(e, i)}
-            >
-              {t.label}
+      {/* Fixed-height row (SSR + Suspense fallback render the same markup) so nothing below shifts. */}
+      <div className="lc-demo-tabs">
+        <div className="lc-demo-tablist" role="tablist" aria-label={`${tech.title} calculator views`}>
+          {TABS.map((t, i) => {
+            const selected = active === t.id;
+            return (
+              <button
+                key={t.id}
+                ref={(el) => {
+                  tabRefs.current[i] = el;
+                }}
+                type="button"
+                role="tab"
+                id={`${baseId}-tab-${t.id}`}
+                aria-selected={selected}
+                aria-controls={`${baseId}-panel-${t.id}`}
+                tabIndex={selected ? 0 : -1}
+                className={selected ? "lc-demo-tab lc-demo-tab-active" : "lc-demo-tab"}
+                onClick={() => select(t.id)}
+                onKeyDown={(e) => onKeyDown(e, i)}
+              >
+                {t.id === "calc" ? <CalcIcon /> : <CodeIcon />}
+                <span className="lc-demo-tab-label">{t.label}</span>
+                {t.id === "tech" ? (
+                  <span className="lc-demo-tab-badge" aria-hidden="true">
+                    For reviewers
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
+        {/* Static helper (no popup): tells first-time visitors the second view exists. */}
+        <p className="lc-demo-tabs-hint">
+          {active === "calc" ? (
+            <button type="button" className="lc-demo-tabs-hint-link" onClick={() => select("tech", true)}>
+              See how this calculator works <span aria-hidden="true">→</span>
             </button>
-          );
-        })}
+          ) : (
+            <button type="button" className="lc-demo-tabs-hint-link" onClick={() => select("calc", true)}>
+              <span aria-hidden="true">←</span> Back to the calculator
+            </button>
+          )}
+        </p>
       </div>
       <div
         role="tabpanel"

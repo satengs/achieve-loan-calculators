@@ -4,6 +4,12 @@
 /* Scan package source for Tailwind class usage if any */
 @source "../../../../packages/calculators/src";
 
+html {
+  /* Desktop: always reserve the scrollbar gutter so centered chrome never moves sideways when a
+     page (or a streaming/partial frame) switches between scrolling and non-scrolling. */
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   margin: 0;
@@ -103,53 +109,309 @@ body {
   font-family: var(--lc-font, system-ui, sans-serif);
 }
 
+/* Tab row: segmented control (left) + static helper (right). Fixed height in every state
+   (SSR, Suspense fallback, hydrated, either tab active) so nothing below it ever moves. */
 .lc-demo-tabs {
   box-sizing: border-box;
-  min-height: 61px; /* reserved: same height in Suspense fallback and hydrated tab bar */
+  height: 69px; /* 12px + 44px control + 12px + 1px border */
   max-width: 960px;
   margin: 0 auto;
-  padding: 1rem 1rem 0;
+  padding: 0.75rem 1rem;
   display: flex;
-  gap: 0.25rem;
+  align-items: center;
+  gap: 1rem;
   border-bottom: 1px solid var(--lc-border, #e7ecf3);
+}
+
+.lc-demo-tablist {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  height: 44px;
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid var(--lc-border-strong, #c0cbd8);
+  border-radius: calc(var(--lc-radius, 8px) + 3px);
+  background: var(--lc-bg, #f8f9fc);
 }
 
 .lc-demo-tab {
   box-sizing: border-box;
-  min-height: 44px;
+  height: 100%;
   appearance: none;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid transparent;
+  border-radius: var(--lc-radius, 8px);
   background: transparent;
   font: inherit;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: var(--lc-text-secondary, #42546b);
-  padding: 0.6rem 0.9rem;
-  margin-bottom: -1px;
-  border-bottom: 3px solid transparent;
-  border-radius: var(--lc-radius, 8px) var(--lc-radius, 8px) 0 0;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--lc-text-secondary, #42546b); /* ≥4.5:1 on --lc-bg for all three brands */
+  padding: 0 0.85rem;
   cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.lc-demo-tab .lc-icon {
+  flex: none;
 }
 
 .lc-demo-tab:hover {
   color: var(--lc-text, #1d252f);
-  background: color-mix(in srgb, var(--lc-primary, #3300ff) 6%, transparent);
+  background: color-mix(in srgb, var(--lc-primary, #3300ff) 8%, var(--lc-surface, #fff));
 }
 
 .lc-demo-tab:focus-visible {
-  outline: none;
-  box-shadow: inset 0 0 0 2px var(--lc-focus-ring, rgba(51, 0, 255, 0.35));
+  outline: 2px solid var(--lc-primary, #3300ff);
+  outline-offset: 1px;
 }
 
-.lc-demo-tab-active {
+.lc-demo-tab-active,
+.lc-demo-tab-active:hover {
   color: var(--lc-primary, #3300ff);
-  border-bottom-color: var(--lc-primary, #3300ff);
+  background: var(--lc-surface, #fff);
+  border-color: var(--lc-border, #e7ecf3);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.12);
+  cursor: default;
 }
 
-.lc-landing-tech-note {
-  margin: 1rem 0 0;
+.lc-demo-tab-badge {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--lc-primary-dark, #1a0080);
+  background: color-mix(in srgb, var(--lc-primary, #3300ff) 12%, #fff);
+}
+
+.lc-demo-tabs-hint {
+  margin: 0 0 0 auto;
+  min-width: 0;
   font-size: 0.875rem;
-  color: var(--lc-text-secondary);
+  white-space: nowrap;
+}
+
+.lc-demo-tabs-hint-link {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0.35rem 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--lc-link, var(--lc-primary, #3300ff));
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.lc-demo-tabs-hint-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lc-demo-tabs-hint-link:focus-visible {
+  outline: 2px solid var(--lc-primary, #3300ff);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  /* Mobile: control on top, compact helper line below — still a fixed total height. */
+  .lc-demo-tabs {
+    height: 94px; /* 12 + 44 + 6 + 20 + 11 + 1 */
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 0.75rem 1rem 0.6875rem;
+  }
+
+  .lc-demo-tablist {
+    width: 100%;
+  }
+
+  .lc-demo-tab {
+    flex: 1 1 0;
+    justify-content: center;
+    padding: 0 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .lc-demo-tab-badge {
+    display: none; /* no room at 390px; the </> icon + helper line carry it */
+  }
+
+  .lc-demo-tabs-hint {
+    margin: 0;
+    height: 20px;
+    font-size: 0.8125rem;
+    line-height: 20px;
+  }
+
+  .lc-demo-tabs-hint-link {
+    padding: 0;
+    line-height: 20px;
+  }
+}
+
+/* ── Landing: reviewer callout (above the fold) + per-card Technical details link ── */
+.lc-reviewer-callout {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin: 1.25rem 0 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--lc-primary, #3300ff) 30%, var(--lc-border, #e7ecf3));
+  border-left: 4px solid var(--lc-primary, #3300ff);
+  border-radius: var(--lc-radius, 8px);
+  background: var(--lc-surface, #fff);
+  font-family: var(--lc-font, system-ui, sans-serif);
+}
+
+.lc-reviewer-callout-icon {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  color: var(--lc-primary, #3300ff);
+  background: color-mix(in srgb, var(--lc-primary, #3300ff) 10%, #fff);
+}
+
+.lc-reviewer-callout-text {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--lc-text, #1d252f);
+}
+
+.lc-reviewer-callout-link {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 40px;
+  padding: 0 1rem;
+  border-radius: var(--lc-radius, 8px);
+  background: var(--lc-cta, var(--lc-primary, #3300ff));
+  color: var(--lc-cta-text, #fff);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lc-reviewer-callout-link:hover {
+  background: var(--lc-cta-hover, var(--lc-primary-hover, #2900cc));
+}
+
+.lc-reviewer-callout-link:focus-visible {
+  outline: 2px solid var(--lc-primary, #3300ff);
+  outline-offset: 2px;
+}
+
+[data-project="bills"] .lc-reviewer-callout-link {
+  border-radius: 9999px;
+}
+
+@media (max-width: 640px) {
+  .lc-reviewer-callout {
+    flex-wrap: wrap;
+  }
+
+  .lc-reviewer-callout-icon {
+    display: none;
+  }
+
+  .lc-reviewer-callout-text {
+    flex-basis: 100%;
+    font-size: 0.875rem;
+  }
+}
+
+/* Card = stretched title link (whole card clickable) + an independent Technical details link. */
+.lc-landing-card {
+  position: relative;
+}
+
+.lc-landing-card:focus-within {
+  box-shadow: var(--lc-shadow);
+}
+
+.lc-landing-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.lc-landing-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.lc-landing-card-link:focus-visible {
+  outline: none;
+}
+
+.lc-landing-card-link:focus-visible::after {
+  outline: 2px solid var(--lc-primary, #3300ff);
+  outline-offset: 2px;
+}
+
+.lc-landing-card-actions {
+  display: flex;
+  flex-wrap: wrap; /* narrow 3-col cards: pill drops below the label — identical for every card in a row */
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  min-height: 32px;
+}
+
+.lc-landing-card-actions .lc-link-label {
+  white-space: nowrap;
+}
+
+.lc-landing-card-tech {
+  position: relative;
+  z-index: 1; /* above the stretched link */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 32px;
+  padding: 0 0.6rem;
+  border: 1px solid var(--lc-border-strong, #c0cbd8);
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lc-text-secondary, #42546b);
+  background: var(--lc-surface, #fff);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lc-landing-card-tech .lc-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.lc-landing-card-tech:hover {
+  color: var(--lc-primary, #3300ff);
+  border-color: var(--lc-primary, #3300ff);
+}
+
+.lc-landing-card-tech:focus-visible {
+  outline: 2px solid var(--lc-primary, #3300ff);
+  outline-offset: 2px;
 }
 
 /* ── Technical details panel (demo-only, v2) ── */
@@ -1108,7 +1370,13 @@ code.lc-tt-ov-value {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem 1rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* desktop: crumbs + back link always on one line (fixed 50px row) */
+}
+
+.lc-crumbs {
+  /* Take the free space next to the back link but never push it to a second line. */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .lc-crumbs ol {
@@ -1116,7 +1384,9 @@ code.lc-tt-ov-value {
   margin: 0;
   padding: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* one line always: long titles ellipsize so the reserved row height holds */
+  min-width: 0;
+  white-space: nowrap;
   align-items: center;
   font-size: 0.8125rem;
   line-height: 1.4;
@@ -1146,6 +1416,17 @@ code.lc-tt-ov-value {
   text-underline-offset: 2px;
 }
 
+.lc-crumbs li:last-child {
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+
+.lc-crumbs li:last-child > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .lc-crumbs [aria-current="page"] {
   color: var(--lc-text-secondary, #42546b);
   font-weight: 500;
@@ -1153,6 +1434,7 @@ code.lc-tt-ov-value {
 
 .lc-back-link {
   box-sizing: border-box;
+  flex: none;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
@@ -1190,6 +1472,11 @@ code.lc-tt-ov-value {
     padding-top: 0.75rem;
     /* 0.75rem + 36px back link + 0.5rem gap + ~1.15rem crumb line */
     min-height: 74px;
+  }
+
+  .lc-crumbs {
+    flex: none;
+    max-width: 100%;
   }
 
   .lc-back-link {

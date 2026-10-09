@@ -15,7 +15,6 @@ import {
   BRAND_QUERY_KEY,
   DEFAULT_BRAND,
   parseBrand,
-  readStoredBrand,
   writeStoredBrand,
 } from "@/lib/brand";
 
@@ -73,9 +72,10 @@ export function BrandProvider({
       return;
     }
 
-    const stored = readStoredBrand();
-    const resolved = stored ?? DEFAULT_BRAND;
-    setBrandState(resolved);
+    // No ?brand=: keep the brand the page was server-rendered with (cookie → default, and the
+    // <head> migration script already redirected stale localStorage-only users before paint).
+    // Never swap the theme after paint here — only sync storage/cookie and the URL to it.
+    const resolved = brand;
     writeStoredBrand(resolved);
 
     const params = new URLSearchParams(searchParams.toString());
@@ -87,7 +87,7 @@ export function BrandProvider({
       const qs = params.toString();
       router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     }
-  }, [queryBrand, queryRaw, pathname, router, searchParams]);
+  }, [brand, queryBrand, queryRaw, pathname, router, searchParams]);
 
   const setBrand = useCallback(
     (next: ProjectName) => {
