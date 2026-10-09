@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "node --import tsx --test src/calc/amortize.test.ts",
+    "test": "node --import tsx --test src/calc/*.test.ts src/rates/*.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build": "tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs"
   },

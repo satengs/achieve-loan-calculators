@@ -19,3 +19,13 @@ export function lifeCoverageEstimate(input: LifeEstimateInput) {
   const netNeed = Math.max(0, grossNeed - existing - assets);
   return { incomeNeed, debts, finals, education, existing, assets, grossNeed, netNeed };
 }
+
+/**
+ * Illustrative annual premium = coverage × rate per $1,000 / 1,000 (Elfsight template:
+ * premium = coverage × premium rate / 100, expressed here per $1,000 to keep rates readable).
+ */
+export function lifePremiumEstimate(coverage: number, ratePerThousand: number) {
+  if (!Number.isFinite(coverage) || !Number.isFinite(ratePerThousand) || coverage < 0 || ratePerThousand < 0) return null;
+  const annual = (coverage / 1000) * ratePerThousand;
+  return { annual, monthly: annual / 12 };
+}
