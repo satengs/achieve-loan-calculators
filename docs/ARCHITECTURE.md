@@ -93,3 +93,20 @@ initial input value + <RateNote> (“based on <source>, as of <date>” | fallba
 ## Shared UI primitives (batch 16)
 
 `SelectField` (native select), `SliderField` (range + exact input), `MoreOptions` (collapsed on mobile, open on desktop), `RateNote` (rate provenance), `DataTable` (scrolling table). Internal helpers: `useNumberInputs`/`NumberFields` (config-validated numeric state), `useCalculatorSetup`, `YearScheduleCard`.
+
+## Demo: "Technical details" tab (demo-only)
+
+Every calculator page in `apps/demo` renders `CalculatorTabs` (Calculator | Technical details). Tab state is `?tab=tech`
+next to `?brand=`; WAI-ARIA tabs with ←/→/Home/End. Gated by `DEMO_CONFIG.showTechnicalTab`
+(`apps/demo/src/config/demo.config.ts`; set `NEXT_PUBLIC_SHOW_TECHNICAL_TAB=false` to hide). Package components are unchanged.
+
+Data flow:
+- `apps/demo/scripts/gen-tech-registry.mjs` runs on `predev` / `prebuild` and writes `apps/demo/src/generated/tech-registry.json`
+  from `docs/calculators/<slug>.md`, `packages/calculators/src/content/<slug>.content.json`,
+  `packages/calculators/src/config/<slug>.config.json`, and `it()` counts per mapped `describe` in `src/calc/*.test.ts`
+  (mapping in `apps/demo/src/lib/tech-meta.json`).
+- Each server page calls `getTechEntry(slug)` (`apps/demo/src/lib/tech.ts`) and passes only that slice to the client,
+  plus `buildRateRows()` from the same `getMarketRates()` call the calculator uses (live vs fallback per FRED series).
+- `TechnicalDetails` renders markdown with `react-markdown` + `remark-gfm` with `skipHtml` (no raw HTML, no
+  `dangerouslySetInnerHTML`), JSON as pretty-printed text in collapsible blocks with copy buttons, and the active brand's
+  resolved CSS variables via `tokensToCssVars(BRAND_TOKENS[brand])`.

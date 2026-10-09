@@ -1,3 +1,5 @@
+import { CalculatorTabs } from "@/components/CalculatorTabs";
+import { buildRateRows, getTechEntry } from "@/lib/tech";
 import { BrandedHeloc } from "@/components/BrandedCalculators";
 import { getMarketRates } from "@/lib/rates";
 
@@ -10,6 +12,11 @@ export const metadata = {
 export const revalidate = 86400;
 
 export default async function Page() {
-  const { rates } = await getMarketRates(["prime"]);
-  return <BrandedHeloc rates={rates} />;
+  const { rates, errors } = await getMarketRates(["prime"]);
+  const tech = getTechEntry("heloc");
+  return (
+    <CalculatorTabs tech={tech} rateRows={buildRateRows(tech.rateKeys, rates, errors)}>
+      <BrandedHeloc rates={rates} />
+    </CalculatorTabs>
+  );
 }

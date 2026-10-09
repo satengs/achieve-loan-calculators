@@ -1,3 +1,5 @@
+import { CalculatorTabs } from "@/components/CalculatorTabs";
+import { getTechEntry } from "@/lib/tech";
 import { BrandedDti } from "@/components/BrandedCalculators";
 
 export const metadata = {
@@ -6,5 +8,10 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <BrandedDti />;
+  const tech = getTechEntry("dti");
+  return (
+    <CalculatorTabs tech={tech} rateRows={[]}>
+      <BrandedDti />
+    </CalculatorTabs>
+  );
 }

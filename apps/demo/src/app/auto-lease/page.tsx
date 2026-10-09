@@ -1,3 +1,5 @@
+import { CalculatorTabs } from "@/components/CalculatorTabs";
+import { buildRateRows, getTechEntry } from "@/lib/tech";
 import { BrandedAutoLease } from "@/components/BrandedCalculators";
 import { getMarketRates } from "@/lib/rates";
 
@@ -10,6 +12,11 @@ export const metadata = {
 export const revalidate = 86400;
 
 export default async function Page() {
-  const { rates } = await getMarketRates(["auto48"]);
-  return <BrandedAutoLease rates={rates} />;
+  const { rates, errors } = await getMarketRates(["auto48"]);
+  const tech = getTechEntry("auto-lease");
+  return (
+    <CalculatorTabs tech={tech} rateRows={buildRateRows(tech.rateKeys, rates, errors)}>
+      <BrandedAutoLease rates={rates} />
+    </CalculatorTabs>
+  );
 }

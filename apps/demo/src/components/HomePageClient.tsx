@@ -4,6 +4,7 @@ import Link from "next/link";
 import { DemoBanner, getSiteContent } from "@loan-calculators/core";
 import { landingChromeFor, withBrandQuery } from "@/lib/brand";
 import { useBrand } from "./BrandProvider";
+import { DEMO_CONFIG } from "@/config/demo.config";
 
 export function HomePageClient() {
   const { brand } = useBrand();
@@ -20,6 +21,14 @@ export function HomePageClient() {
       </header>
 
       <DemoBanner icon={site.demoBanner.icon} strong={site.demoBanner.strong} body={site.demoBanner.body} />
+
+      {DEMO_CONFIG.showTechnicalTab ? (
+        <p className="lc-landing-tech-note">
+          <strong>For reviewers:</strong> every calculator has a <em>Technical details</em> tab (or add{" "}
+          <code>?tab=tech</code> to its URL) showing how it works, its content and config JSON, live rate data, the
+          active brand tokens, and the package component, tests and source links.
+        </p>
+      ) : null}
 
       {sections.map((section) => {
         const cards = site.cards.filter((c) => (section.id === "all" ? true : c.section === section.id));

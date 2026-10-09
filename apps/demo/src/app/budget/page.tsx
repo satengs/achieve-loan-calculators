@@ -1,3 +1,5 @@
+import { CalculatorTabs } from "@/components/CalculatorTabs";
+import { getTechEntry } from "@/lib/tech";
 import { BrandedBudget } from "@/components/BrandedCalculators";
 
 export const metadata = {
@@ -6,5 +8,10 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <BrandedBudget />;
+  const tech = getTechEntry("budget");
+  return (
+    <CalculatorTabs tech={tech} rateRows={[]}>
+      <BrandedBudget />
+    </CalculatorTabs>
+  );
 }

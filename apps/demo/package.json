@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "gen:tech": "node scripts/gen-tech-registry.mjs",
+    "predev": "node scripts/gen-tech-registry.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/gen-tech-registry.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -13,7 +16,9 @@
     "@loan-calculators/core": "*",
     "next": "16.3.6",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",

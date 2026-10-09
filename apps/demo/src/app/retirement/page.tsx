@@ -1,3 +1,5 @@
+import { CalculatorTabs } from "@/components/CalculatorTabs";
+import { buildRateRows, getTechEntry } from "@/lib/tech";
 import { BrandedRetirement } from "@/components/BrandedCalculators";
 import { getMarketRates } from "@/lib/rates";
 
@@ -10,6 +12,11 @@ export const metadata = {
 export const revalidate = 86400;
 
 export default async function Page() {
-  const { rates } = await getMarketRates(["inflationYoY"]);
-  return <BrandedRetirement rates={rates} />;
+  const { rates, errors } = await getMarketRates(["inflationYoY"]);
+  const tech = getTechEntry("retirement");
+  return (
+    <CalculatorTabs tech={tech} rateRows={buildRateRows(tech.rateKeys, rates, errors)}>
+      <BrandedRetirement rates={rates} />
+    </CalculatorTabs>
+  );
 }
