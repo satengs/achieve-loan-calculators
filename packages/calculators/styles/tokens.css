@@ -655,8 +655,7 @@
 }
 
 .lc-rate-note-fallback {
-  border-left: 3px solid var(--lc-border-strong);
-  padding-left: 0.5rem;
+  font-style: italic;
 }
 
 .lc-sr-only {

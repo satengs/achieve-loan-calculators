@@ -30,9 +30,6 @@ export function HomePageClient() {
 
       {DEMO_CONFIG.showTechnicalTab ? (
         <aside className="lc-reviewer-callout" aria-label="For reviewers">
-          <span className="lc-reviewer-callout-icon">
-            <CodeIcon />
-          </span>
           <p className="lc-reviewer-callout-text">
             <strong>For reviewers:</strong> every calculator has a <strong>Technical details</strong> view — formulas,
             content &amp; config JSON, live data and brand tokens.

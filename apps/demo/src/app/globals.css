@@ -267,8 +267,7 @@ body {
   gap: 0.75rem 1rem;
   margin: 1.25rem 0 0.75rem;
   padding: 0.85rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--lc-primary, #3300ff) 30%, var(--lc-border, #e7ecf3));
-  border-left: 4px solid var(--lc-primary, #3300ff);
+  border: 1px solid var(--lc-border, #e7ecf3);
   border-radius: var(--lc-radius, 8px);
   background: var(--lc-surface, #fff);
   font-family: var(--lc-font, system-ui, sans-serif);
@@ -837,9 +836,9 @@ code.lc-tt-ov-value {
   max-width: 72ch;
   margin: 0 0 1rem;
   padding: 0.85rem 1rem;
-  border-left: 4px solid #b26a00;
+  border: 1px solid #f0dcb4;
   background: #fff8ec;
-  border-radius: 0 var(--lc-radius) var(--lc-radius) 0;
+  border-radius: var(--lc-radius);
   color: #3d2a00;
 }
 
@@ -911,7 +910,6 @@ code.lc-tt-ov-value {
   margin: 0;
   min-width: 0;
   border: 1px solid var(--tt-code-border);
-  border-left: 4px solid var(--lc-primary);
   border-radius: var(--lc-radius);
   background: var(--tt-code-bg);
   padding: 0.7rem 0.85rem;
