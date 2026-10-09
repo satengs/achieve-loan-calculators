@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DEMO_CONFIG } from "@/config/demo.config";
 import type { TechEntry, TechRateRow } from "@/lib/tech";
 import { TechnicalDetails } from "./TechnicalDetails";
+import { CalculatorBreadcrumb } from "./CalculatorBreadcrumb";
 
 export const TAB_QUERY_KEY = "tab";
 const TABS = [
@@ -26,7 +27,15 @@ type Props = {
  * The calculator panel stays mounted (hidden) so its inputs survive tab switches.
  */
 export function CalculatorTabs(props: Props) {
-  if (!DEMO_CONFIG.showTechnicalTab) return <>{props.children}</>;
+  return (
+    <>
+      <CalculatorBreadcrumb slug={props.tech.slug} />
+      {DEMO_CONFIG.showTechnicalTab ? <TabsWithUrl {...props} /> : props.children}
+    </>
+  );
+}
+
+function TabsWithUrl(props: Props) {
   // useSearchParams needs a Suspense boundary for static prerender; the fallback
   // renders the same tab UI pinned to "Calculator" so the server HTML matches the default.
   return (

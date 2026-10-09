@@ -1086,3 +1086,114 @@ code.lc-tt-ov-value {
   display: inline-block;
   font-size: 0.8125rem;
 }
+
+/* ── Demo-only: breadcrumb + back link on calculator pages (scrolls away; sticky estimate unaffected) ── */
+.lc-crumbs-bar {
+  font-family: var(--lc-font, system-ui, sans-serif);
+  background: var(--lc-bg, #f8f9fc);
+}
+
+.lc-crumbs-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.85rem 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  flex-wrap: wrap;
+}
+
+.lc-crumbs ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.lc-crumbs li {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.lc-crumbs li + li::before {
+  content: "›";
+  margin: 0 0.45rem;
+  color: var(--lc-text-muted, #5c708a);
+}
+
+.lc-crumbs a {
+  color: var(--lc-link, var(--lc-primary, #3300ff));
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+.lc-crumbs a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lc-crumbs [aria-current="page"] {
+  color: var(--lc-text-secondary, #42546b);
+  font-weight: 500;
+}
+
+.lc-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 36px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--lc-link, var(--lc-primary, #3300ff));
+  background: var(--lc-surface, #fff);
+  border: 1px solid var(--lc-border-strong, #c0cbd8);
+  border-radius: var(--lc-radius, 8px);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.lc-back-link:hover {
+  border-color: var(--lc-link, var(--lc-primary, #3300ff));
+  background: var(--lc-bg-tint, #eff5ff);
+}
+
+.lc-crumbs a:focus-visible,
+.lc-back-link:focus-visible {
+  outline: 2px solid var(--lc-primary, #3300ff);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--lc-focus-ring, rgba(51, 0, 255, 0.35));
+}
+
+/* ≤640px: back link first; breadcrumb drops the redundant "All calculators" crumb */
+@media (max-width: 640px) {
+  .lc-crumbs-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 0.75rem;
+  }
+
+  .lc-back-link {
+    order: -1;
+  }
+
+  .lc-crumb-home {
+    display: none !important;
+  }
+
+  .lc-crumb-home + li::before {
+    content: none;
+  }
+}
+
+/* Landing section anchors clear the sticky brand bar */
+.lc-landing-section[id] {
+  scroll-margin-top: calc(var(--lc-brand-bar-offset, 3.25rem) + 0.75rem);
+}

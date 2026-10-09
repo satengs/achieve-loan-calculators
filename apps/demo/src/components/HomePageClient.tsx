@@ -34,7 +34,7 @@ export function HomePageClient() {
         const cards = site.cards.filter((c) => (section.id === "all" ? true : c.section === section.id));
         if (cards.length === 0) return null;
         return (
-          <section className="lc-landing-section" key={section.id} aria-labelledby={`sec-${section.id}`}>
+          <section className="lc-landing-section" id={section.id === "all" ? undefined : section.id} key={section.id} aria-labelledby={`sec-${section.id}`}>
             {section.title ? <h2 id={`sec-${section.id}`}>{section.title}</h2> : null}
             {section.description ? <p>{section.description}</p> : null}
             <div className="lc-landing-grid" role="list">
