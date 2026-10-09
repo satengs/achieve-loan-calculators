@@ -1,11 +1,11 @@
 {
   "meta": {
     "title": "Loan Calculators | Multi-brand demos",
-    "description": "Self-contained personal loan, mortgage, HELOC, and life insurance coverage calculators. Sample rates are illustrative only — not offers."
+    "description": "Self-contained debt, loan, home, auto, savings, and insurance calculators. Sample rates are illustrative only — not offers."
   },
   "header": {
     "eyebrow": "Multi-brand demos",
-    "title": "Loan & coverage calculators",
+    "title": "Loan, savings & coverage calculators",
     "intro": "Self-contained prototypes for UX and product exploration. Sample rates and defaults are illustrative only — not offers, quotes, or guarantees."
   },
   "demoBanner": {
@@ -15,11 +15,57 @@
   },
   "cards": [
     {
+      "id": "debt-payoff",
+      "href": "/debt-payoff",
+      "section": "debt",
+      "eyebrow": "Debt payoff",
+      "title": "Debt payoff calculator",
+      "description": "Compare paying minimums, waiting, your own payoff plan, and an illustrative program cost.",
+      "linkLabel": "Open calculator →"
+    },
+    {
+      "id": "consolidation-options",
+      "href": "/consolidation-options",
+      "section": "debt",
+      "eyebrow": "Consolidation options",
+      "title": "Consolidation options estimator",
+      "description": "Slide your debt amount to compare indicative personal loan, home equity, and program ranges.",
+      "linkLabel": "Open calculator →"
+    },
+    {
+      "id": "dti",
+      "href": "/dti",
+      "section": "debt",
+      "eyebrow": "DTI ratio",
+      "title": "Debt-to-income calculator",
+      "description": "See your DTI and where it falls in commonly used ranges.",
+      "linkLabel": "Open calculator →"
+    },
+    {
       "id": "personal-loan",
       "href": "/personal-loan",
       "eyebrow": "Personal loan",
       "title": "Personal loan calculator",
       "description": "Estimate monthly payments, total interest, and total cost with optional origination fee (financed).",
+      "linkLabel": "Open calculator →",
+      "section": "debt"
+    },
+    {
+      "id": "loan",
+      "href": "/loan",
+      "section": "debt",
+      "eyebrow": "Loan",
+      "title": "Loan calculator",
+      "description": "Monthly installment, total interest, and the effect of extra payments.",
+      "linkLabel": "Open calculator →"
+    },
+    {
+      "id": "student-loan",
+      "href": "/student-loan",
+      "section": "debt",
+      "eyebrow": "Student loan",
+      "title": "Student loan calculator",
+      "description": "Standard repayment, capitalized interest, and extra-payment payoff.",
       "linkLabel": "Open calculator →"
     },
     {
@@ -28,6 +74,16 @@
       "eyebrow": "Home loan",
       "title": "Mortgage calculator",
       "description": "Estimate principal & interest, optional PITI, total interest, and loan amount from price and down payment.",
+      "linkLabel": "Open calculator →",
+      "section": "home"
+    },
+    {
+      "id": "refinance",
+      "href": "/refinance",
+      "section": "home",
+      "eyebrow": "Refinance",
+      "title": "Refinance calculator",
+      "description": "Monthly savings, break-even on closing costs, and lifetime cost difference.",
       "linkLabel": "Open calculator →"
     },
     {
@@ -35,7 +91,53 @@
       "href": "/heloc",
       "eyebrow": "Home equity",
       "title": "HELOC calculator",
-      "description": "Estimate available equity, interest-only or amortizing payment on a draw, remaining equity, and LTV / CLTV.",
+      "description": "Estimate borrowing power, interest-only, fixed P&I, or draw-then-repay payments, and LTV / CLTV.",
+      "linkLabel": "Open calculator →",
+      "section": "home"
+    },
+    {
+      "id": "car-loan",
+      "href": "/car-loan",
+      "section": "auto",
+      "eyebrow": "Car loan",
+      "title": "Car loan calculator",
+      "description": "Payment with sales tax, fees, down payment, and trade-in equity.",
+      "linkLabel": "Open calculator →"
+    },
+    {
+      "id": "auto-lease",
+      "href": "/auto-lease",
+      "section": "auto",
+      "eyebrow": "Auto lease",
+      "title": "Auto lease calculator",
+      "description": "Lease payment from residual, money factor, term, and tax.",
+      "linkLabel": "Open calculator →"
+    },
+    {
+      "id": "budget",
+      "href": "/budget",
+      "section": "savings",
+      "eyebrow": "Budget",
+      "title": "Monthly budget calculator",
+      "description": "Income vs spending with a 50/30/20 comparison.",
+      "linkLabel": "Open calculator →"
+    },
+    {
+      "id": "savings",
+      "href": "/savings",
+      "section": "savings",
+      "eyebrow": "Savings",
+      "title": "Savings calculator",
+      "description": "Compound growth of deposits, in nominal and today’s dollars.",
+      "linkLabel": "Open calculator →"
+    },
+    {
+      "id": "retirement",
+      "href": "/retirement",
+      "section": "savings",
+      "eyebrow": "Retirement",
+      "title": "Retirement savings calculator",
+      "description": "Projected balance and an illustrative retirement income.",
       "linkLabel": "Open calculator →"
     },
     {
@@ -43,11 +145,57 @@
       "href": "/life-insurance",
       "eyebrow": "Life insurance",
       "title": "Coverage need estimator",
-      "description": "Illustrative DIME-style estimate of term coverage need from income, debts, expenses, and existing cover.",
+      "description": "Illustrative DIME-style coverage need plus an illustrative premium range.",
+      "linkLabel": "Open estimator →",
+      "section": "insurance"
+    },
+    {
+      "id": "car-insurance",
+      "href": "/car-insurance",
+      "section": "insurance",
+      "eyebrow": "Car insurance",
+      "title": "Car insurance cost estimator",
+      "description": "Rough premium from a transparent, editable factor table.",
+      "linkLabel": "Open estimator →"
+    },
+    {
+      "id": "home-insurance",
+      "href": "/home-insurance",
+      "section": "insurance",
+      "eyebrow": "Home insurance",
+      "title": "Home insurance cost estimator",
+      "description": "Rough homeowners premium from coverage and editable factors.",
       "linkLabel": "Open estimator →"
     }
   ],
   "footer": {
     "note": "Multi-brand calculator demos hosted on Vercel (Next.js). Visual patterns are illustrative only. CTAs inside each calculator are placeholders (not live applications)."
-  }
+  },
+  "sections": [
+    {
+      "id": "debt",
+      "title": "Debt & loans",
+      "description": "Payoff, consolidation, DTI, and personal loans."
+    },
+    {
+      "id": "home",
+      "title": "Home",
+      "description": "Mortgage, refinance, and home equity."
+    },
+    {
+      "id": "auto",
+      "title": "Auto",
+      "description": "Car loans and leases."
+    },
+    {
+      "id": "savings",
+      "title": "Savings & budget",
+      "description": "Budgeting, savings growth, and retirement."
+    },
+    {
+      "id": "insurance",
+      "title": "Insurance",
+      "description": "Rough, illustrative coverage and cost estimates — not quotes."
+    }
+  ]
 }

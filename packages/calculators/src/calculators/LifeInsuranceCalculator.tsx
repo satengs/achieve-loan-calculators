@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { lifeCoverageEstimate, validateRange } from "../calc";
+import { lifeCoverageEstimate, lifePremiumEstimate, validateRange } from "../calc";
+import { SelectField } from "../components/SelectField";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
 import { CTA } from "../components/CTA";
@@ -37,6 +38,9 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
   const [existingCoverage, setExistingCoverage] = useState(String(config.defaults.existingCoverage ?? 100000));
   const [liquidAssets, setLiquidAssets] = useState(String(config.defaults.liquidAssets ?? 25000));
   const [termYears, setTermYears] = useState(String(config.defaults.termYears ?? 20));
+  const [ageBand, setAgeBand] = useState(String(config.defaults.ageBand ?? "30-39"));
+  const [tobacco, setTobacco] = useState(String(config.defaults.tobacco ?? "no"));
+  const feats = (config.features || {}) as Record<string, any>;
 
   const fieldDefs = [
     { id: "annual-income", key: "annualIncome" as const, state: annualIncome, set: setAnnualIncome, conf: "annualIncome", field: fields.annualIncome },
@@ -70,6 +74,11 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
       existingCoverage: values.existingCoverage,
       liquidAssets: values.liquidAssets,
     });
+    const ratePer1000 =
+      Number(feats.premiumRatePer1000ByAge?.[ageBand] ?? 1) *
+      Number(feats.termMultiplier?.[termYears] ?? 1) *
+      (tobacco === "yes" ? Number(feats.tobaccoMultiplier ?? 1) : 1);
+    const premium = lifePremiumEstimate(est.netNeed, ratePer1000);
     const termDisplay = String(results.termDisplay || "{{years}} years").replace("{{years}}", termYears);
     return {
       err,
@@ -83,10 +92,12 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
         final: fmt(est.finals),
         edu: fmt(est.education),
         term: termDisplay,
+        premiumMonthly: premium ? money(premium.monthly) : PLACEHOLDER,
+        premiumAnnual: premium ? fmt(premium.annual) : PLACEHOLDER,
       },
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [annualIncome, yearsReplace, totalDebts, finalExpenses, educationFund, existingCoverage, liquidAssets, termYears, config, results]);
+  }, [annualIncome, yearsReplace, totalDebts, finalExpenses, educationFund, existingCoverage, liquidAssets, termYears, ageBand, tobacco, feats, config, results]);
 
   const out = computed.out;
   const err = computed.err;
@@ -131,6 +142,21 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
             />
             {fields.termYears?.hint ? <p className="lc-hint">{fields.termYears.hint}</p> : null}
           </Fieldset>
+          <SelectField
+            id="age-band"
+            label={fields.ageBand?.label || "Age"}
+            value={ageBand}
+            onChange={setAgeBand}
+            options={Object.entries((fields.ageBand?.options || {}) as Record<string, string>).map(([value, label]) => ({ value, label }))}
+          />
+          <SelectField
+            id="tobacco"
+            label={fields.tobacco?.label || "Tobacco use"}
+            hint={String(results.premiumNote || "")}
+            value={tobacco}
+            onChange={setTobacco}
+            options={Object.entries((fields.tobacco?.options || {}) as Record<string, string>).map(([value, label]) => ({ value, label }))}
+          />
         </section>
 
         <ResultsPanel
@@ -149,6 +175,8 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
                   { label: labels.finalExpenses || "Final expenses", value: out.final },
                   { label: labels.education || "Education / goals", value: out.edu },
                   { label: labels.selectedTerm || "Selected term", value: out.term },
+                  { label: labels.premiumMonthly || "Illustrative premium (monthly)", value: out.premiumMonthly },
+                  { label: labels.premiumAnnual || "Illustrative premium (annual)", value: out.premiumAnnual },
                 ]
               : []
           }

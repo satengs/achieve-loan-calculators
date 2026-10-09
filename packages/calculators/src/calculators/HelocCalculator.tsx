@@ -6,6 +6,7 @@ import {
   derivedCreditLimit,
   equityRatios,
   formatPercent,
+  helocDrawRepay,
   interestOnlyMonthly,
   validateRange,
 } from "../calc";
@@ -14,14 +15,19 @@ import { CalculatorShell } from "../components/CalculatorShell";
 import { CTA } from "../components/CTA";
 import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
+import { RateNote } from "../components/RateNote";
+import { SelectField } from "../components/SelectField";
+import { resolveRate, type MarketRates } from "../rates/types";
 import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
 
 export type HelocCalculatorProps = {
   projectName?: ProjectName | string;
+  /** Live market rates injected by the host. Uses `prime` (APR default = prime + band margin). */
+  rates?: MarketRates;
 };
 
-export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProps) {
+export function HelocCalculator({ projectName = "achieve", rates }: HelocCalculatorProps) {
   const brand = resolveProjectName(projectName);
   const content = getCalculatorContent("heloc");
   const config = getCalculatorConfig("heloc");
@@ -37,7 +43,18 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
   const [creditLimit, setCreditLimit] = useState(String(config.defaults.creditLimit ?? 102500));
   const [limitManual, setLimitManual] = useState(false);
   const [draw, setDraw] = useState(String(config.defaults.drawAmount ?? 50000));
-  const [apr, setApr] = useState(String(config.defaults.apr ?? 8.5));
+  const feats = (config.features || {}) as Record<string, any>;
+  const margins = (feats.primeMarginByBand || {}) as Record<string, number>;
+  const [creditBand, setCreditBand] = useState(String(config.defaults.creditBand ?? "good"));
+  const primeLive = resolveRate(rates, "prime", Number(feats.fallbackPrime ?? 7));
+  const rate = resolveRate(rates, "prime", Number(config.defaults.apr ?? 8.5), (p) => p + (margins[creditBand] ?? 0));
+  const [apr, setApr] = useState(String(rate.value));
+  const [drawYears, setDrawYears] = useState(String(config.defaults.drawYears ?? 5));
+  const [repayYears, setRepayYears] = useState(String(config.defaults.repayYears ?? 15));
+  const onBand = (b: string) => {
+    setCreditBand(b);
+    setApr(String(Math.round((primeLive.value + (margins[b] ?? 0)) * 100) / 100));
+  };
   const [payMode, setPayMode] = useState(String(config.defaults.payMode ?? "interest-only"));
   const [termYears, setTermYears] = useState(String(config.defaults.termYears ?? 10));
   const [advancedOpen, setAdvancedOpen] = useState(true);
@@ -75,6 +92,9 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
     const drawV = validateRange(draw, config.validation.drawAmount);
     const aprV = validateRange(apr, config.validation.apr);
     const yearsV = validateRange(termYears, config.validation.termYears);
+    const drawYV = validateRange(drawYears, config.validation.drawYears);
+    const repayV = validateRange(repayYears, config.validation.repayYears);
+    const isDR = payMode === "draw-repay";
 
     let drawMsg = drawV.ok ? "" : drawV.message;
     if (drawV.ok && limitV.ok && drawV.value > limitV.value) {
@@ -85,7 +105,8 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
       mortMsg = msgs.mortgageExceedsHome || "Mortgage balance cannot exceed home value.";
     }
 
-    if (!homeV.ok || mortMsg || !maxCltvV.ok || !limitV.ok || drawMsg || !aprV.ok || !yearsV.ok) {
+    const termOk = isDR ? drawYV.ok && repayV.ok : yearsV.ok;
+    if (!homeV.ok || mortMsg || !maxCltvV.ok || !limitV.ok || drawMsg || !aprV.ok || !termOk) {
       return {
         err: {
           home: homeV.ok ? "" : homeV.message,
@@ -95,7 +116,9 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
           draw: drawMsg,
           apr: aprV.ok ? "" : aprV.message,
           term: yearsV.ok ? "" : yearsV.message,
-        },
+          drawYears: drawYV.ok ? "" : drawYV.message,
+          repayYears: repayV.ok ? "" : repayV.message,
+        } as Record<string, string>,
         message: String(results.invalidMessage || ""),
         paymentLabel: String(results.paymentLabelInterestOnly || "Estimated monthly interest"),
         out: null as null | Record<string, string>,
@@ -106,15 +129,28 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
     let monthly: number;
     let modeLabel: string;
     let paymentLabel: string;
+    let repayPayment = NaN;
+    let totalInterest = NaN;
 
-    if (payMode === "interest-only") {
+    if (isDR) {
+      const dr = helocDrawRepay(drawV.value, aprV.value, drawYV.value, repayV.value);
+      if (!dr) return { err: {} as Record<string, string>, message: String(results.unableMessage || ""), paymentLabel: "", out: null };
+      monthly = dr.drawPayment;
+      repayPayment = dr.repayPayment;
+      totalInterest = dr.totalInterest;
+      modeLabel = String(results.modeLabels?.drawRepay || "Draw then repay")
+        .replace("{{draw}}", String(drawYV.value))
+        .replace("{{repay}}", String(repayV.value));
+      paymentLabel = String(results.paymentLabelDrawRepay || "Est. payment during draw");
+    } else if (payMode === "interest-only") {
       monthly = interestOnlyMonthly(drawV.value, aprV.value);
       modeLabel = String(results.modeLabels?.interestOnly || "Interest-only on draw");
       paymentLabel = String(results.paymentLabelInterestOnly || "Estimated monthly interest");
     } else {
       const result = amortize(drawV.value, aprV.value, months);
-      if (!result) return { err: {}, message: String(results.unableMessage || ""), paymentLabel: "", out: null };
+      if (!result) return { err: {} as Record<string, string>, message: String(results.unableMessage || ""), paymentLabel: "", out: null };
       monthly = result.payment;
+      totalInterest = result.totalInterest;
       modeLabel = String(results.modeLabels?.amortizing || "Amortizing P&I ({{years}} yr)").replace(
         "{{years}}",
         String(yearsV.value),
@@ -131,8 +167,9 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
           .replace("{{maxCltv}}", formatPercent(maxCltvV.value))
           .replace("{{derivedLimit}}", money(derived));
 
-    const template =
-      payMode === "interest-only"
+    const template = isDR
+      ? String(results.summaryDrawRepay || "")
+      : payMode === "interest-only"
         ? String(results.summaryInterestOnly || "")
         : String(results.summaryAmortizing || "");
 
@@ -143,7 +180,7 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
       .replace("{{limitNote}}", limitNote);
 
     return {
-      err: { home: "", mort: "", maxCltv: "", limit: "", draw: "", apr: "", term: "" },
+      err: { home: "", mort: "", maxCltv: "", limit: "", draw: "", apr: "", term: "", drawYears: "", repayYears: "" } as Record<string, string>,
       message,
       paymentLabel,
       out: {
@@ -156,6 +193,9 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
         draw: money(drawV.value),
         unused: money(unused),
         mode: modeLabel,
+        repay: Number.isFinite(repayPayment) ? money(repayPayment) : "",
+        totalInterest: Number.isFinite(totalInterest) ? money(totalInterest) : "",
+        power: money(Math.min(Number(feats.maxLine ?? Infinity), derived)),
       },
     };
   }, [
@@ -167,7 +207,10 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
     apr,
     payMode,
     termYears,
+    drawYears,
+    repayYears,
     limitManual,
+    feats,
     config,
     money,
     results,
@@ -201,7 +244,16 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
             error={err.home}
           />
           <Field id="draw" label={fields.drawAmount?.label || "Draw amount"} hint={fields.drawAmount?.hint} prefix="$" value={draw} onChange={setDraw} error={err.draw} />
+          <SelectField
+            id="credit-band"
+            label={fields.creditBand?.label || "Credit score range"}
+            hint={fields.creditBand?.hint}
+            value={creditBand}
+            onChange={onBand}
+            options={Object.entries((fields.creditBand?.options || {}) as Record<string, string>).map(([value, label]) => ({ value, label }))}
+          />
           <Field id="apr" label={fields.apr?.label || "APR"} hint={fields.apr?.hint} suffix="%" value={apr} onChange={setApr} error={err.apr} />
+          <RateNote rate={rate} subject="HELOC APR" adjustment={`(prime + ${(margins[creditBand] ?? 0).toFixed(2)}% illustrative margin)`} />
           <details
             className="lc-advanced"
             open={advancedOpen}
@@ -261,20 +313,28 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
                   options={[
                     { value: "interest-only", label: fields.payMode?.modes?.["interest-only"] || "Interest-only" },
                     { value: "amortizing", label: fields.payMode?.modes?.amortizing || "Amortizing" },
+                    { value: "draw-repay", label: fields.payMode?.modes?.["draw-repay"] || "Draw, then repay" },
                   ]}
                 />
                 {fields.payMode?.hint ? <p className="lc-hint">{fields.payMode.hint}</p> : null}
               </Fieldset>
-              <Field
-                id="term-years"
-                label={termLabel}
-                hint={termHint}
-                suffix="yr"
-                value={termYears}
-                onChange={setTermYears}
-                inputMode="numeric"
-                error={err.term}
-              />
+              {payMode === "draw-repay" ? (
+                <>
+                  <Field id="draw-years" label={fields.drawYears?.label || "Draw period"} hint={fields.drawYears?.hint} suffix="yr" value={drawYears} onChange={setDrawYears} inputMode="numeric" error={err.drawYears} />
+                  <Field id="repay-years" label={fields.repayYears?.label || "Repayment period"} hint={fields.repayYears?.hint} suffix="yr" value={repayYears} onChange={setRepayYears} inputMode="numeric" error={err.repayYears} />
+                </>
+              ) : (
+                <Field
+                  id="term-years"
+                  label={termLabel}
+                  hint={termHint}
+                  suffix="yr"
+                  value={termYears}
+                  onChange={setTermYears}
+                  inputMode="numeric"
+                  error={err.term}
+                />
+              )}
             </div>
           </details>
         </section>
@@ -296,6 +356,9 @@ export function HelocCalculator({ projectName = "achieve" }: HelocCalculatorProp
                   { label: labels.drawAmount || "Draw amount", value: out.draw },
                   { label: labels.unusedLine || "Unused line", value: out.unused },
                   { label: labels.mode || "Mode", value: out.mode },
+                  ...(out.repay ? [{ label: labels.repayPayment || "Payment after draw", value: out.repay }] : []),
+                  ...(out.totalInterest ? [{ label: labels.totalInterest || "Total interest", value: out.totalInterest }] : []),
+                  { label: labels.borrowingPower || "Max borrowing power", value: out.power },
                 ]
               : []
           }

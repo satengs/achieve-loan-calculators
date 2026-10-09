@@ -1,0 +1,44 @@
+{
+  "id": "loan",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "loanAmount": 15000,
+    "apr": 12,
+    "termYears": 5,
+    "extraMonthly": 0
+  },
+  "validation": {
+    "loanAmount": {
+      "min": 100,
+      "max": 100000000,
+      "label": "Loan amount",
+      "allowZero": false
+    },
+    "apr": {
+      "min": 0,
+      "max": 99,
+      "label": "APR",
+      "allowZero": true
+    },
+    "termYears": {
+      "min": 0.5,
+      "max": 40,
+      "label": "Loan period",
+      "allowZero": false
+    },
+    "extraMonthly": {
+      "min": 0,
+      "max": 1000000,
+      "label": "Extra payment",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "rateKey": "personalLoan24"
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

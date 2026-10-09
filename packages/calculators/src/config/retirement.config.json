@@ -1,0 +1,80 @@
+{
+  "id": "retirement",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "currentAge": 35,
+    "retireAge": 67,
+    "currentSavings": 50000,
+    "monthlyContribution": 500,
+    "employerMonthly": 150,
+    "annualReturn": 6,
+    "inflation": 3,
+    "withdrawalRate": 4,
+    "contributionGrowth": 2
+  },
+  "validation": {
+    "currentAge": {
+      "min": 16,
+      "max": 90,
+      "label": "Current age",
+      "allowZero": false
+    },
+    "retireAge": {
+      "min": 30,
+      "max": 100,
+      "label": "Retirement age",
+      "allowZero": false
+    },
+    "currentSavings": {
+      "min": 0,
+      "max": 1000000000,
+      "label": "Current savings",
+      "allowZero": true
+    },
+    "monthlyContribution": {
+      "min": 0,
+      "max": 1000000,
+      "label": "Monthly contribution",
+      "allowZero": true
+    },
+    "employerMonthly": {
+      "min": 0,
+      "max": 1000000,
+      "label": "Employer contribution",
+      "allowZero": true
+    },
+    "annualReturn": {
+      "min": 0,
+      "max": 20,
+      "label": "Return",
+      "allowZero": true
+    },
+    "inflation": {
+      "min": 0,
+      "max": 20,
+      "label": "Inflation",
+      "allowZero": true
+    },
+    "withdrawalRate": {
+      "min": 0,
+      "max": 20,
+      "label": "Withdrawal rate",
+      "allowZero": true
+    },
+    "contributionGrowth": {
+      "min": 0,
+      "max": 20,
+      "label": "Contribution increase",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "inflationKey": "inflationYoY",
+    "tableEveryYears": 5
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

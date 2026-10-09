@@ -1,0 +1,59 @@
+{
+  "id": "refinance",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "balance": 300000,
+    "currentRate": 7.5,
+    "remainingYears": 28,
+    "newRate": 6.5,
+    "newTermYears": 30,
+    "closingCosts": 6000,
+    "rollCosts": "cash"
+  },
+  "validation": {
+    "balance": {
+      "min": 1000,
+      "max": 100000000,
+      "label": "Balance",
+      "allowZero": false
+    },
+    "currentRate": {
+      "min": 0,
+      "max": 30,
+      "label": "Current rate",
+      "allowZero": true
+    },
+    "remainingYears": {
+      "min": 1,
+      "max": 40,
+      "label": "Years remaining",
+      "allowZero": false
+    },
+    "newRate": {
+      "min": 0,
+      "max": 30,
+      "label": "New rate",
+      "allowZero": true
+    },
+    "newTermYears": {
+      "min": 1,
+      "max": 40,
+      "label": "New term",
+      "allowZero": false
+    },
+    "closingCosts": {
+      "min": 0,
+      "max": 1000000,
+      "label": "Closing costs",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "rateKey": "mortgage30"
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

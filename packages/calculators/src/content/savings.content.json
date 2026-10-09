@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "title": "Savings calculator | Multi-brand demo",
+    "description": "Compound savings growth projection."
+  },
+  "header": {
+    "eyebrow": "Savings",
+    "title": "Savings calculator",
+    "intro": "Project how an initial deposit and monthly contributions could grow with compound interest, and what that’s worth in today’s dollars."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample figures for demo only — not an offer.",
+    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "Your savings plan",
+    "fields": {
+      "initial": {
+        "label": "Initial deposit",
+        "prefix": "$"
+      },
+      "monthly": {
+        "label": "Monthly contribution",
+        "prefix": "$"
+      },
+      "rate": {
+        "label": "Annual interest rate (APY)",
+        "suffix": "%"
+      },
+      "years": {
+        "label": "Years to save",
+        "suffix": "yr"
+      },
+      "compounding": {
+        "label": "Compounding",
+        "options": {
+          "365": "Daily",
+          "12": "Monthly",
+          "4": "Quarterly",
+          "1": "Annually"
+        }
+      },
+      "contributionGrowth": {
+        "label": "Annual contribution increase",
+        "suffix": "%",
+        "hint": "Raise monthly contributions by this % each year."
+      },
+      "inflation": {
+        "label": "Inflation assumption",
+        "suffix": "%",
+        "hint": "Used only for the today’s-dollars figure."
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Projected savings",
+    "primaryLabel": "Balance at end",
+    "labels": {
+      "contributions": "Total deposits",
+      "interest": "Interest earned",
+      "real": "In today’s dollars",
+      "rate": "Rate used"
+    },
+    "summaryMessage": "Assumes a constant rate and end-of-month deposits. Actual yields change over time; taxes are not modeled."
+  },
+  "cta": {
+    "label": "Explore savings accounts",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "table": {
+    "heading": "Year-by-year",
+    "columns": [
+      "Year",
+      "Deposits",
+      "Interest",
+      "Balance"
+    ]
+  }
+}

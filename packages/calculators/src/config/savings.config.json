@@ -1,0 +1,66 @@
+{
+  "id": "savings",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "initial": 5000,
+    "monthly": 200,
+    "rate": 0.4,
+    "years": 10,
+    "compounding": "12",
+    "contributionGrowth": 0,
+    "inflation": 3
+  },
+  "validation": {
+    "initial": {
+      "min": 0,
+      "max": 100000000,
+      "label": "Initial deposit",
+      "allowZero": true
+    },
+    "monthly": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Monthly contribution",
+      "allowZero": true
+    },
+    "rate": {
+      "min": 0,
+      "max": 50,
+      "label": "Rate",
+      "allowZero": true
+    },
+    "years": {
+      "min": 1,
+      "max": 80,
+      "label": "Years",
+      "allowZero": false
+    },
+    "contributionGrowth": {
+      "min": 0,
+      "max": 50,
+      "label": "Contribution increase",
+      "allowZero": true
+    },
+    "inflation": {
+      "min": 0,
+      "max": 50,
+      "label": "Inflation",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "rateKey": "savings",
+    "inflationKey": "inflationYoY",
+    "compoundingOptions": [
+      "365",
+      "12",
+      "4",
+      "1"
+    ]
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

@@ -51,9 +51,10 @@
         "ariaLabel": "Interest-only or amortizing",
         "modes": {
           "interest-only": "Interest-only",
-          "amortizing": "Amortizing"
+          "amortizing": "Amortizing",
+          "draw-repay": "Draw, then repay"
         },
-        "hint": "Interest-only: monthly interest on the draw. Amortizing: fixed P&I over the term below."
+        "hint": "Interest-only: monthly interest on the draw. Amortizing: fixed P&I from day one (Achieve-style fixed-rate line). Draw, then repay: interest-only during the draw period, then P&I over the repayment period."
       },
       "term": {
         "labelInterestOnly": "Interest-only / draw period",
@@ -61,6 +62,26 @@
         "hintInterestOnly": "Shown for context on interest-only; monthly payment is interest on the draw only.",
         "hintAmortizing": "Fixed principal & interest over this many years on the draw amount.",
         "suffix": "yr"
+      },
+      "drawYears": {
+        "label": "Draw period",
+        "suffix": "yr",
+        "hint": "Interest-only payments during this period."
+      },
+      "repayYears": {
+        "label": "Repayment period",
+        "suffix": "yr",
+        "hint": "Principal & interest after the draw period ends."
+      },
+      "creditBand": {
+        "label": "Credit score range",
+        "hint": "Sets the illustrative margin added to the prime rate. Edit APR directly to override.",
+        "options": {
+          "excellent": "Excellent (750+)",
+          "good": "Good (700–749)",
+          "fair": "Fair (640–699)",
+          "poor": "Below 640"
+        }
       }
     }
   },
@@ -76,11 +97,15 @@
       "grossEquity": "Home equity (value − mortgage)",
       "drawAmount": "Draw amount",
       "unusedLine": "Unused line (limit − draw)",
-      "mode": "Mode"
+      "mode": "Mode",
+      "repayPayment": "Payment after draw (P&I)",
+      "borrowingPower": "Est. max borrowing power",
+      "totalInterest": "Total interest (draw + repay)"
     },
     "modeLabels": {
       "interestOnly": "Interest-only on draw",
-      "amortizing": "Amortizing P&I ({{years}} yr)"
+      "amortizing": "Amortizing P&I ({{years}} yr)",
+      "drawRepay": "Draw {{draw}} yr IO, then {{repay}} yr P&I"
     },
     "emptyPlaceholder": "—",
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
@@ -88,7 +113,9 @@
     "summaryInterestOnly": "Sample / demo only — not an offer. {{modeLabel}} · IO period {{years}} yr (context){{limitNote}}",
     "summaryAmortizing": "Sample / demo only — not an offer. {{modeLabel}} · {{months}} payments{{limitNote}}",
     "limitNoteManual": " · credit limit manually set",
-    "limitNoteDerived": " · limit derived at {{maxCltv}} max CLTV (≈ {{derivedLimit}})"
+    "limitNoteDerived": " · limit derived at {{maxCltv}} max CLTV (≈ {{derivedLimit}})",
+    "paymentLabelDrawRepay": "Est. payment during draw (interest-only)",
+    "summaryDrawRepay": "Sample / demo only — not an offer. {{modeLabel}}{{limitNote}}"
   },
   "cta": {
     "label": "Explore home equity options",

@@ -1,0 +1,138 @@
+{
+  "id": "budget",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "netIncome": 5000,
+    "otherIncome": 0,
+    "housing": 1600,
+    "utilities": 250,
+    "groceries": 500,
+    "transportation": 400,
+    "insurance": 250,
+    "debtPayments": 300,
+    "dining": 250,
+    "entertainment": 150,
+    "shopping": 200,
+    "subscriptions": 50,
+    "savings": 400,
+    "retirement": 300
+  },
+  "validation": {
+    "netIncome": {
+      "min": 0,
+      "max": 10000000,
+      "label": "netIncome",
+      "allowZero": true
+    },
+    "otherIncome": {
+      "min": 0,
+      "max": 10000000,
+      "label": "otherIncome",
+      "allowZero": true
+    },
+    "housing": {
+      "min": 0,
+      "max": 10000000,
+      "label": "housing",
+      "allowZero": true
+    },
+    "utilities": {
+      "min": 0,
+      "max": 10000000,
+      "label": "utilities",
+      "allowZero": true
+    },
+    "groceries": {
+      "min": 0,
+      "max": 10000000,
+      "label": "groceries",
+      "allowZero": true
+    },
+    "transportation": {
+      "min": 0,
+      "max": 10000000,
+      "label": "transportation",
+      "allowZero": true
+    },
+    "insurance": {
+      "min": 0,
+      "max": 10000000,
+      "label": "insurance",
+      "allowZero": true
+    },
+    "debtPayments": {
+      "min": 0,
+      "max": 10000000,
+      "label": "debtPayments",
+      "allowZero": true
+    },
+    "dining": {
+      "min": 0,
+      "max": 10000000,
+      "label": "dining",
+      "allowZero": true
+    },
+    "entertainment": {
+      "min": 0,
+      "max": 10000000,
+      "label": "entertainment",
+      "allowZero": true
+    },
+    "shopping": {
+      "min": 0,
+      "max": 10000000,
+      "label": "shopping",
+      "allowZero": true
+    },
+    "subscriptions": {
+      "min": 0,
+      "max": 10000000,
+      "label": "subscriptions",
+      "allowZero": true
+    },
+    "savings": {
+      "min": 0,
+      "max": 10000000,
+      "label": "savings",
+      "allowZero": true
+    },
+    "retirement": {
+      "min": 0,
+      "max": 10000000,
+      "label": "retirement",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "categories": {
+      "needs": [
+        "housing",
+        "utilities",
+        "groceries",
+        "transportation",
+        "insurance",
+        "debtPayments"
+      ],
+      "wants": [
+        "dining",
+        "entertainment",
+        "shopping",
+        "subscriptions"
+      ],
+      "savings": [
+        "savings",
+        "retirement"
+      ]
+    },
+    "targets": {
+      "needs": 50,
+      "wants": 30,
+      "savings": 20
+    }
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

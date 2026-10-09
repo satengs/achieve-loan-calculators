@@ -1,0 +1,11 @@
+{
+  "rateNote": {
+    "live": "Default {{subject}} based on {{source}}, as of {{asOf}} ({{value}}%){{adjustment}}. Illustrative only — not an offer or rate quote.",
+    "fallback": "Default {{subject}} is an illustrative fallback from config (live data unavailable). Not an offer or rate quote.",
+    "linkLabel": "Source",
+    "noSource": "Default {{subject}} is an illustrative config value — no keyless public data series is wired for this rate. Not an offer or rate quote."
+  },
+  "moreOptions": "More options",
+  "unavailable": "Not shown for this amount",
+  "monthsSuffix": "mo"
+}

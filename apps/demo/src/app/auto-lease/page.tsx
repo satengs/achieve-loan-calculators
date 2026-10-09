@@ -1,0 +1,15 @@
+import { BrandedAutoLease } from "@/components/BrandedCalculators";
+import { getMarketRates } from "@/lib/rates";
+
+export const metadata = {
+  title: "Auto Lease Calculator",
+  description: "Monthly lease payment estimate.",
+};
+
+/** Daily ISR: live market rates are fetched server-side and cached for 24h. */
+export const revalidate = 86400;
+
+export default async function Page() {
+  const { rates } = await getMarketRates(["auto48"]);
+  return <BrandedAutoLease rates={rates} />;
+}

@@ -3,3 +3,8 @@ export { Field, Segmented, Fieldset } from "./Field";
 export { ResultsPanel } from "./ResultsPanel";
 export { CTA } from "./CTA";
 export { CalculatorShell } from "./CalculatorShell";
+export { SelectField } from "./SelectField";
+export { MoreOptions } from "./MoreOptions";
+export { RateNote } from "./RateNote";
+export { DataTable } from "./DataTable";
+export { SliderField } from "./SliderField";

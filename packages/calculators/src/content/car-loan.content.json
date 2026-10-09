@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "Car loan calculator | Multi-brand demo",
+    "description": "Auto loan payment estimate."
+  },
+  "header": {
+    "eyebrow": "Car loan",
+    "title": "Car loan calculator",
+    "intro": "Estimate your auto loan amount and monthly payment including sales tax, fees, down payment, and trade-in equity."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample figures for demo only — not an offer.",
+    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "Vehicle & loan",
+    "fields": {
+      "price": {
+        "label": "Vehicle price",
+        "prefix": "$"
+      },
+      "down": {
+        "label": "Down payment",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "APR",
+        "suffix": "%"
+      },
+      "termMonths": {
+        "legend": "Loan term",
+        "ariaLabel": "Loan term in months",
+        "presetLabels": {
+          "36": "36 mo",
+          "48": "48 mo",
+          "60": "60 mo",
+          "72": "72 mo",
+          "84": "84 mo"
+        }
+      },
+      "tradeIn": {
+        "label": "Trade-in value",
+        "prefix": "$"
+      },
+      "tradeOwed": {
+        "label": "Owed on trade-in",
+        "prefix": "$"
+      },
+      "salesTax": {
+        "label": "Sales tax",
+        "suffix": "%",
+        "hint": "Applied to price minus trade-in (common, varies by state)."
+      },
+      "fees": {
+        "label": "Title, registration & doc fees",
+        "prefix": "$"
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your estimate",
+    "primaryLabel": "Monthly payment",
+    "labels": {
+      "loanAmount": "Loan amount",
+      "totalInterest": "Total interest",
+      "totalCost": "Total cost (incl. down & trade)",
+      "salesTax": "Sales tax",
+      "tradeEquity": "Trade-in equity"
+    },
+    "summaryMessage": "Fixed-rate estimate. Dealer add-ons and rebates are not modeled."
+  },
+  "cta": {
+    "label": "Check auto loan rates",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "table": {
+    "heading": "Year-by-year schedule",
+    "columns": [
+      "Year",
+      "Paid",
+      "Principal",
+      "Interest",
+      "Balance"
+    ]
+  }
+}

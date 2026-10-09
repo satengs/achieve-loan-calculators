@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "title": "Auto lease calculator | Multi-brand demo",
+    "description": "Monthly auto lease payment estimate."
+  },
+  "header": {
+    "eyebrow": "Auto lease",
+    "title": "Auto lease calculator",
+    "intro": "Estimate a monthly lease payment from price, residual value, money factor (APR ÷ 2,400), term, and sales tax — and the total cost of the lease."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample figures for demo only — not an offer.",
+    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "Lease details",
+    "fields": {
+      "msrp": {
+        "label": "Vehicle MSRP",
+        "prefix": "$"
+      },
+      "price": {
+        "label": "Negotiated price (cap cost)",
+        "prefix": "$"
+      },
+      "down": {
+        "label": "Down payment (cap reduction)",
+        "prefix": "$"
+      },
+      "tradeIn": {
+        "label": "Trade-in credit",
+        "prefix": "$"
+      },
+      "fees": {
+        "label": "Fees rolled in (acquisition, doc)",
+        "prefix": "$"
+      },
+      "residualPct": {
+        "label": "Residual value (% of MSRP)",
+        "suffix": "%"
+      },
+      "apr": {
+        "label": "Equivalent APR",
+        "suffix": "%",
+        "hint": "Converted to a money factor: APR ÷ 2,400."
+      },
+      "termMonths": {
+        "label": "Lease term",
+        "suffix": "mo"
+      },
+      "salesTax": {
+        "label": "Sales tax on payment",
+        "suffix": "%"
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your lease estimate",
+    "primaryLabel": "Est. monthly payment",
+    "labels": {
+      "totalCost": "Total lease cost",
+      "moneyFactor": "Money factor",
+      "residual": "Residual value",
+      "depreciation": "Depreciation / mo",
+      "finance": "Rent charge / mo",
+      "tax": "Tax / mo",
+      "financeTotal": "Total rent charge"
+    },
+    "summaryMessage": "Standard lease formula; excludes mileage overage, wear charges, and disposition fees.",
+    "invalidCap": "Cap cost must be greater than the residual value."
+  },
+  "cta": {
+    "label": "See lease offers",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  }
+}

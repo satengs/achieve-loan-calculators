@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "title": "Debt payoff calculator | Multi-brand demo",
+    "description": "Compare minimum payments vs a payoff plan vs an illustrative program. Not an offer."
+  },
+  "header": {
+    "eyebrow": "Debt payoff",
+    "title": "Debt payoff calculator",
+    "intro": "Compare paying only credit card minimums, waiting three months, following your own fixed payoff plan, and an illustrative debt-resolution style program."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Illustrative only — not an offer for debt relief or any product.",
+    "body": "Scenarios use simple assumptions you can edit. Debt-resolution style programs can affect credit, may have tax consequences, and are not available everywhere; results are not guaranteed."
+  },
+  "form": {
+    "heading": "Your credit card debt",
+    "fields": {
+      "debtAmount": {
+        "label": "Credit card debt",
+        "prefix": "$",
+        "hint": "Total unsecured credit card balance."
+      },
+      "apr": {
+        "label": "Average card APR",
+        "suffix": "%"
+      },
+      "planPayment": {
+        "label": "Your payoff plan — fixed monthly payment",
+        "prefix": "$",
+        "hint": "Used for the “Your plan” column. Must exceed monthly interest."
+      },
+      "minPrincipalPct": {
+        "label": "Minimum payment: principal % of balance",
+        "suffix": "%",
+        "hint": "Common issuer formula: interest + 1% of balance."
+      },
+      "minFloor": {
+        "label": "Minimum payment floor",
+        "prefix": "$"
+      },
+      "programCostPct": {
+        "label": "Program total cost (% of enrolled debt)",
+        "suffix": "%",
+        "hint": "Illustrative assumption covering settlements + fees. Real programs vary widely."
+      },
+      "programMonths": {
+        "label": "Program length",
+        "suffix": "mo"
+      },
+      "waitGrowthPct": {
+        "label": "Debt growth if you wait 3 months",
+        "suffix": "%",
+        "hint": "Illustrative assumption for the “If you wait” column."
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your comparison",
+    "primaryLabel": "Total paid at minimum payments",
+    "labels": {
+      "minMonths": "Time at minimums",
+      "planMonths": "Time on your plan",
+      "planSaved": "Interest saved on your plan",
+      "programTotal": "Illustrative program total",
+      "firstMin": "First minimum payment",
+      "waitTotal": "If you wait 3 months — total paid"
+    },
+    "summaryMessage": "Minimum payments decline as the balance falls (interest + principal %), which stretches payoff. Program figures are a flat illustrative assumption, not an estimate of any provider’s results.",
+    "planInvalid": "Your plan payment must be larger than the first month’s interest."
+  },
+  "cta": {
+    "label": "See your options",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "table": {
+    "heading": "Scenario comparison",
+    "columns": [
+      "Scenario",
+      "Monthly payment",
+      "Time to pay off",
+      "Interest / cost",
+      "Total paid"
+    ],
+    "rows": {
+      "minimum": "Minimum payments (current)",
+      "wait": "If you wait 3 months",
+      "plan": "Your fixed payoff plan",
+      "program": "Debt-resolution style program (illustrative)"
+    },
+    "programCostLabel": "Program cost",
+    "firstPaymentNote": "first month"
+  },
+  "months": "{{months}} mo"
+}

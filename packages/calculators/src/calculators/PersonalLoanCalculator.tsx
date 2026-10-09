@@ -7,17 +7,21 @@ import { CalculatorShell } from "../components/CalculatorShell";
 import { CTA } from "../components/CTA";
 import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
+import { RateNote } from "../components/RateNote";
+import { resolveRate, type MarketRates } from "../rates/types";
 import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
 
 export type PersonalLoanCalculatorProps = {
   /** Brand theme key: achieve | fdr | bills */
   projectName?: ProjectName | string;
+  /** Live market rates injected by the host (uses personalLoan24). */
+  rates?: MarketRates;
 };
 
 type FieldKey = "loanAmount" | "apr" | "originationFee";
 
-export function PersonalLoanCalculator({ projectName = "achieve" }: PersonalLoanCalculatorProps) {
+export function PersonalLoanCalculator({ projectName = "achieve", rates }: PersonalLoanCalculatorProps) {
   const brand = resolveProjectName(projectName);
   const content = getCalculatorContent("personal-loan");
   const config = getCalculatorConfig("personal-loan");
@@ -28,7 +32,8 @@ export function PersonalLoanCalculator({ projectName = "achieve" }: PersonalLoan
   const amort = (content.amortization || {}) as { heading?: string; intro?: string; columns?: string[]; emptyRow?: string };
 
   const [loanAmount, setLoanAmount] = useState(String(config.defaults.loanAmount ?? 15000));
-  const [apr, setApr] = useState(String(config.defaults.apr ?? 11.99));
+  const rate = resolveRate(rates, "personalLoan24", Number(config.defaults.apr ?? 11.99));
+  const [apr, setApr] = useState(String(rate.value));
   const [termValue, setTermValue] = useState(String(config.defaults.termValue ?? 36));
   const [termUnit, setTermUnit] = useState(String(config.defaults.termUnit ?? "months"));
   const [fee, setFee] = useState(String(config.defaults.originationFeePercent ?? 0));
@@ -141,6 +146,7 @@ export function PersonalLoanCalculator({ projectName = "achieve" }: PersonalLoan
             onChange={setApr}
             error={err.apr}
           />
+          <RateNote rate={rate} subject="APR (24-month personal loan average at commercial banks)" />
           <Fieldset legend={fields.term?.legend || "Term"}>
             <Segmented
               name="term-unit"

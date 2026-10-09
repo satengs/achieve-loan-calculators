@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "Student loan calculator | Multi-brand demo",
+    "description": "Student loan repayment estimate."
+  },
+  "header": {
+    "eyebrow": "Student loan",
+    "title": "Student loan calculator",
+    "intro": "Estimate a standard fixed repayment, total interest, interest that may capitalize before repayment, and how extra payments shorten payoff."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample figures for demo only — not an offer.",
+    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "Loan details",
+    "fields": {
+      "balance": {
+        "label": "Loan balance",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "Interest rate",
+        "suffix": "%",
+        "hint": "Federal rates are set annually by law; private rates vary by lender."
+      },
+      "termYears": {
+        "label": "Repayment term",
+        "suffix": "yr",
+        "hint": "Standard federal plan is 10 years."
+      },
+      "deferMonths": {
+        "label": "Months until repayment starts",
+        "suffix": "mo",
+        "hint": "In-school / grace months; accrued interest is added to the balance (unsubsidized)."
+      },
+      "extraMonthly": {
+        "label": "Extra monthly payment",
+        "prefix": "$"
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your repayment estimate",
+    "primaryLabel": "Monthly payment",
+    "labels": {
+      "totalInterest": "Total interest",
+      "totalPaid": "Total repaid",
+      "capitalized": "Interest capitalized before repayment",
+      "payoffWithExtra": "Payoff with extra",
+      "interestSaved": "Interest saved"
+    },
+    "summaryMessage": "Standard fixed repayment only. Income-driven plans, forgiveness, and subsidies are not modeled."
+  },
+  "cta": {
+    "label": "Explore repayment options",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "table": {
+    "heading": "Year-by-year schedule",
+    "columns": [
+      "Year",
+      "Paid",
+      "Principal",
+      "Interest",
+      "Balance"
+    ]
+  }
+}

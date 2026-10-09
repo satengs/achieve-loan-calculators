@@ -7,14 +7,18 @@ import { CalculatorShell } from "../components/CalculatorShell";
 import { CTA } from "../components/CTA";
 import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
+import { RateNote } from "../components/RateNote";
+import { resolveRate, type MarketRates } from "../rates/types";
 import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
 
 export type MortgageCalculatorProps = {
   projectName?: ProjectName | string;
+  /** Live market rates injected by the host (mortgage30 / mortgage15 by default term). */
+  rates?: MarketRates;
 };
 
-export function MortgageCalculator({ projectName = "achieve" }: MortgageCalculatorProps) {
+export function MortgageCalculator({ projectName = "achieve", rates }: MortgageCalculatorProps) {
   const brand = resolveProjectName(projectName);
   const content = getCalculatorContent("mortgage");
   const config = getCalculatorConfig("mortgage");
@@ -29,7 +33,9 @@ export function MortgageCalculator({ projectName = "achieve" }: MortgageCalculat
   const [downPayment, setDownPayment] = useState(String(config.defaults.downPayment ?? 20));
   const [loanAmount, setLoanAmount] = useState(String(config.defaults.loanAmount ?? 320000));
   const [loanManual, setLoanManual] = useState(false);
-  const [apr, setApr] = useState(String(config.defaults.apr ?? 6.5));
+  const rateKey = Number(config.defaults.termYears) === 15 ? "mortgage15" : "mortgage30";
+  const rate = resolveRate(rates, rateKey, Number(config.defaults.apr ?? 6.5));
+  const [apr, setApr] = useState(String(rate.value));
   const [termYears, setTermYears] = useState(String(config.defaults.termYears ?? 30));
   const [tax, setTax] = useState(String(config.defaults.taxMonthly ?? 350));
   const [ins, setIns] = useState(String(config.defaults.insMonthly ?? 150));
@@ -189,6 +195,7 @@ export function MortgageCalculator({ projectName = "achieve" }: MortgageCalculat
             error={err.loan}
           />
           <Field id="apr" label={fields.apr?.label || "APR"} hint={fields.apr?.hint} suffix="%" value={apr} onChange={setApr} error={err.apr} />
+          <RateNote rate={rate} subject={rateKey === "mortgage15" ? "rate (15-year fixed average)" : "rate (30-year fixed average)"} />
           <Fieldset legend={fields.term?.legend || "Loan term"}>
             <Segmented
               name="term-preset"

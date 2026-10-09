@@ -1,0 +1,128 @@
+{
+  "id": "home-insurance",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "dwelling": 350000,
+    "ratePerThousand": 4,
+    "region": "moderate",
+    "homeAge": "mid",
+    "construction": "frame",
+    "deductible": "1000",
+    "claims": "0",
+    "contents": "50",
+    "liability": "300000"
+  },
+  "validation": {
+    "dwelling": {
+      "min": 10000,
+      "max": 100000000,
+      "label": "Dwelling coverage",
+      "allowZero": false
+    },
+    "ratePerThousand": {
+      "min": 0,
+      "max": 100,
+      "label": "Rate per $1,000",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "factors": {
+      "region": [
+        {
+          "value": "low",
+          "factor": 0.85
+        },
+        {
+          "value": "moderate",
+          "factor": 1.0
+        },
+        {
+          "value": "wind",
+          "factor": 1.45
+        },
+        {
+          "value": "wildfire",
+          "factor": 1.35
+        }
+      ],
+      "homeAge": [
+        {
+          "value": "new",
+          "factor": 0.9
+        },
+        {
+          "value": "mid",
+          "factor": 1.0
+        },
+        {
+          "value": "old",
+          "factor": 1.2
+        }
+      ],
+      "construction": [
+        {
+          "value": "masonry",
+          "factor": 0.9
+        },
+        {
+          "value": "frame",
+          "factor": 1.0
+        }
+      ],
+      "deductible": [
+        {
+          "value": "500",
+          "factor": 1.1
+        },
+        {
+          "value": "1000",
+          "factor": 1.0
+        },
+        {
+          "value": "2500",
+          "factor": 0.88
+        },
+        {
+          "value": "5000",
+          "factor": 0.78
+        }
+      ],
+      "claims": [
+        {
+          "value": "0",
+          "factor": 1.0
+        },
+        {
+          "value": "1",
+          "factor": 1.15
+        },
+        {
+          "value": "2",
+          "factor": 1.35
+        }
+      ],
+      "contents": [
+        {
+          "value": "50",
+          "factor": 1.0
+        },
+        {
+          "value": "70",
+          "factor": 1.08
+        }
+      ]
+    },
+    "liabilityAddOn": {
+      "100000": 0,
+      "300000": 25,
+      "500000": 50
+    },
+    "rangePct": 20
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

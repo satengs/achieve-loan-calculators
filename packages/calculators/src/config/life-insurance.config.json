@@ -10,21 +10,76 @@
     "educationFund": 50000,
     "existingCoverage": 100000,
     "liquidAssets": 25000,
-    "termYears": 20
+    "termYears": 20,
+    "ageBand": "30-39",
+    "tobacco": "no"
   },
   "validation": {
-    "annualIncome": { "min": 0, "max": 100000000, "label": "Annual income", "allowZero": true },
-    "yearsReplace": { "min": 0, "max": 50, "label": "Years to replace", "allowZero": true },
-    "totalDebts": { "min": 0, "max": 1000000000, "label": "Total debts", "allowZero": true },
-    "finalExpenses": { "min": 0, "max": 10000000, "label": "Final expenses", "allowZero": true },
-    "educationFund": { "min": 0, "max": 100000000, "label": "Education fund", "allowZero": true },
-    "existingCoverage": { "min": 0, "max": 1000000000, "label": "Existing coverage", "allowZero": true },
-    "liquidAssets": { "min": 0, "max": 1000000000, "label": "Liquid assets", "allowZero": true }
+    "annualIncome": {
+      "min": 0,
+      "max": 100000000,
+      "label": "Annual income",
+      "allowZero": true
+    },
+    "yearsReplace": {
+      "min": 0,
+      "max": 50,
+      "label": "Years to replace",
+      "allowZero": true
+    },
+    "totalDebts": {
+      "min": 0,
+      "max": 1000000000,
+      "label": "Total debts",
+      "allowZero": true
+    },
+    "finalExpenses": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Final expenses",
+      "allowZero": true
+    },
+    "educationFund": {
+      "min": 0,
+      "max": 100000000,
+      "label": "Education fund",
+      "allowZero": true
+    },
+    "existingCoverage": {
+      "min": 0,
+      "max": 1000000000,
+      "label": "Existing coverage",
+      "allowZero": true
+    },
+    "liquidAssets": {
+      "min": 0,
+      "max": 1000000000,
+      "label": "Liquid assets",
+      "allowZero": true
+    }
   },
-  "termPresets": [10, 20, 30],
+  "termPresets": [
+    10,
+    20,
+    30
+  ],
   "features": {
     "currencyRoundToWhole": true,
-    "termAffectsNeed": false
+    "termAffectsNeed": false,
+    "premiumRatePer1000ByAge": {
+      "18-29": 0.6,
+      "30-39": 0.75,
+      "40-49": 1.4,
+      "50-59": 3.2,
+      "60-69": 8.5
+    },
+    "tobaccoMultiplier": 2.5,
+    "termMultiplier": {
+      "10": 0.85,
+      "20": 1.0,
+      "30": 1.45
+    },
+    "premiumNote": "Illustrative rate table for demo only — not actuarial or carrier rates."
   },
   "cta": {
     "enabled": true,

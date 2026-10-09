@@ -10,21 +10,79 @@
     "drawAmount": 50000,
     "apr": 8.5,
     "payMode": "interest-only",
-    "termYears": 10
+    "termYears": 10,
+    "creditBand": "good",
+    "drawYears": 5,
+    "repayYears": 15
   },
   "validation": {
-    "homeValue": { "min": 1, "max": 100000000, "label": "Home value" },
-    "mortgageBalance": { "min": 0, "max": 100000000, "label": "Mortgage balance", "allowZero": true },
-    "maxCltv": { "min": 1, "max": 100, "label": "Max CLTV" },
-    "creditLimit": { "min": 0, "max": 100000000, "label": "Credit limit", "allowZero": true },
-    "drawAmount": { "min": 1, "max": 100000000, "label": "Draw amount" },
-    "apr": { "min": 0, "max": 100, "label": "APR", "allowZero": true },
-    "termYears": { "min": 1, "max": 40, "label": "Term (years)" }
+    "homeValue": {
+      "min": 1,
+      "max": 100000000,
+      "label": "Home value"
+    },
+    "mortgageBalance": {
+      "min": 0,
+      "max": 100000000,
+      "label": "Mortgage balance",
+      "allowZero": true
+    },
+    "maxCltv": {
+      "min": 1,
+      "max": 100,
+      "label": "Max CLTV"
+    },
+    "creditLimit": {
+      "min": 0,
+      "max": 100000000,
+      "label": "Credit limit",
+      "allowZero": true
+    },
+    "drawAmount": {
+      "min": 1,
+      "max": 100000000,
+      "label": "Draw amount"
+    },
+    "apr": {
+      "min": 0,
+      "max": 100,
+      "label": "APR",
+      "allowZero": true
+    },
+    "termYears": {
+      "min": 1,
+      "max": 40,
+      "label": "Term (years)"
+    },
+    "drawYears": {
+      "min": 0,
+      "max": 20,
+      "label": "Draw period",
+      "allowZero": true
+    },
+    "repayYears": {
+      "min": 1,
+      "max": 30,
+      "label": "Repayment period"
+    }
   },
   "features": {
-    "payModes": ["interest-only", "amortizing"],
+    "payModes": [
+      "interest-only",
+      "amortizing",
+      "draw-repay"
+    ],
     "deriveCreditLimit": true,
-    "allowLimitOverride": true
+    "allowLimitOverride": true,
+    "rateKey": "prime",
+    "fallbackPrime": 7.0,
+    "primeMarginByBand": {
+      "excellent": 0.5,
+      "good": 1.5,
+      "fair": 3.0,
+      "poor": 4.5
+    },
+    "maxLine": 700000
   },
   "cta": {
     "enabled": true,

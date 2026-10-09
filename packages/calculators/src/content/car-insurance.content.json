@@ -1,0 +1,121 @@
+{
+  "meta": {
+    "title": "Car insurance cost estimator | Multi-brand demo",
+    "description": "Illustrative car insurance estimate from transparent factors. Not a quote."
+  },
+  "header": {
+    "eyebrow": "Car insurance",
+    "title": "Car insurance cost estimator",
+    "intro": "Rough, transparent estimate of annual and monthly premium using a base premium and editable factor table. Not a quote."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Rough estimate — not an insurance quote.",
+    "body": "No free public API provides real-time car insurance quotes, so this demo uses a transparent, editable factor table. Actual premiums vary widely."
+  },
+  "form": {
+    "heading": "Driver & vehicle",
+    "fields": {
+      "driverAge": {
+        "label": "Primary driver age",
+        "options": {
+          "16-20": "16–20",
+          "21-24": "21–24",
+          "25-64": "25–64",
+          "65+": "65+"
+        }
+      },
+      "record": {
+        "label": "Driving record (last 3–5 yrs)",
+        "options": {
+          "clean": "Clean",
+          "ticket": "Minor ticket(s)",
+          "accident": "At-fault accident",
+          "dui": "DUI / major violation"
+        }
+      },
+      "vehicle": {
+        "label": "Vehicle type",
+        "options": {
+          "sedan": "Sedan / hatchback",
+          "suv": "SUV / crossover",
+          "truck": "Pickup truck",
+          "ev": "Electric vehicle",
+          "sports": "Sports / performance"
+        }
+      },
+      "coverage": {
+        "label": "Coverage level",
+        "options": {
+          "liability": "Liability only",
+          "standard": "Standard (liability + collision)",
+          "full": "Full (comprehensive + extras)"
+        }
+      },
+      "deductible": {
+        "label": "Deductible",
+        "options": {
+          "250": "$250",
+          "500": "$500",
+          "1000": "$1,000",
+          "2000": "$2,000"
+        }
+      },
+      "mileage": {
+        "label": "Annual mileage",
+        "options": {
+          "low": "Under 7,500",
+          "average": "7,500–15,000",
+          "high": "Over 15,000"
+        }
+      },
+      "area": {
+        "label": "Where the car is garaged",
+        "options": {
+          "rural": "Rural",
+          "suburban": "Suburban",
+          "urban": "Urban"
+        }
+      },
+      "roadside": {
+        "label": "Roadside assistance",
+        "options": {
+          "no": "No",
+          "yes": "Yes"
+        }
+      },
+      "rental": {
+        "label": "Rental reimbursement",
+        "options": {
+          "no": "No",
+          "yes": "Yes"
+        }
+      },
+      "basePremium": {
+        "label": "Base annual premium assumption",
+        "prefix": "$",
+        "hint": "Illustrative starting point for a 25–64 driver, clean record, sedan, standard coverage. Edit to match local knowledge."
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your rough estimate",
+    "primaryLabel": "Est. monthly premium",
+    "labels": {
+      "annual": "Est. annual premium",
+      "range": "Rough range (annual)",
+      "multiplier": "Combined factor",
+      "addOns": "Add-ons (annual)"
+    },
+    "summaryMessage": "Rough estimate from an illustrative factor table — not a quote. Real premiums depend on insurer, state rules, credit-based insurance scores where permitted, and full driver history."
+  },
+  "cta": {
+    "label": "Compare insurance quotes",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "This tool does not sell insurance or provide quotes. Achieve-styled demo for product exploration only."
+  }
+}

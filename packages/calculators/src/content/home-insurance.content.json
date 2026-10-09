@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "title": "Home insurance cost estimator | Multi-brand demo",
+    "description": "Illustrative homeowners insurance estimate. Not a quote."
+  },
+  "header": {
+    "eyebrow": "Home insurance",
+    "title": "Home insurance cost estimator",
+    "intro": "Rough annual and monthly homeowners premium from dwelling coverage, a rate per $1,000, and an editable factor table. Not a quote."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Rough estimate — not an insurance quote.",
+    "body": "No free public API provides real-time homeowners quotes, so this demo uses a transparent, editable factor table."
+  },
+  "form": {
+    "heading": "Your home",
+    "fields": {
+      "dwelling": {
+        "label": "Dwelling coverage (rebuild cost)",
+        "prefix": "$",
+        "hint": "Cost to rebuild, not market value."
+      },
+      "ratePerThousand": {
+        "label": "Base rate per $1,000 of coverage",
+        "prefix": "$",
+        "hint": "Illustrative assumption. Edit to match local knowledge."
+      },
+      "region": {
+        "label": "Area risk profile",
+        "options": {
+          "low": "Lower risk",
+          "moderate": "Moderate",
+          "wind": "Coastal / high wind",
+          "wildfire": "Wildfire-prone"
+        }
+      },
+      "homeAge": {
+        "label": "Age of home",
+        "options": {
+          "new": "Under 10 years",
+          "mid": "10–30 years",
+          "old": "Over 30 years"
+        }
+      },
+      "construction": {
+        "label": "Construction",
+        "options": {
+          "masonry": "Masonry / brick",
+          "frame": "Wood frame"
+        }
+      },
+      "deductible": {
+        "label": "Deductible",
+        "options": {
+          "500": "$500",
+          "1000": "$1,000",
+          "2500": "$2,500",
+          "5000": "$5,000"
+        }
+      },
+      "claims": {
+        "label": "Claims in last 5 years",
+        "options": {
+          "0": "None",
+          "1": "One",
+          "2": "Two or more"
+        }
+      },
+      "contents": {
+        "label": "Personal property coverage",
+        "options": {
+          "50": "50% of dwelling (typical)",
+          "70": "70% of dwelling"
+        }
+      },
+      "liability": {
+        "label": "Liability limit",
+        "options": {
+          "100000": "$100,000",
+          "300000": "$300,000",
+          "500000": "$500,000"
+        }
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your rough estimate",
+    "primaryLabel": "Est. monthly premium",
+    "labels": {
+      "annual": "Est. annual premium",
+      "range": "Rough range (annual)",
+      "base": "Base (coverage × rate)",
+      "multiplier": "Combined factor"
+    },
+    "summaryMessage": "Rough estimate from an illustrative factor table — not a quote. Flood and earthquake typically require separate policies and are not included."
+  },
+  "cta": {
+    "label": "Compare home insurance",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "This tool does not sell insurance or provide quotes. Achieve-styled demo for product exploration only."
+  }
+}

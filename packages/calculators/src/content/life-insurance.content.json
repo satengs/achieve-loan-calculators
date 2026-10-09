@@ -16,26 +16,62 @@
   "form": {
     "heading": "Your inputs",
     "fields": {
-      "annualIncome": { "label": "Annual income", "prefix": "$" },
+      "annualIncome": {
+        "label": "Annual income",
+        "prefix": "$"
+      },
       "yearsReplace": {
         "label": "Years of income to replace",
         "hint": "Common planning ranges: 5–15 years (demo default 10).",
         "suffix": "yr"
       },
-      "totalDebts": { "label": "Total debts (incl. mortgage balance)", "prefix": "$" },
+      "totalDebts": {
+        "label": "Total debts (incl. mortgage balance)",
+        "prefix": "$"
+      },
       "finalExpenses": {
         "label": "Final expenses estimate",
         "hint": "Funeral, immediate costs — illustrative default.",
         "prefix": "$"
       },
-      "educationFund": { "label": "Education / other goals fund", "prefix": "$" },
-      "existingCoverage": { "label": "Existing life coverage", "prefix": "$" },
-      "liquidAssets": { "label": "Liquid assets available to survivors", "prefix": "$" },
+      "educationFund": {
+        "label": "Education / other goals fund",
+        "prefix": "$"
+      },
+      "existingCoverage": {
+        "label": "Existing life coverage",
+        "prefix": "$"
+      },
+      "liquidAssets": {
+        "label": "Liquid assets available to survivors",
+        "prefix": "$"
+      },
       "termYears": {
         "label": "Preferred term length (informational)",
         "ariaLabel": "Term length",
-        "presetLabels": { "10": "10 yr", "20": "20 yr", "30": "30 yr" },
-        "hint": "Term length does not change the coverage-need math in this demo; it is shown for planning context only."
+        "presetLabels": {
+          "10": "10 yr",
+          "20": "20 yr",
+          "30": "30 yr"
+        },
+        "hint": "Term length affects only the illustrative premium below, not the coverage-need math."
+      },
+      "ageBand": {
+        "label": "Age (for illustrative premium)",
+        "options": {
+          "18-29": "18–29",
+          "30-39": "30–39",
+          "40-49": "40–49",
+          "50-59": "50–59",
+          "60-69": "60–69"
+        }
+      },
+      "tobacco": {
+        "label": "Tobacco use",
+        "options": {
+          "no": "No",
+          "yes": "Yes"
+        }
       }
     }
   },
@@ -49,12 +85,15 @@
       "offset": "Less existing + assets",
       "finalExpenses": "Final expenses",
       "education": "Education / goals",
-      "selectedTerm": "Selected term (context)"
+      "selectedTerm": "Selected term (context)",
+      "premiumMonthly": "Illustrative premium on this need (monthly)",
+      "premiumAnnual": "Illustrative premium (annual)"
     },
     "termDisplay": "{{years}} years",
     "emptyPlaceholder": "—",
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
-    "summaryMessage": "Heuristic only. Rounded for readability. Not a premium quote or guarantee of coverage."
+    "summaryMessage": "Heuristic only. Rounded for readability. Not a premium quote or guarantee of coverage.",
+    "premiumNote": "Premium = coverage ÷ 1,000 × an illustrative rate per $1,000 (by age band, term and tobacco). Not a quote — real premiums depend on underwriting."
   },
   "cta": {
     "label": "Learn about coverage options",

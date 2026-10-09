@@ -1,0 +1,47 @@
+{
+  "id": "dti",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "monthlyIncome": 6000,
+    "monthlyDebts": 1980,
+    "cardBalance": 0,
+    "cardMinPct": 3
+  },
+  "validation": {
+    "monthlyIncome": {
+      "min": 1,
+      "max": 10000000,
+      "label": "Monthly income",
+      "allowZero": false
+    },
+    "monthlyDebts": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Monthly debts",
+      "allowZero": true
+    },
+    "cardBalance": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Card balance",
+      "allowZero": true
+    },
+    "cardMinPct": {
+      "min": 0,
+      "max": 100,
+      "label": "Card minimum %",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "bands": {
+      "goodMax": 35,
+      "fairMax": 43
+    }
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

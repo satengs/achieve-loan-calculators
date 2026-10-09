@@ -4,12 +4,55 @@ import mortgageContent from "./mortgage.content.json";
 import helocContent from "./heloc.content.json";
 import lifeContent from "./life-insurance.content.json";
 import siteContent from "./site.json";
+import debtPayoffContent from "./debt-payoff.content.json";
+import consolidationOptionsContent from "./consolidation-options.content.json";
+import dtiContent from "./dti.content.json";
+import carInsuranceContent from "./car-insurance.content.json";
+import budgetContent from "./budget.content.json";
+import savingsContent from "./savings.content.json";
+import retirementContent from "./retirement.content.json";
+import homeInsuranceContent from "./home-insurance.content.json";
+import loanContent from "./loan.content.json";
+import autoLeaseContent from "./auto-lease.content.json";
+import studentLoanContent from "./student-loan.content.json";
+import carLoanContent from "./car-loan.content.json";
+import refinanceContent from "./refinance.content.json";
 import personalLoanConfig from "../config/personal-loan.config.json";
 import mortgageConfig from "../config/mortgage.config.json";
 import helocConfig from "../config/heloc.config.json";
 import lifeConfig from "../config/life-insurance.config.json";
+import debtPayoffConfig from "../config/debt-payoff.config.json";
+import consolidationOptionsConfig from "../config/consolidation-options.config.json";
+import dtiConfig from "../config/dti.config.json";
+import carInsuranceConfig from "../config/car-insurance.config.json";
+import budgetConfig from "../config/budget.config.json";
+import savingsConfig from "../config/savings.config.json";
+import retirementConfig from "../config/retirement.config.json";
+import homeInsuranceConfig from "../config/home-insurance.config.json";
+import loanConfig from "../config/loan.config.json";
+import autoLeaseConfig from "../config/auto-lease.config.json";
+import studentLoanConfig from "../config/student-loan.config.json";
+import carLoanConfig from "../config/car-loan.config.json";
+import refinanceConfig from "../config/refinance.config.json";
 
-export type CalculatorId = "personal-loan" | "mortgage" | "heloc" | "life-insurance";
+export type CalculatorId =
+  | "personal-loan"
+  | "mortgage"
+  | "heloc"
+  | "life-insurance"
+  | "debt-payoff"
+  | "consolidation-options"
+  | "dti"
+  | "car-insurance"
+  | "budget"
+  | "savings"
+  | "retirement"
+  | "home-insurance"
+  | "loan"
+  | "auto-lease"
+  | "student-loan"
+  | "car-loan"
+  | "refinance";
 
 const rangeSchema = z.object({
   min: z.number().optional(),
@@ -46,6 +89,8 @@ export type CalculatorContent = {
   cta: { label: string; href: string; note: string };
   footer: { note: string };
   amortization?: Record<string, unknown>;
+  table?: Record<string, unknown>;
+  [key: string]: unknown;
   validationMessages?: Record<string, string>;
 };
 
@@ -60,7 +105,9 @@ export type SiteContent = {
     title: string;
     description: string;
     linkLabel: string;
+    section?: string;
   }>;
+  sections?: Array<{ id: string; title: string; description?: string }>;
   footer: { note: string };
 };
 
@@ -69,6 +116,19 @@ const CONTENT_MAP: Record<CalculatorId, CalculatorContent> = {
   mortgage: mortgageContent as CalculatorContent,
   heloc: helocContent as CalculatorContent,
   "life-insurance": lifeContent as CalculatorContent,
+  "debt-payoff": debtPayoffContent as CalculatorContent,
+  "consolidation-options": consolidationOptionsContent as CalculatorContent,
+  "dti": dtiContent as CalculatorContent,
+  "car-insurance": carInsuranceContent as CalculatorContent,
+  "budget": budgetContent as CalculatorContent,
+  "savings": savingsContent as CalculatorContent,
+  "retirement": retirementContent as CalculatorContent,
+  "home-insurance": homeInsuranceContent as CalculatorContent,
+  "loan": loanContent as CalculatorContent,
+  "auto-lease": autoLeaseContent as CalculatorContent,
+  "student-loan": studentLoanContent as CalculatorContent,
+  "car-loan": carLoanContent as CalculatorContent,
+  "refinance": refinanceContent as CalculatorContent,
 };
 
 const CONFIG_MAP: Record<CalculatorId, unknown> = {
@@ -76,6 +136,19 @@ const CONFIG_MAP: Record<CalculatorId, unknown> = {
   mortgage: mortgageConfig,
   heloc: helocConfig,
   "life-insurance": lifeConfig,
+  "debt-payoff": debtPayoffConfig,
+  "consolidation-options": consolidationOptionsConfig,
+  "dti": dtiConfig,
+  "car-insurance": carInsuranceConfig,
+  "budget": budgetConfig,
+  "savings": savingsConfig,
+  "retirement": retirementConfig,
+  "home-insurance": homeInsuranceConfig,
+  "loan": loanConfig,
+  "auto-lease": autoLeaseConfig,
+  "student-loan": studentLoanConfig,
+  "car-loan": carLoanConfig,
+  "refinance": refinanceConfig,
 };
 
 export function getCalculatorContent(id: CalculatorId): CalculatorContent {

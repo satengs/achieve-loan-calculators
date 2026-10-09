@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "title": "Consolidation options estimator | Multi-brand demo",
+    "description": "Indicative consolidation ranges by debt amount. Not offers."
+  },
+  "header": {
+    "eyebrow": "Consolidation options",
+    "title": "Consolidation options estimator",
+    "intro": "Set your debt amount to compare indicative ranges for a personal loan, a home equity loan, and a debt-resolution style program against paying minimums."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Indicative ranges — not offers.",
+    "body": "Ranges use editable illustrative assumptions and public average rates where available. Eligibility, APR, fees, and program terms depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "What’s your debt amount?",
+    "fields": {
+      "debtAmount": {
+        "label": "Debt amount",
+        "prefix": "$",
+        "hint": "Total unsecured debt you’d like to address."
+      },
+      "creditBand": {
+        "label": "Credit score range",
+        "hint": "Changes the illustrative APR range only.",
+        "options": {
+          "excellent": "Excellent (740+)",
+          "good": "Good (670–739)",
+          "fair": "Fair (580–669)",
+          "poor": "Below 580"
+        }
+      },
+      "plTermMonths": {
+        "label": "Personal loan term",
+        "suffix": "mo"
+      },
+      "heTermMonths": {
+        "label": "Home equity term",
+        "suffix": "mo"
+      },
+      "programCostPct": {
+        "label": "Program total cost (% of debt)",
+        "suffix": "%",
+        "hint": "Illustrative assumption."
+      },
+      "programMonths": {
+        "label": "Program length",
+        "suffix": "mo"
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Indicative options",
+    "primaryLabel": "Current est. minimum payment",
+    "labels": {
+      "minMonths": "Time at minimums",
+      "minTotal": "Total paid at minimums"
+    },
+    "optionLabels": {
+      "personal-loan": "Personal loan",
+      "home-equity": "Home equity loan",
+      "debt-resolution": "Debt-resolution style program",
+      "minimums": "Keep paying minimums"
+    },
+    "summaryMessage": "Indicative ranges only — not offers, pre-qualification, or rate quotes. Loan ranges assume the APR band shown; home equity requires sufficient equity; program figures are a flat illustrative assumption.",
+    "unavailableMin": "Shown for amounts of {{amount}} or more",
+    "unavailableMax": "Shown for amounts up to {{amount}}"
+  },
+  "cta": {
+    "label": "Compare your options",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "table": {
+    "heading": "Options at a glance",
+    "columns": [
+      "Option",
+      "Est. monthly",
+      "Term",
+      "Est. total paid",
+      "APR range used"
+    ]
+  }
+}

@@ -23,12 +23,38 @@ export {
   MortgageCalculator,
   HelocCalculator,
   LifeInsuranceCalculator,
+  DebtPayoffCalculator,
+  ConsolidationOptionsCalculator,
+  DtiCalculator,
+  CarInsuranceCalculator,
+  BudgetCalculator,
+  SavingsCalculator,
+  RetirementCalculator,
+  HomeInsuranceCalculator,
+  LoanCalculator,
+  AutoLeaseCalculator,
+  StudentLoanCalculator,
+  CarLoanCalculator,
+  RefinanceCalculator,
 } from "./calculators";
 export type {
   PersonalLoanCalculatorProps,
   MortgageCalculatorProps,
   HelocCalculatorProps,
   LifeInsuranceCalculatorProps,
+  DebtPayoffCalculatorProps,
+  ConsolidationOptionsCalculatorProps,
+  DtiCalculatorProps,
+  CarInsuranceCalculatorProps,
+  BudgetCalculatorProps,
+  SavingsCalculatorProps,
+  RetirementCalculatorProps,
+  HomeInsuranceCalculatorProps,
+  LoanCalculatorProps,
+  AutoLeaseCalculatorProps,
+  StudentLoanCalculatorProps,
+  CarLoanCalculatorProps,
+  RefinanceCalculatorProps,
 } from "./calculators";
 
 export {
@@ -39,7 +65,15 @@ export {
   Fieldset,
   ResultsPanel,
   CTA,
+  SelectField,
+  SliderField,
+  MoreOptions,
+  RateNote,
+  DataTable,
 } from "./components";
+
+export { resolveRate } from "./rates";
+export type { RateKey, RateInfo, MarketRates, ResolvedRate } from "./rates";
 
 export {
   getCalculatorContent,

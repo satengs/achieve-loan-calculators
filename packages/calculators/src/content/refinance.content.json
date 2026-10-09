@@ -1,0 +1,77 @@
+{
+  "meta": {
+    "title": "Refinance calculator | Multi-brand demo",
+    "description": "Mortgage refinance savings estimate."
+  },
+  "header": {
+    "eyebrow": "Refinance",
+    "title": "Refinance calculator",
+    "intro": "Compare your current mortgage payment with a new loan: monthly savings, break-even on closing costs, and lifetime cost difference."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample figures for demo only — not an offer.",
+    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "Current & new loan",
+    "fields": {
+      "balance": {
+        "label": "Current loan balance",
+        "prefix": "$"
+      },
+      "currentRate": {
+        "label": "Current interest rate",
+        "suffix": "%"
+      },
+      "remainingYears": {
+        "label": "Years remaining",
+        "suffix": "yr"
+      },
+      "newRate": {
+        "label": "New interest rate",
+        "suffix": "%"
+      },
+      "newTermYears": {
+        "label": "New loan term",
+        "suffix": "yr"
+      },
+      "closingCosts": {
+        "label": "Closing costs",
+        "prefix": "$"
+      },
+      "rollCosts": {
+        "legend": "Closing costs",
+        "ariaLabel": "How closing costs are paid",
+        "options": {
+          "cash": "Pay in cash",
+          "roll": "Roll into loan"
+        }
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Refinance comparison",
+    "primaryLabel": "Monthly savings",
+    "labels": {
+      "currentPayment": "Current P&I",
+      "newPayment": "New P&I",
+      "breakEven": "Break-even",
+      "lifetime": "Lifetime savings (after costs)",
+      "simple": "Savings over remaining term (simple)",
+      "currentInterest": "Remaining interest — current",
+      "newInterest": "Interest — new loan"
+    },
+    "breakEvenNever": "No monthly savings",
+    "summaryMessage": "Principal & interest only; taxes, insurance, PMI and points are not modeled. Extending the term can lower payments but raise lifetime interest."
+  },
+  "cta": {
+    "label": "See refinance options",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  }
+}

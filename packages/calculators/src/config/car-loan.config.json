@@ -1,0 +1,73 @@
+{
+  "id": "car-loan",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "price": 35000,
+    "down": 4000,
+    "apr": 7.5,
+    "termMonths": "60",
+    "tradeIn": 5000,
+    "tradeOwed": 2000,
+    "salesTax": 6,
+    "fees": 800
+  },
+  "validation": {
+    "price": {
+      "min": 1000,
+      "max": 10000000,
+      "label": "Price",
+      "allowZero": false
+    },
+    "down": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Down payment",
+      "allowZero": true
+    },
+    "apr": {
+      "min": 0,
+      "max": 40,
+      "label": "APR",
+      "allowZero": true
+    },
+    "tradeIn": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Trade-in",
+      "allowZero": true
+    },
+    "tradeOwed": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Owed on trade",
+      "allowZero": true
+    },
+    "salesTax": {
+      "min": 0,
+      "max": 25,
+      "label": "Sales tax",
+      "allowZero": true
+    },
+    "fees": {
+      "min": 0,
+      "max": 100000,
+      "label": "Fees",
+      "allowZero": true
+    }
+  },
+  "termPresets": [
+    36,
+    48,
+    60,
+    72,
+    84
+  ],
+  "features": {
+    "rateKey": "auto48"
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

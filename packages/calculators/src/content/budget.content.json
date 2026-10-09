@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "title": "Monthly budget calculator | Multi-brand demo",
+    "description": "Monthly budget with 50/30/20 comparison."
+  },
+  "header": {
+    "eyebrow": "Budget",
+    "title": "Monthly budget calculator",
+    "intro": "Add up monthly income and spending, see what’s left over, and compare your split with a 50/30/20 guideline."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Planning tool — demo only.",
+    "body": "Uses only the numbers you enter; nothing is stored or sent."
+  },
+  "form": {
+    "heading": "Monthly income & spending",
+    "fields": {
+      "netIncome": {
+        "label": "Take-home pay (monthly)",
+        "prefix": "$"
+      },
+      "otherIncome": {
+        "label": "Other income (monthly)",
+        "prefix": "$"
+      },
+      "housing": {
+        "label": "Housing (rent / mortgage)",
+        "prefix": "$"
+      },
+      "utilities": {
+        "label": "Utilities & phone",
+        "prefix": "$"
+      },
+      "groceries": {
+        "label": "Groceries",
+        "prefix": "$"
+      },
+      "transportation": {
+        "label": "Transportation",
+        "prefix": "$"
+      },
+      "insurance": {
+        "label": "Insurance premiums",
+        "prefix": "$"
+      },
+      "debtPayments": {
+        "label": "Minimum debt payments",
+        "prefix": "$"
+      },
+      "dining": {
+        "label": "Dining out",
+        "prefix": "$"
+      },
+      "entertainment": {
+        "label": "Entertainment",
+        "prefix": "$"
+      },
+      "shopping": {
+        "label": "Shopping",
+        "prefix": "$"
+      },
+      "subscriptions": {
+        "label": "Subscriptions",
+        "prefix": "$"
+      },
+      "savings": {
+        "label": "Savings / emergency fund",
+        "prefix": "$"
+      },
+      "retirement": {
+        "label": "Retirement contributions (from take-home)",
+        "prefix": "$"
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your budget",
+    "primaryLabel": "Left over each month",
+    "labels": {
+      "income": "Total income",
+      "needs": "Needs",
+      "wants": "Wants",
+      "savings": "Savings",
+      "savingsRate": "Savings rate (incl. leftover)",
+      "outflow": "Total outflow"
+    },
+    "overBudget": "You’re spending more than you bring in — leftover is negative.",
+    "summaryMessage": "The 50/30/20 split is a common rule of thumb, not a requirement. Adjust categories to fit your situation."
+  },
+  "cta": {
+    "label": "Get budgeting tips",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "sections": {
+    "income": "Income",
+    "needs": "Needs",
+    "wants": "Wants",
+    "savings": "Savings"
+  },
+  "table": {
+    "heading": "Your split vs 50/30/20",
+    "columns": [
+      "Category",
+      "Yours",
+      "% of income",
+      "Guideline",
+      "Guideline amount"
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "title": "Debt-to-income (DTI) calculator | Multi-brand demo",
+    "description": "Calculate your debt-to-income ratio with neutral band explanations."
+  },
+  "header": {
+    "eyebrow": "DTI ratio",
+    "title": "Debt-to-income (DTI) calculator",
+    "intro": "Divide your monthly debt payments by your gross (before-tax) monthly income to see your DTI and where it falls in commonly used ranges."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Educational estimate — not a lending decision.",
+    "body": "Bands are general reference points, not approval criteria for any lender."
+  },
+  "form": {
+    "heading": "Your monthly numbers",
+    "fields": {
+      "monthlyIncome": {
+        "label": "Monthly gross income",
+        "prefix": "$",
+        "hint": "Before taxes. Include salary, self-employment taxable income, alimony/support received, etc."
+      },
+      "monthlyDebts": {
+        "label": "Monthly debt payments",
+        "prefix": "$",
+        "hint": "Rent or mortgage (incl. taxes/insurance/HOA), car, student, personal loans, card minimums, support payments. Exclude utilities, food, insurance premiums."
+      },
+      "cardBalance": {
+        "label": "Credit card balances not included above (est.)",
+        "prefix": "$",
+        "hint": "Optional. We add an estimated minimum payment for these balances."
+      },
+      "cardMinPct": {
+        "label": "Estimated card minimum (% of balance)",
+        "suffix": "%"
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your estimated DTI",
+    "primaryLabel": "Debt-to-income ratio",
+    "labels": {
+      "band": "Range",
+      "totalDebts": "Monthly debts used",
+      "to35": "Payments at 35% of income",
+      "headroom": "Difference vs 35%"
+    },
+    "bands": {
+      "good": {
+        "label": "35% or less — generally considered manageable",
+        "body": "Many lenders look for a DTI in this range. A lower DTI can leave more room in your budget."
+      },
+      "fair": {
+        "label": "36% to 43% — may need work",
+        "body": "Some lenders may still work with this range, though options or terms can be more limited."
+      },
+      "high": {
+        "label": "44% or more — high",
+        "body": "Your budget may be stretched. Reducing payments or increasing income can lower DTI."
+      }
+    },
+    "summaryMessage": "DTI is one factor lenders may consider; it is not a credit score and does not guarantee approval or terms. Bands are general reference points only."
+  },
+  "cta": {
+    "label": "Explore ways to lower DTI",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  }
+}

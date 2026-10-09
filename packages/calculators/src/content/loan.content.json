@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Loan calculator | Multi-brand demo",
+    "description": "Generic amortizing loan calculator."
+  },
+  "header": {
+    "eyebrow": "Loan",
+    "title": "Loan calculator",
+    "intro": "Estimate the monthly installment, total interest, and total repayment for a fixed-rate amortizing loan, plus the effect of extra payments."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample figures for demo only — not an offer.",
+    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "Loan details",
+    "fields": {
+      "loanAmount": {
+        "label": "Loan amount",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "Interest rate (APR)",
+        "suffix": "%"
+      },
+      "termYears": {
+        "label": "Loan period",
+        "suffix": "yr"
+      },
+      "extraMonthly": {
+        "label": "Extra monthly payment",
+        "prefix": "$",
+        "hint": "Optional — applied to principal each month."
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Your estimate",
+    "primaryLabel": "Monthly installment",
+    "labels": {
+      "totalInterest": "Total interest",
+      "totalPaid": "Total repayment",
+      "payoffWithExtra": "Payoff with extra",
+      "interestSaved": "Interest saved with extra"
+    },
+    "summaryMessage": "Fixed-rate estimate. Fees and taxes are not included."
+  },
+  "cta": {
+    "label": "Check your rate",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "table": {
+    "heading": "Year-by-year schedule",
+    "columns": [
+      "Year",
+      "Paid",
+      "Principal",
+      "Interest",
+      "Balance"
+    ]
+  }
+}

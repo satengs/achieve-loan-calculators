@@ -1,0 +1,115 @@
+{
+  "id": "consolidation-options",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "debtAmount": 20000,
+    "creditBand": "good",
+    "plTermMonths": 60,
+    "heTermMonths": 180,
+    "programCostPct": 90,
+    "programMonths": 48
+  },
+  "validation": {
+    "debtAmount": {
+      "min": 1000,
+      "max": 1000000,
+      "label": "Debt amount",
+      "allowZero": false
+    },
+    "plTermMonths": {
+      "min": 12,
+      "max": 120,
+      "label": "Personal loan term",
+      "allowZero": false
+    },
+    "heTermMonths": {
+      "min": 60,
+      "max": 360,
+      "label": "Home equity term",
+      "allowZero": false
+    },
+    "programCostPct": {
+      "min": 0,
+      "max": 200,
+      "label": "Program cost %",
+      "allowZero": true
+    },
+    "programMonths": {
+      "min": 1,
+      "max": 120,
+      "label": "Program length",
+      "allowZero": false
+    }
+  },
+  "features": {
+    "slider": {
+      "min": 5000,
+      "max": 150000,
+      "step": 1000
+    },
+    "personalLoan": {
+      "maxDebt": 50000,
+      "feePct": 5,
+      "aprByBand": {
+        "excellent": [
+          -2,
+          2
+        ],
+        "good": [
+          2,
+          8
+        ],
+        "fair": [
+          8,
+          16
+        ],
+        "poor": [
+          14,
+          24
+        ]
+      },
+      "aprFloor": 7.99,
+      "aprCap": 35.99,
+      "rateKey": "personalLoan24",
+      "fallbackBase": 12
+    },
+    "homeEquity": {
+      "minDebt": 15000,
+      "marginByBand": {
+        "excellent": [
+          0.5,
+          2
+        ],
+        "good": [
+          1.5,
+          3.5
+        ],
+        "fair": [
+          3,
+          5.5
+        ],
+        "poor": [
+          5,
+          7
+        ]
+      },
+      "rateKey": "prime",
+      "fallbackBase": 7.5
+    },
+    "program": {
+      "minDebt": 7500
+    },
+    "minimums": {
+      "principalPct": 1,
+      "floor": 35,
+      "rateKey": "creditCard",
+      "fallbackApr": 22.77
+    },
+    "note": "Personal-loan APR range = live 24-mo personal loan average + band offsets (clamped). Home equity = prime + band margins."
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

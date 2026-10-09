@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "Retirement savings calculator | Multi-brand demo",
+    "description": "Retirement savings projection."
+  },
+  "header": {
+    "eyebrow": "Retirement",
+    "title": "Retirement savings calculator",
+    "intro": "Project your retirement balance from current savings, monthly and employer contributions, and an assumed return — plus an illustrative monthly income using a withdrawal rate."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Sample figures for demo only — not an offer.",
+    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+  },
+  "form": {
+    "heading": "Your retirement plan",
+    "fields": {
+      "currentAge": {
+        "label": "Current age"
+      },
+      "retireAge": {
+        "label": "Retirement age"
+      },
+      "currentSavings": {
+        "label": "Current retirement savings",
+        "prefix": "$"
+      },
+      "monthlyContribution": {
+        "label": "Your monthly contribution",
+        "prefix": "$"
+      },
+      "employerMonthly": {
+        "label": "Employer contribution (monthly)",
+        "prefix": "$"
+      },
+      "annualReturn": {
+        "label": "Expected annual return",
+        "suffix": "%",
+        "hint": "Illustrative assumption — not a forecast. Investments can lose value."
+      },
+      "inflation": {
+        "label": "Inflation assumption",
+        "suffix": "%"
+      },
+      "withdrawalRate": {
+        "label": "Withdrawal rate in retirement",
+        "suffix": "%",
+        "hint": "A commonly cited planning rule of thumb is ~4%."
+      },
+      "contributionGrowth": {
+        "label": "Annual contribution increase",
+        "suffix": "%"
+      }
+    }
+  },
+  "results": {
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "heading": "Projected at retirement",
+    "primaryLabel": "Projected balance",
+    "labels": {
+      "real": "In today’s dollars",
+      "monthlyIncome": "Est. monthly income",
+      "monthlyIncomeToday": "Monthly income (today’s $)",
+      "contributions": "Total contributions",
+      "growth": "Investment growth",
+      "years": "Years to retirement"
+    },
+    "summaryMessage": "Constant-return projection for illustration. Does not model taxes, fees, Social Security, or market volatility. Not investment advice."
+  },
+  "cta": {
+    "label": "Talk to a planner",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+  },
+  "table": {
+    "heading": "Balance by age",
+    "columns": [
+      "Age",
+      "Contributions (yr)",
+      "Growth (yr)",
+      "Balance"
+    ]
+  }
+}
