@@ -1188,7 +1188,7 @@ code.lc-tt-ov-value {
     display: none !important;
   }
 
-  .lc-crumb-home + li::before {
+  .lc-crumbs .lc-crumb-home + li::before {
     content: none;
   }
 }
