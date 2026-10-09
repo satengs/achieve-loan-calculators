@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, type ReactNode } from "react";
-import { BrandTheme } from "@loan-calculators/core";
+import { BrandTheme, type ProjectName } from "@loan-calculators/core";
 import { BrandProvider, DefaultBrandProvider, useBrand } from "./BrandProvider";
 import { BrandSwitcher } from "./BrandSwitcher";
 
@@ -19,19 +19,25 @@ function ThemedChrome({ children }: { children: ReactNode }) {
  * Shared demo chrome: brand context + top switcher inside BrandTheme
  * so the bar restyles with the active brand tokens.
  */
-export function DemoShell({ children }: { children: ReactNode }) {
+export function DemoShell({
+  children,
+  initialBrand = "achieve",
+}: {
+  children: ReactNode;
+  initialBrand?: ProjectName;
+}) {
   return (
     <Suspense
       fallback={
-        <DefaultBrandProvider>
-          <BrandTheme projectName="achieve">
+        <DefaultBrandProvider brand={initialBrand}>
+          <BrandTheme projectName={initialBrand}>
             <BrandSwitcher />
             {children}
           </BrandTheme>
         </DefaultBrandProvider>
       }
     >
-      <BrandProvider>
+      <BrandProvider initialBrand={initialBrand}>
         <ThemedChrome>{children}</ThemedChrome>
       </BrandProvider>
     </Suspense>

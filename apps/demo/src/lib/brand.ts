@@ -5,6 +5,8 @@ import {
 } from "@loan-calculators/core";
 
 export const BRAND_STORAGE_KEY = "lc-demo-brand";
+/** Mirrors localStorage so the server can theme the first paint when the URL has no ?brand=. */
+export const BRAND_COOKIE = "lc-demo-brand";
 export const BRAND_QUERY_KEY = "brand";
 export const DEFAULT_BRAND: ProjectName = "achieve";
 
@@ -34,6 +36,11 @@ export function writeStoredBrand(brand: ProjectName): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(BRAND_STORAGE_KEY, brand);
+  } catch {
+    /* private mode / quota — ignore */
+  }
+  try {
+    document.cookie = `${BRAND_COOKIE}=${brand}; path=/; max-age=31536000; samesite=lax`;
   } catch {
     /* private mode / quota — ignore */
   }

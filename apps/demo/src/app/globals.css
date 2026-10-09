@@ -104,6 +104,8 @@ body {
 }
 
 .lc-demo-tabs {
+  box-sizing: border-box;
+  min-height: 61px; /* reserved: same height in Suspense fallback and hydrated tab bar */
   max-width: 960px;
   margin: 0 auto;
   padding: 1rem 1rem 0;
@@ -113,6 +115,8 @@ body {
 }
 
 .lc-demo-tab {
+  box-sizing: border-box;
+  min-height: 44px;
   appearance: none;
   border: none;
   background: transparent;
@@ -1094,6 +1098,9 @@ code.lc-tt-ov-value {
 }
 
 .lc-crumbs-inner {
+  box-sizing: border-box;
+  /* Reserved height = top padding + 36px back link, so the row never changes size (no CLS). */
+  min-height: calc(0.85rem + 36px);
   max-width: 960px;
   margin: 0 auto;
   padding: 0.85rem 1rem 0;
@@ -1145,6 +1152,8 @@ code.lc-tt-ov-value {
 }
 
 .lc-back-link {
+  box-sizing: border-box;
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -1177,7 +1186,10 @@ code.lc-tt-ov-value {
   .lc-crumbs-inner {
     flex-direction: column;
     align-items: flex-start;
+    justify-content: flex-start;
     padding-top: 0.75rem;
+    /* 0.75rem + 36px back link + 0.5rem gap + ~1.15rem crumb line */
+    min-height: 74px;
   }
 
   .lc-back-link {

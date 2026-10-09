@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { DM_Sans, Noto_Sans } from "next/font/google";
+import { cookies, headers } from "next/headers";
+import { isProjectName } from "@loan-calculators/core";
 import { DemoShell } from "@/components/DemoShell";
+import { BRAND_COOKIE, DEFAULT_BRAND } from "@/lib/brand";
+import { BRAND_HEADER, TAB_HEADER } from "@/lib/brand-header";
+import { RequestHintsProvider } from "@/components/RequestHints";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -30,11 +35,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/** Resolve the first-paint brand on the server: ?brand= (via proxy header) → cookie → Achieve. */
+async function resolveInitialBrand() {
+  const fromQuery = (await headers()).get(BRAND_HEADER);
+  if (isProjectName(fromQuery)) return fromQuery;
+  const fromCookie = (await cookies()).get(BRAND_COOKIE)?.value;
+  if (isProjectName(fromCookie)) return fromCookie;
+  return DEFAULT_BRAND;
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const initialBrand = await resolveInitialBrand();
+  const initialTab = (await headers()).get(TAB_HEADER) === "tech" ? "tech" : "calc";
   return (
     <html lang="en" className={`${dmSans.variable} ${notoSans.variable}`}>
       <body style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}>
-        <DemoShell>{children}</DemoShell>
+        <RequestHintsProvider value={{ initialTab }}>
+          <DemoShell initialBrand={initialBrand}>{children}</DemoShell>
+        </RequestHintsProvider>
       </body>
     </html>
   );

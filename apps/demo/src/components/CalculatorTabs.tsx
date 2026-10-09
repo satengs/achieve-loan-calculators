@@ -6,6 +6,7 @@ import { DEMO_CONFIG } from "@/config/demo.config";
 import type { TechEntry, TechRateRow } from "@/lib/tech";
 import { TechnicalDetails } from "./TechnicalDetails";
 import { CalculatorBreadcrumb } from "./CalculatorBreadcrumb";
+import { useRequestHints } from "./RequestHints";
 
 export const TAB_QUERY_KEY = "tab";
 const TABS = [
@@ -36,10 +37,11 @@ export function CalculatorTabs(props: Props) {
 }
 
 function TabsWithUrl(props: Props) {
-  // useSearchParams needs a Suspense boundary for static prerender; the fallback
-  // renders the same tab UI pinned to "Calculator" so the server HTML matches the default.
+  // useSearchParams needs a Suspense boundary; the fallback renders the same tab UI with the
+  // tab the server saw in ?tab= (via proxy header), so the first paint already shows the right panel.
+  const { initialTab } = useRequestHints();
   return (
-    <Suspense fallback={<TabsView {...props} active="calc" onSelect={() => {}} />}>
+    <Suspense fallback={<TabsView {...props} active={initialTab} onSelect={() => {}} />}>
       <UrlTabs {...props} />
     </Suspense>
   );
