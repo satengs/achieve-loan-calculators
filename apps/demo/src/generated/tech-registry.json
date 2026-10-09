@@ -15,6 +15,101 @@
       ],
       "docPath": "docs/calculators/personal-loan.md",
       "docMarkdown": "# Personal loan calculator (rate wiring)\n\n- **Route:** `/personal-loan` · **Component:** `PersonalLoanCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** (existing Achieve-style tool)\n\n## Purpose\nUnchanged math; APR default now from Fed G.19 24-month personal loan rate (FRED TERMCBPER24NS) with as-of note.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `loanAmount` | Loan amount | number | 15000 | 1–1000000 | required, >0 |\n| `apr` | APR | number | 11.99 | 0–100 | required |\n| `termValue` | termValue | number | 36 | — | option list |\n| `termUnit` | termUnit | enum | months | — | option list |\n| `originationFeePercent` | originationFeePercent | number | 0 | 0–100 | required |\n| `termPreset` | termPreset | enum | 36 | — | option list |\n\nContent labels/hints live in `src/content/personal-loan.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Monthly payment, total interest, total cost, financed principal, amortization snapshot\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\nStandard amortization; optional origination fee financed or upfront.\n\n### Worked example (defaults)\n$15,000, 11.99% (fallback), 36 mo → **$498.14/mo**.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `personalLoan24` | Fed G.19 24-mo personal loan rate, commercial banks (monthly; lags ~2 mo) | `TERMCBPER24NS` | https://fred.stlouisfed.org/series/TERMCBPER24NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/personal-loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`showAmortization`, `showOriginationFee`, `termUnits`, `originationFeeMode`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/personal-loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Bank average, not a lender-specific offer.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`amortize.test.ts` (payment, fees).\n",
+      "doc": {
+        "intro": "# Personal loan calculator (rate wiring)\n\n- **Route:** `/personal-loan` · **Component:** `PersonalLoanCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** (existing Achieve-style tool)",
+        "lead": "Unchanged math; APR default now from Fed G.19 24-month personal loan rate (FRED TERMCBPER24NS) with as-of note.",
+        "purpose": "Unchanged math; APR default now from Fed G.19 24-month personal loan rate (FRED TERMCBPER24NS) with as-of note.",
+        "formulas": [],
+        "formulaNotes": "Standard amortization; optional origination fee financed or upfront.",
+        "workedExample": [
+          "$15,000, 11.99% (fallback), 36 mo → **$498.14/mo**."
+        ],
+        "outputs": [
+          "Monthly payment, total interest, total cost, financed principal, amortization snapshot"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Bank average, not a lender-specific offer.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `personalLoan24` | Fed G.19 24-mo personal loan rate, commercial banks (monthly; lags ~2 mo) | `TERMCBPER24NS` | https://fred.stlouisfed.org/series/TERMCBPER24NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/personal-loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`showAmortization`, `showOriginationFee`, `termUnits`, `originationFeeMode`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/personal-loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`amortize.test.ts` (payment, fees)."
+      },
+      "inputs": [
+        {
+          "key": "loanAmount",
+          "label": "Loan amount",
+          "type": "number",
+          "default": 15000,
+          "min": 1,
+          "max": 1000000,
+          "allowZero": null,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.loanAmount"
+        },
+        {
+          "key": "apr",
+          "label": "APR",
+          "type": "number",
+          "default": 11.99,
+          "min": 0,
+          "max": 100,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "termValue",
+          "label": "termValue",
+          "type": "number",
+          "default": 36,
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termValue"
+        },
+        {
+          "key": "termUnit",
+          "label": "termUnit",
+          "type": "string",
+          "default": "months",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termUnit"
+        },
+        {
+          "key": "originationFeePercent",
+          "label": "Origination fee",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 100,
+          "allowZero": true,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.originationFeePercent"
+        },
+        {
+          "key": "termPreset",
+          "label": "termPreset",
+          "type": "string",
+          "default": "36",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termPreset"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/personal-loan.content.json",
       "content": {
         "meta": {
@@ -218,6 +313,156 @@
       ],
       "docPath": "docs/calculators/mortgage.md",
       "docMarkdown": "# Mortgage calculator (extended)\n\n- **Route:** `/mortgage` · **Component:** `MortgageCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/mortgage-calculator/\n\n## Purpose\nExisting calculator already covers the Elfsight template (P&I via standard formula + taxes) and more (PITI, HOA, down payment %/$, amortization snapshot). Extension: APR default now comes from Freddie Mac PMMS via FRED with as-of display.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `homePrice` | Home price | number | 400000 | 1–100000000 | required, >0 |\n| `downPaymentMode` | downPaymentMode | enum | percent | — | option list |\n| `downPayment` | Down payment | number | 20 | — | option list |\n| `loanAmount` | Loan amount | number | 320000 | 1–100000000 | required, >0 |\n| `apr` | APR | number | 6.5 | 0–100 | required |\n| `termYears` | termYears | number | 30 | 1–50 | required, >0 |\n| `termPreset` | termPreset | enum | 30 | — | option list |\n| `taxMonthly` | taxMonthly | number | 350 | 0–100000 | required |\n| `insMonthly` | insMonthly | number | 150 | 0–100000 | required |\n| `hoaMonthly` | hoaMonthly | number | 0 | 0–100000 | required |\n\nContent labels/hints live in `src/content/mortgage.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Monthly P&I / PITI, total interest, loan amount, amortization snapshot\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`M = P·r(1+r)^n/((1+r)^n − 1)`, r = APR/12, n = years×12; PITI = M + tax + insurance + HOA.\n\n### Worked example (defaults)\n$400k, 20% down → $320k at 6.5% (fallback), 30 yr → **$2,022.62** P&I. With live PMMS (e.g. 7.40%) the default changes accordingly.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `mortgage30` | Freddie Mac PMMS 30-yr fixed avg (weekly) | `MORTGAGE30US` | https://fred.stlouisfed.org/series/MORTGAGE30US |\n| `mortgage15` | Freddie Mac PMMS 15-yr fixed avg (weekly) | `MORTGAGE15US` | https://fred.stlouisfed.org/series/MORTGAGE15US |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/mortgage.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`showPiti`, `downPaymentModes`, `allowLoanOverride`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/mortgage.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- PMMS is an average for well-qualified borrowers; not an offer.\n- PMI not modeled.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`amortize.test.ts`: payment, zero APR, invalid, down-payment mode conversion.\n",
+      "doc": {
+        "intro": "# Mortgage calculator (extended)\n\n- **Route:** `/mortgage` · **Component:** `MortgageCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/mortgage-calculator/",
+        "lead": "Existing calculator already covers the Elfsight template (P&I via standard formula + taxes) and more (PITI, HOA, down payment %/$, amortization snapshot). Extension: APR default now comes from Freddie Mac PMMS via FRED with as-of display.",
+        "purpose": "Existing calculator already covers the Elfsight template (P&I via standard formula + taxes) and more (PITI, HOA, down payment %/$, amortization snapshot). Extension: APR default now comes from Freddie Mac PMMS via FRED with as-of display.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "M = P·r(1+r)^n/((1+r)^n − 1)"
+          }
+        ],
+        "formulaNotes": "`M = P·r(1+r)^n/((1+r)^n − 1)`, r = APR/12, n = years×12; PITI = M + tax + insurance + HOA.",
+        "workedExample": [
+          "$400k, 20% down → $320k at 6.5% (fallback), 30 yr → **$2,022.62** P&I.",
+          "With live PMMS (e.g. 7.40%) the default changes accordingly."
+        ],
+        "outputs": [
+          "Monthly P&I / PITI, total interest, loan amount, amortization snapshot"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "PMMS is an average for well-qualified borrowers; not an offer.",
+          "PMI not modeled.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `mortgage30` | Freddie Mac PMMS 30-yr fixed avg (weekly) | `MORTGAGE30US` | https://fred.stlouisfed.org/series/MORTGAGE30US |\n| `mortgage15` | Freddie Mac PMMS 15-yr fixed avg (weekly) | `MORTGAGE15US` | https://fred.stlouisfed.org/series/MORTGAGE15US |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/mortgage.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`showPiti`, `downPaymentModes`, `allowLoanOverride`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/mortgage.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`amortize.test.ts`: payment, zero APR, invalid, down-payment mode conversion."
+      },
+      "inputs": [
+        {
+          "key": "homePrice",
+          "label": "Home price",
+          "type": "number",
+          "default": 400000,
+          "min": 1,
+          "max": 100000000,
+          "allowZero": null,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.homePrice"
+        },
+        {
+          "key": "downPaymentMode",
+          "label": "downPaymentMode",
+          "type": "string",
+          "default": "percent",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.downPaymentMode"
+        },
+        {
+          "key": "downPayment",
+          "label": "downPayment",
+          "type": "number",
+          "default": 20,
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.downPayment"
+        },
+        {
+          "key": "loanAmount",
+          "label": "Loan amount",
+          "type": "number",
+          "default": 320000,
+          "min": 1,
+          "max": 100000000,
+          "allowZero": null,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.loanAmount"
+        },
+        {
+          "key": "apr",
+          "label": "APR",
+          "type": "number",
+          "default": 6.5,
+          "min": 0,
+          "max": 100,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "termYears",
+          "label": "Term (years)",
+          "type": "number",
+          "default": 30,
+          "min": 1,
+          "max": 50,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termYears"
+        },
+        {
+          "key": "termPreset",
+          "label": "termPreset",
+          "type": "string",
+          "default": "30",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termPreset"
+        },
+        {
+          "key": "taxMonthly",
+          "label": "Property tax",
+          "type": "number",
+          "default": 350,
+          "min": 0,
+          "max": 100000,
+          "allowZero": true,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.taxMonthly"
+        },
+        {
+          "key": "insMonthly",
+          "label": "Insurance",
+          "type": "number",
+          "default": 150,
+          "min": 0,
+          "max": 100000,
+          "allowZero": true,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.insMonthly"
+        },
+        {
+          "key": "hoaMonthly",
+          "label": "HOA",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 100000,
+          "allowZero": true,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.hoaMonthly"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/mortgage.content.json",
       "content": {
         "meta": {
@@ -452,6 +697,176 @@
       ],
       "docPath": "docs/calculators/heloc.md",
       "docMarkdown": "# HELOC calculator (extended for Achieve parity)\n\n- **Route:** `/heloc` · **Component:** `HelocCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://www.achieve.com/tools/heloc-payment-calculator\n\n## Purpose\nExisting component extended rather than duplicated. Achieve asks home value, mortgage balance, desired loan amount, credit score, state, and returns borrowing power + payment; its FAQ explains interest-only draw vs P&I repayment (e.g. $40k @ 8%, 5-yr draw/15-yr repay ≈ $267 → $382) and that Achieve's fixed-rate line is P&I from day one. Gaps closed: credit score band (sets prime + margin APR), third payment style **Draw, then repay** with draw/repay periods, and **max borrowing power** (CLTV-derived limit capped at $700k). State is not modeled (no rate impact we can source).\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `homeValue` | Home value | number | 450000 | 1–100000000 | required, >0 |\n| `mortgageBalance` | Mortgage balance (optional) | number | 280000 | 0–100000000 | required |\n| `maxCltv` | Max combined LTV for credit limit | number | 85 | 1–100 | required, >0 |\n| `creditLimit` | Available equity / credit limit | number | 102500 | 0–100000000 | required |\n| `drawAmount` | Draw amount | number | 50000 | 1–100000000 | required, >0 |\n| `apr` | APR (variable-rate, illustrative) | number | 8.5 | 0–100 | required |\n| `payMode` | Payment style | enum | interest-only | — | option list |\n| `termYears` | termYears | number | 10 | 1–40 | required, >0 |\n| `creditBand` | Credit score range | select | good | — | option list |\n| `drawYears` | Draw period | number | 5 | 0–20 | required |\n| `repayYears` | Repayment period | number | 15 | 1–30 | required, >0 |\n\nContent labels/hints live in `src/content/heloc.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Est. monthly payment (IO / amortizing / draw-period)\n- Credit limit, remaining equity, LTV, CLTV\n- Home equity, draw, unused line, mode, payment after draw, total interest, max borrowing power\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`limit = max(0, value × maxCLTV − mortgage)`; IO = `draw × APR/12`; amortizing = standard payment over term; draw-then-repay: draw-period IO payment, then `amortize(draw, APR, repayYears×12)`; total interest = IO × draw months + repay interest. APR default = prime + margin[band].\n\n### Worked example (defaults)\n$450k home, $280k mortgage, 85% CLTV → limit $102,500. Draw $50k at 8.5% (prime 7.00 + 1.50): IO **$354.17/mo**; amortizing 10 yr $619.93; draw 5 yr/repay 15 yr → $354.17 then **$492.37**, total interest $59,876.56.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `prime` | Bank prime loan rate (daily) | `DPRIME` | https://fred.stlouisfed.org/series/DPRIME |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/heloc.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`payModes`, `deriveCreditLimit`, `allowLimitOverride`, `rateKey`, `fallbackPrime`, `primeMarginByBand`, `maxLine`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/heloc.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Single fixed APR for the whole life (Achieve-style fixed rate); variable-rate resets not modeled.\n- Band margins are illustrative config values.\n- Borrowing power ignores income/DTI/credit approval.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`amortize.test.ts` (IO, equity, CLTV), `loans.test.ts › helocDrawRepay` matches Achieve FAQ ($267/$382), zero rate, invalid.\n",
+      "doc": {
+        "intro": "# HELOC calculator (extended for Achieve parity)\n\n- **Route:** `/heloc` · **Component:** `HelocCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://www.achieve.com/tools/heloc-payment-calculator",
+        "lead": "Existing component extended rather than duplicated. Achieve asks home value, mortgage balance, desired loan amount, credit score, state, and returns borrowing power + payment; its FAQ explains interest-only draw vs P&I repayment (e.g. $40k @ 8%, 5-yr draw/15-yr repay ≈ $267 → $382) and that Achieve's fixed-rate line is P&I from day one. Gaps closed: credit score band (sets prime + margin APR), third payment style **Draw, then repay** with draw/repay periods, and **max borrowing power** (CLTV-derived limit capped at $700k). State is not modeled (no rate impact we can source).",
+        "purpose": "Existing component extended rather than duplicated. Achieve asks home value, mortgage balance, desired loan amount, credit score, state, and returns borrowing power + payment; its FAQ explains interest-only draw vs P&I repayment (e.g. $40k @ 8%, 5-yr draw/15-yr repay ≈ $267 → $382) and that Achieve's fixed-rate line is P&I from day one. Gaps closed: credit score band (sets prime + margin APR), third payment style **Draw, then repay** with draw/repay periods, and **max borrowing power** (CLTV-derived limit capped at $700k). State is not modeled (no rate impact we can source).",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "limit = max(0, value × maxCLTV − mortgage)"
+          }
+        ],
+        "formulaNotes": "`limit = max(0, value × maxCLTV − mortgage)`; IO = `draw × APR/12`; amortizing = standard payment over term; draw-then-repay: draw-period IO payment, then `amortize(draw, APR, repayYears×12)`; total interest = IO × draw months + repay interest. APR default = prime + margin[band].",
+        "workedExample": [
+          "$450k home, $280k mortgage, 85% CLTV → limit $102,500.",
+          "Draw $50k at 8.5% (prime 7.00 + 1.50): IO **$354.17/mo**; amortizing 10 yr $619.93; draw 5 yr/repay 15 yr → $354.17 then **$492.37**, total interest $59,876.56."
+        ],
+        "outputs": [
+          "Est. monthly payment (IO / amortizing / draw-period)",
+          "Credit limit, remaining equity, LTV, CLTV",
+          "Home equity, draw, unused line, mode, payment after draw, total interest, max borrowing power"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Single fixed APR for the whole life (Achieve-style fixed rate); variable-rate resets not modeled.",
+          "Band margins are illustrative config values.",
+          "Borrowing power ignores income/DTI/credit approval.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `prime` | Bank prime loan rate (daily) | `DPRIME` | https://fred.stlouisfed.org/series/DPRIME |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/heloc.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`payModes`, `deriveCreditLimit`, `allowLimitOverride`, `rateKey`, `fallbackPrime`, `primeMarginByBand`, `maxLine`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/heloc.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`amortize.test.ts` (IO, equity, CLTV), `loans.test.ts › helocDrawRepay` matches Achieve FAQ ($267/$382), zero rate, invalid."
+      },
+      "inputs": [
+        {
+          "key": "homeValue",
+          "label": "Home value",
+          "type": "number",
+          "default": 450000,
+          "min": 1,
+          "max": 100000000,
+          "allowZero": null,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.homeValue"
+        },
+        {
+          "key": "mortgageBalance",
+          "label": "Mortgage balance (optional)",
+          "type": "number",
+          "default": 280000,
+          "min": 0,
+          "max": 100000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.mortgageBalance"
+        },
+        {
+          "key": "maxCltv",
+          "label": "Max combined LTV for credit limit",
+          "type": "number",
+          "default": 85,
+          "min": 1,
+          "max": 100,
+          "allowZero": null,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.maxCltv"
+        },
+        {
+          "key": "creditLimit",
+          "label": "Available equity / credit limit",
+          "type": "number",
+          "default": 102500,
+          "min": 0,
+          "max": 100000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.creditLimit"
+        },
+        {
+          "key": "drawAmount",
+          "label": "Draw amount",
+          "type": "number",
+          "default": 50000,
+          "min": 1,
+          "max": 100000000,
+          "allowZero": null,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.drawAmount"
+        },
+        {
+          "key": "apr",
+          "label": "APR (variable-rate, illustrative)",
+          "type": "number",
+          "default": 8.5,
+          "min": 0,
+          "max": 100,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "payMode",
+          "label": "payMode",
+          "type": "string",
+          "default": "interest-only",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.payMode"
+        },
+        {
+          "key": "termYears",
+          "label": "Term (years)",
+          "type": "number",
+          "default": 10,
+          "min": 1,
+          "max": 40,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termYears"
+        },
+        {
+          "key": "creditBand",
+          "label": "Credit score range",
+          "type": "enum",
+          "default": "good",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Excellent (750+)",
+            "Good (700–749)",
+            "Fair (640–699)",
+            "Below 640"
+          ],
+          "configKey": "defaults.creditBand"
+        },
+        {
+          "key": "drawYears",
+          "label": "Draw period",
+          "type": "number",
+          "default": 5,
+          "min": 0,
+          "max": 20,
+          "allowZero": true,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.drawYears"
+        },
+        {
+          "key": "repayYears",
+          "label": "Repayment period",
+          "type": "number",
+          "default": 15,
+          "min": 1,
+          "max": 30,
+          "allowZero": null,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.repayYears"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/heloc.content.json",
       "content": {
         "meta": {
@@ -719,6 +1134,170 @@
       "rateKeys": [],
       "docPath": "docs/calculators/life-insurance.md",
       "docMarkdown": "# Life insurance coverage estimator (extended)\n\n- **Route:** `/life-insurance` · **Component:** `LifeInsuranceCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/life-insurance-calculator/\n\n## Purpose\nExisting DIME-style need estimator kept; Elfsight template formula is *Premium = Coverage × Premium Rate / 100*. Added age band + tobacco selects and an **illustrative premium** on the computed need (rate per $1,000 by age band × term multiplier × tobacco multiplier). Not a near-duplicate route.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `annualIncome` | Annual income | number | 75000 | 0–100000000 | required |\n| `yearsReplace` | Years of income to replace | number | 10 | 0–50 | required |\n| `totalDebts` | Total debts (incl. mortgage balance) | number | 250000 | 0–1000000000 | required |\n| `finalExpenses` | Final expenses estimate | number | 15000 | 0–10000000 | required |\n| `educationFund` | Education / other goals fund | number | 50000 | 0–100000000 | required |\n| `existingCoverage` | Existing life coverage | number | 100000 | 0–1000000000 | required |\n| `liquidAssets` | Liquid assets available to survivors | number | 25000 | 0–1000000000 | required |\n| `termYears` | Preferred term length (informational) | number | 20 | — | option list |\n| `ageBand` | Age (for illustrative premium) | select | 30-39 | — | option list |\n| `tobacco` | Tobacco use | select | no | — | option list |\n\nContent labels/hints live in `src/content/life-insurance.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Additional coverage to consider (primary)\n- Gross need, income replacement, debts, offsets\n- Final expenses, education, term, illustrative monthly/annual premium\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`need = income×years + debts + final + education − existing − assets` (≥0). `premium/yr = need/1000 × rate(age) × termMult × (tobacco ? 2.5 : 1)`.\n\n### Worked example (defaults)\nDefaults → need **$940,000**; age 30–39 (0.75/$1k), 20-yr (×1.0), non-tobacco → $705/yr ≈ **$58.75/mo**.\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/life-insurance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`currencyRoundToWhole`, `termAffectsNeed`, `premiumRatePer1000ByAge`, `tobaccoMultiplier`, `termMultiplier`, `premiumNote`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/life-insurance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Rate table is illustrative config, not carrier or actuarial pricing; no public premium API.\n- Health class, gender, state, riders not modeled.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`amortize.test.ts › lifeCoverageEstimate`, `insurance.test.ts › lifePremiumEstimate` (per-$1k, invalid, zero rate).\n",
+      "doc": {
+        "intro": "# Life insurance coverage estimator (extended)\n\n- **Route:** `/life-insurance` · **Component:** `LifeInsuranceCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/life-insurance-calculator/",
+        "lead": "Existing DIME-style need estimator kept; Elfsight template formula is *Premium = Coverage × Premium Rate / 100*. Added age band + tobacco selects and an **illustrative premium** on the computed need (rate per $1,000 by age band × term multiplier × tobacco multiplier). Not a near-duplicate route.",
+        "purpose": "Existing DIME-style need estimator kept; Elfsight template formula is *Premium = Coverage × Premium Rate / 100*. Added age band + tobacco selects and an **illustrative premium** on the computed need (rate per $1,000 by age band × term multiplier × tobacco multiplier). Not a near-duplicate route.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "need = income×years + debts + final + education − existing − assets"
+          },
+          {
+            "label": "Formula",
+            "expr": "premium/yr = need/1000 × rate(age) × termMult × (tobacco ? 2.5 : 1)"
+          }
+        ],
+        "formulaNotes": "`need = income×years + debts + final + education − existing − assets` (≥0). `premium/yr = need/1000 × rate(age) × termMult × (tobacco ? 2.5 : 1)`.",
+        "workedExample": [
+          "Defaults → need **$940,000**; age 30–39 (0.75/$1k), 20-yr (×1.0), non-tobacco → $705/yr ≈ **$58.75/mo**."
+        ],
+        "outputs": [
+          "Additional coverage to consider (primary)",
+          "Gross need, income replacement, debts, offsets",
+          "Final expenses, education, term, illustrative monthly/annual premium"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Rate table is illustrative config, not carrier or actuarial pricing; no public premium API.",
+          "Health class, gender, state, riders not modeled.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "None. All defaults are illustrative config values (see assumptions).",
+        "configVsContent": "- `src/config/life-insurance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`currencyRoundToWhole`, `termAffectsNeed`, `premiumRatePer1000ByAge`, `tobaccoMultiplier`, `termMultiplier`, `premiumNote`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/life-insurance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`amortize.test.ts › lifeCoverageEstimate`, `insurance.test.ts › lifePremiumEstimate` (per-$1k, invalid, zero rate)."
+      },
+      "inputs": [
+        {
+          "key": "annualIncome",
+          "label": "Annual income",
+          "type": "number",
+          "default": 75000,
+          "min": 0,
+          "max": 100000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.annualIncome"
+        },
+        {
+          "key": "yearsReplace",
+          "label": "Years of income to replace",
+          "type": "number",
+          "default": 10,
+          "min": 0,
+          "max": 50,
+          "allowZero": true,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.yearsReplace"
+        },
+        {
+          "key": "totalDebts",
+          "label": "Total debts (incl. mortgage balance)",
+          "type": "number",
+          "default": 250000,
+          "min": 0,
+          "max": 1000000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.totalDebts"
+        },
+        {
+          "key": "finalExpenses",
+          "label": "Final expenses estimate",
+          "type": "number",
+          "default": 15000,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.finalExpenses"
+        },
+        {
+          "key": "educationFund",
+          "label": "Education / other goals fund",
+          "type": "number",
+          "default": 50000,
+          "min": 0,
+          "max": 100000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.educationFund"
+        },
+        {
+          "key": "existingCoverage",
+          "label": "Existing life coverage",
+          "type": "number",
+          "default": 100000,
+          "min": 0,
+          "max": 1000000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.existingCoverage"
+        },
+        {
+          "key": "liquidAssets",
+          "label": "Liquid assets available to survivors",
+          "type": "number",
+          "default": 25000,
+          "min": 0,
+          "max": 1000000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.liquidAssets"
+        },
+        {
+          "key": "termYears",
+          "label": "Preferred term length (informational)",
+          "type": "number",
+          "default": 20,
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termYears"
+        },
+        {
+          "key": "ageBand",
+          "label": "Age (for illustrative premium)",
+          "type": "enum",
+          "default": "30-39",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "18–29",
+            "30–39",
+            "40–49",
+            "50–59",
+            "60–69"
+          ],
+          "configKey": "defaults.ageBand"
+        },
+        {
+          "key": "tobacco",
+          "label": "Tobacco use",
+          "type": "enum",
+          "default": "no",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "No",
+            "Yes"
+          ],
+          "configKey": "defaults.tobacco"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/life-insurance.content.json",
       "content": {
         "meta": {
@@ -956,6 +1535,160 @@
       ],
       "docPath": "docs/calculators/debt-payoff.md",
       "docMarkdown": "# Debt payoff calculator\n\n- **Route:** `/debt-payoff` · **Component:** `DebtPayoffCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://www.achieve.com/tools/debt-payoff-calculator\n\n## Purpose\nShow the cost of only paying credit card minimums versus waiting 3 months, a user-chosen fixed payoff plan, and an illustrative debt-resolution style program. Mirrors the Achieve tool's Current / If-you-wait / program comparison (debt amount selector, monthly payment, total cost, months, savings).\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `debtAmount` | Credit card debt | number | 20000 | 1000–1000000 | required, >0 |\n| `apr` | Average card APR | number | 22.77 | 0–99 | required |\n| `planPayment` | Your payoff plan — fixed monthly payment | number | 700 | 1–1000000 | required, >0 |\n| `minPrincipalPct` | Minimum payment: principal % of balance | number | 1 | 0.1–100 | required, >0 |\n| `minFloor` | Minimum payment floor | number | 35 | 0–10000 | required |\n| `programCostPct` | Program total cost (% of enrolled debt) | number | 90 | 0–200 | required |\n| `programMonths` | Program length | number | 48 | 1–120 | required, >0 |\n| `waitGrowthPct` | Debt growth if you wait 3 months | number | 10 | 0–100 | required |\n\nContent labels/hints live in `src/content/debt-payoff.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Total paid at minimums (primary / sticky)\n- Time at minimums, time on your plan, interest saved on plan, illustrative program total\n- First minimum payment, “if you wait” total\n- Scenario comparison table: monthly payment, months, interest/cost, total paid for 4 scenarios\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\nMonthly rate r = APR/100/12.\n\n**Minimum payments (declining):** each month `interest = B·r`, `payment = max(interest + B·p, floor)` capped at `B + interest`; `B ← B + interest − payment`. Repeat until B ≈ 0 (cap 1,200 months). p = principal % (default 1%), floor = $35 — mirrors the issuer-style rule the Achieve page describes (interest + principal paydown %, $35 minimum).\n\n**If you wait:** same simulation on `B·(1 + g)`, g = illustrative 3-month growth (default 10%).\n\n**Your plan (fixed payment P):** same loop with constant P; invalid if `P ≤ B·r` (never amortizes).\n\n**Program (illustrative):** `total = debt × costPct`, `monthly = total / months`.\n\n### Worked example (defaults)\nDefaults (fallback APR 22.77%, live default uses FRED TERMCBCCALLNS e.g. 21.19%): $20,000, plan $700. At 22.77%: first minimum = 20,000×(0.018975+0.01) = **$579.50**; minimums take **336 months**, total paid **$56,430.83** (interest $36,430.83). Wait (+10% → $22,000): 346 months, $62,225.88. Plan $700: **42 months**, interest $9,093.08. Program 90% × $20,000 = **$18,000** over 48 mo = **$375/mo**.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `creditCard` | Fed G.19 credit card plan rate, all accounts (monthly) | `TERMCBCCALLNS` | https://fred.stlouisfed.org/series/TERMCBCCALLNS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/debt-payoff.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`slider`, `rateKey`, `maxMonths`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/debt-payoff.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Credit card debt only; a single blended APR.\n- Program cost % and length are editable illustrative assumptions, NOT Achieve/FDR median offers (those come from a private API). Program impacts (credit, taxes, fees timing, settlement risk) are not modeled.\n- Wait growth % is illustrative (Achieve uses observed median increases; not public).\n- No new charges, fees, or rate changes during payoff.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`debt.test.ts`: $20k @ 22.77% first minimum = $579.50, terminates, totalPaid = principal + interest; zero APR; zero balance → 0 months; invalid (negative, NaN, 0% principal) → null; fixed payment zero-rate months, payment ≤ interest → null; plan beats minimums; program flat cost; waitBalance validation.\n",
+      "doc": {
+        "intro": "# Debt payoff calculator\n\n- **Route:** `/debt-payoff` · **Component:** `DebtPayoffCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://www.achieve.com/tools/debt-payoff-calculator",
+        "lead": "Show the cost of only paying credit card minimums versus waiting 3 months, a user-chosen fixed payoff plan, and an illustrative debt-resolution style program. Mirrors the Achieve tool's Current / If-you-wait / program comparison (debt amount selector, monthly payment, total cost, months, savings).",
+        "purpose": "Show the cost of only paying credit card minimums versus waiting 3 months, a user-chosen fixed payoff plan, and an illustrative debt-resolution style program. Mirrors the Achieve tool's Current / If-you-wait / program comparison (debt amount selector, monthly payment, total cost, months, savings).",
+        "formulas": [
+          {
+            "label": "Minimum payments (declining)",
+            "expr": "interest = B·r"
+          },
+          {
+            "label": "Minimum payments (declining)",
+            "expr": "payment = max(interest + B·p, floor)"
+          },
+          {
+            "label": "Minimum payments (declining)",
+            "expr": "B ← B + interest − payment"
+          },
+          {
+            "label": "Your plan (fixed payment P)",
+            "expr": "P ≤ B·r"
+          },
+          {
+            "label": "Program (illustrative)",
+            "expr": "total = debt × costPct"
+          },
+          {
+            "label": "Program (illustrative)",
+            "expr": "monthly = total / months"
+          }
+        ],
+        "formulaNotes": "Monthly rate r = APR/100/12.\n\n**Minimum payments (declining):** each month `interest = B·r`, `payment = max(interest + B·p, floor)` capped at `B + interest`; `B ← B + interest − payment`. Repeat until B ≈ 0 (cap 1,200 months). p = principal % (default 1%), floor = $35 — mirrors the issuer-style rule the Achieve page describes (interest + principal paydown %, $35 minimum).\n\n**If you wait:** same simulation on `B·(1 + g)`, g = illustrative 3-month growth (default 10%).\n\n**Your plan (fixed payment P):** same loop with constant P; invalid if `P ≤ B·r` (never amortizes).\n\n**Program (illustrative):** `total = debt × costPct`, `monthly = total / months`.",
+        "workedExample": [
+          "Defaults (fallback APR 22.77%, live default uses FRED TERMCBCCALLNS e.g. 21.19%): $20,000, plan $700.",
+          "At 22.77%: first minimum = 20,000×(0.018975+0.01) = **$579.50**; minimums take **336 months**, total paid **$56,430.83** (interest $36,430.83).",
+          "Wait (+10% → $22,000): 346 months, $62,225.88.",
+          "Plan $700: **42 months**, interest $9,093.08.",
+          "Program 90% × $20,000 = **$18,000** over 48 mo = **$375/mo**."
+        ],
+        "outputs": [
+          "Total paid at minimums (primary / sticky)",
+          "Time at minimums, time on your plan, interest saved on plan, illustrative program total",
+          "First minimum payment, “if you wait” total",
+          "Scenario comparison table: monthly payment, months, interest/cost, total paid for 4 scenarios"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Credit card debt only; a single blended APR.",
+          "Program cost % and length are editable illustrative assumptions, NOT Achieve/FDR median offers (those come from a private API). Program impacts (credit, taxes, fees timing, settlement risk) are not modeled.",
+          "Wait growth % is illustrative (Achieve uses observed median increases; not public).",
+          "No new charges, fees, or rate changes during payoff.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `creditCard` | Fed G.19 credit card plan rate, all accounts (monthly) | `TERMCBCCALLNS` | https://fred.stlouisfed.org/series/TERMCBCCALLNS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/debt-payoff.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`slider`, `rateKey`, `maxMonths`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/debt-payoff.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`debt.test.ts`: $20k @ 22.77% first minimum = $579.50, terminates, totalPaid = principal + interest; zero APR; zero balance → 0 months; invalid (negative, NaN, 0% principal) → null; fixed payment zero-rate months, payment ≤ interest → null; plan beats minimums; program flat cost; waitBalance validation."
+      },
+      "inputs": [
+        {
+          "key": "debtAmount",
+          "label": "Credit card debt",
+          "type": "number",
+          "default": 20000,
+          "min": 1000,
+          "max": 1000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.debtAmount"
+        },
+        {
+          "key": "apr",
+          "label": "Average card APR",
+          "type": "number",
+          "default": 22.77,
+          "min": 0,
+          "max": 99,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "planPayment",
+          "label": "Your payoff plan — fixed monthly payment",
+          "type": "number",
+          "default": 700,
+          "min": 1,
+          "max": 1000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.planPayment"
+        },
+        {
+          "key": "minPrincipalPct",
+          "label": "Minimum payment: principal % of balance",
+          "type": "number",
+          "default": 1,
+          "min": 0.1,
+          "max": 100,
+          "allowZero": false,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.minPrincipalPct"
+        },
+        {
+          "key": "minFloor",
+          "label": "Minimum payment floor",
+          "type": "number",
+          "default": 35,
+          "min": 0,
+          "max": 10000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.minFloor"
+        },
+        {
+          "key": "programCostPct",
+          "label": "Program total cost (% of enrolled debt)",
+          "type": "number",
+          "default": 90,
+          "min": 0,
+          "max": 200,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.programCostPct"
+        },
+        {
+          "key": "programMonths",
+          "label": "Program length",
+          "type": "number",
+          "default": 48,
+          "min": 1,
+          "max": 120,
+          "allowZero": false,
+          "unit": "mo",
+          "options": null,
+          "configKey": "defaults.programMonths"
+        },
+        {
+          "key": "waitGrowthPct",
+          "label": "Debt growth if you wait 3 months",
+          "type": "number",
+          "default": 10,
+          "min": 0,
+          "max": 100,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.waitGrowthPct"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/debt-payoff.content.json",
       "content": {
         "meta": {
@@ -1194,6 +1927,135 @@
       ],
       "docPath": "docs/calculators/consolidation-options.md",
       "docMarkdown": "# Consolidation options estimator\n\n- **Route:** `/consolidation-options` · **Component:** `ConsolidationOptionsCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://www.achieve.com/ (homepage “CONSOLIDATION OPTIONS — What’s your debt amount?” slider)\n\n## Purpose\nSlider for debt amount (Achieve: $5k–$150k, default $20k) → side-by-side indicative options: Personal loan (Achieve hides above $50k), Home equity loan (hidden below $15k), Debt-resolution program, vs. keep paying minimums. Each shows est. monthly, term, est. total. We add a credit-score band that drives APR ranges, and show ranges rather than single numbers.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `debtAmount` | Debt amount | number | 20000 | 1000–1000000 | required, >0 |\n| `creditBand` | Credit score range | select | good | — | option list |\n| `plTermMonths` | Personal loan term | number | 60 | 12–120 | required, >0 |\n| `heTermMonths` | Home equity term | number | 180 | 60–360 | required, >0 |\n| `programCostPct` | Program total cost (% of debt) | number | 90 | 0–200 | required |\n| `programMonths` | Program length | number | 48 | 1–120 | required, >0 |\n\nContent labels/hints live in `src/content/consolidation-options.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Current est. minimum payment (primary)\n- Per-option indicative monthly range (items)\n- Minimums: months and total paid\n- Options table: monthly range, term, total range, APR range used, or availability text\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\nLoans: `principal = debt × (1 + fee%)` (PL fee 5% financed); `payment = P·r(1+r)^n / ((1+r)^n − 1)` at the low and high APR of the band → range; `total = payment × n`.\nPL APR band = live 24-mo personal-loan avg + band offsets, clamped to [7.99%, 35.99%]. Home equity APR band = prime + band margins.\nProgram: `total = debt × cost%`, `monthly = total / months`. Minimums: same simulation as debt-payoff at the card APR.\n\n### Worked example (defaults)\n$20,000, band Good (offsets +2..+8 on 24-mo avg 11.90% → 13.90–19.90%), 60 mo, 5% fee → ~$488–$556/mo. Home equity (prime 7.00% + 1.5..3.5 → 8.5–10.5%), 180 mo → ~$197–$221/mo. Program 90%/48 mo → $375/mo, $18,000. Minimums at 21.19% → first payment ≈ $553, ~27 yr 9 mo.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `personalLoan24` | Fed G.19 24-mo personal loan rate, commercial banks (monthly; lags ~2 mo) | `TERMCBPER24NS` | https://fred.stlouisfed.org/series/TERMCBPER24NS |\n| `prime` | Bank prime loan rate (daily) | `DPRIME` | https://fred.stlouisfed.org/series/DPRIME |\n| `creditCard` | Fed G.19 credit card plan rate, all accounts (monthly) | `TERMCBCCALLNS` | https://fred.stlouisfed.org/series/TERMCBCCALLNS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/consolidation-options.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`slider`, `personalLoan`, `homeEquity`, `program`, `minimums`, `note`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/consolidation-options.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Achieve's tool returns single values from internal pricing; we show transparent ranges from public averages + editable band offsets. Not pre-qualification.\n- Home equity availability ignores actual equity/CLTV (see HELOC calculator).\n- Thresholds ($50k PL max, $15k HE min, $7.5k program min) are config values inspired by the reference's availability text.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`loans.test.ts › consolidationOptions`: range ordering, program flat payment, availability by min/max debt, zero debt → null. Minimums reuse `debt.test.ts`.\n",
+      "doc": {
+        "intro": "# Consolidation options estimator\n\n- **Route:** `/consolidation-options` · **Component:** `ConsolidationOptionsCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://www.achieve.com/ (homepage “CONSOLIDATION OPTIONS — What’s your debt amount?” slider)",
+        "lead": "Slider for debt amount (Achieve: $5k–$150k, default $20k) → side-by-side indicative options: Personal loan (Achieve hides above $50k), Home equity loan (hidden below $15k), Debt-resolution program, vs. keep paying minimums. Each shows est. monthly, term, est. total. We add a credit-score band that drives APR ranges, and show ranges rather than single numbers.",
+        "purpose": "Slider for debt amount (Achieve: $5k–$150k, default $20k) → side-by-side indicative options: Personal loan (Achieve hides above $50k), Home equity loan (hidden below $15k), Debt-resolution program, vs. keep paying minimums. Each shows est. monthly, term, est. total. We add a credit-score band that drives APR ranges, and show ranges rather than single numbers.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "principal = debt × (1 + fee%)"
+          },
+          {
+            "label": "Formula",
+            "expr": "payment = P·r(1+r)^n / ((1+r)^n − 1)"
+          },
+          {
+            "label": "Formula",
+            "expr": "total = payment × n"
+          },
+          {
+            "label": "Formula",
+            "expr": "total = debt × cost%"
+          },
+          {
+            "label": "Formula",
+            "expr": "monthly = total / months"
+          }
+        ],
+        "formulaNotes": "Loans: `principal = debt × (1 + fee%)` (PL fee 5% financed); `payment = P·r(1+r)^n / ((1+r)^n − 1)` at the low and high APR of the band → range; `total = payment × n`.\nPL APR band = live 24-mo personal-loan avg + band offsets, clamped to [7.99%, 35.99%]. Home equity APR band = prime + band margins.\nProgram: `total = debt × cost%`, `monthly = total / months`. Minimums: same simulation as debt-payoff at the card APR.",
+        "workedExample": [
+          "$20,000, band Good (offsets +2..+8 on 24-mo avg 11.90% → 13.90–19.90%), 60 mo, 5% fee → ~$488–$556/mo.",
+          "Home equity (prime 7.00% + 1.5..3.5 → 8.5–10.5%), 180 mo → ~$197–$221/mo.",
+          "Program 90%/48 mo → $375/mo, $18,000.",
+          "Minimums at 21.19% → first payment ≈ $553, ~27 yr 9 mo."
+        ],
+        "outputs": [
+          "Current est. minimum payment (primary)",
+          "Per-option indicative monthly range (items)",
+          "Minimums: months and total paid",
+          "Options table: monthly range, term, total range, APR range used, or availability text"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Achieve's tool returns single values from internal pricing; we show transparent ranges from public averages + editable band offsets. Not pre-qualification.",
+          "Home equity availability ignores actual equity/CLTV (see HELOC calculator).",
+          "Thresholds ($50k PL max, $15k HE min, $7.5k program min) are config values inspired by the reference's availability text.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `personalLoan24` | Fed G.19 24-mo personal loan rate, commercial banks (monthly; lags ~2 mo) | `TERMCBPER24NS` | https://fred.stlouisfed.org/series/TERMCBPER24NS |\n| `prime` | Bank prime loan rate (daily) | `DPRIME` | https://fred.stlouisfed.org/series/DPRIME |\n| `creditCard` | Fed G.19 credit card plan rate, all accounts (monthly) | `TERMCBCCALLNS` | https://fred.stlouisfed.org/series/TERMCBCCALLNS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/consolidation-options.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`slider`, `personalLoan`, `homeEquity`, `program`, `minimums`, `note`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/consolidation-options.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`loans.test.ts › consolidationOptions`: range ordering, program flat payment, availability by min/max debt, zero debt → null. Minimums reuse `debt.test.ts`."
+      },
+      "inputs": [
+        {
+          "key": "debtAmount",
+          "label": "Debt amount",
+          "type": "number",
+          "default": 20000,
+          "min": 1000,
+          "max": 1000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.debtAmount"
+        },
+        {
+          "key": "creditBand",
+          "label": "Credit score range",
+          "type": "enum",
+          "default": "good",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Excellent (740+)",
+            "Good (670–739)",
+            "Fair (580–669)",
+            "Below 580"
+          ],
+          "configKey": "defaults.creditBand"
+        },
+        {
+          "key": "plTermMonths",
+          "label": "Personal loan term",
+          "type": "number",
+          "default": 60,
+          "min": 12,
+          "max": 120,
+          "allowZero": false,
+          "unit": "mo",
+          "options": null,
+          "configKey": "defaults.plTermMonths"
+        },
+        {
+          "key": "heTermMonths",
+          "label": "Home equity term",
+          "type": "number",
+          "default": 180,
+          "min": 60,
+          "max": 360,
+          "allowZero": false,
+          "unit": "mo",
+          "options": null,
+          "configKey": "defaults.heTermMonths"
+        },
+        {
+          "key": "programCostPct",
+          "label": "Program total cost (% of debt)",
+          "type": "number",
+          "default": 90,
+          "min": 0,
+          "max": 200,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.programCostPct"
+        },
+        {
+          "key": "programMonths",
+          "label": "Program length",
+          "type": "number",
+          "default": 48,
+          "min": 1,
+          "max": 120,
+          "allowZero": false,
+          "unit": "mo",
+          "options": null,
+          "configKey": "defaults.programMonths"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/consolidation-options.content.json",
       "content": {
         "meta": {
@@ -1433,6 +2295,95 @@
       "rateKeys": [],
       "docPath": "docs/calculators/dti.md",
       "docMarkdown": "# Debt-to-income (DTI) calculator\n\n- **Route:** `/dti` · **Component:** `DtiCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://www.achieve.com/tools/debt-income-ratio-calculator\n\n## Purpose\nInputs mirror Achieve: monthly gross income, monthly debt payments, estimated credit card balance. Output DTI % and a neutral band (≤35% good, 36–43% needs work, ≥44% high — the bands displayed on the reference).\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `monthlyIncome` | Monthly gross income | number | 6000 | 1–10000000 | required, >0 |\n| `monthlyDebts` | Monthly debt payments | number | 1980 | 0–10000000 | required |\n| `cardBalance` | Credit card balances not included above (est.) | number | 0 | 0–10000000 | required |\n| `cardMinPct` | Estimated card minimum (% of balance) | number | 3 | 0–100 | required |\n\nContent labels/hints live in `src/content/dti.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- DTI % (primary)\n- Band label + neutral explanation\n- Monthly debts used, payment level at 35% of income, difference vs 35%\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`cardMin = cardBalance × cardMin%` (default 3%); `debts = monthlyDebts + cardMin`; `DTI = debts / income × 100`; band: ≤ goodMax → good, ≤ fairMax → fair, else high.\n\n### Worked example (defaults)\n$6,000 income, $1,980 debts, $0 card balance → 1,980/6,000 = **33.0%** → “35% or less”. 35% of income = $2,100 → $120 headroom.\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/dti.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`bands`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/dti.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Gross income; front-end (housing) ratio not computed.\n- Band wording is neutral and not a lending criterion or guarantee.\n- Card minimum % is an estimate; users who already included card minimums should leave balance at 0.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`dti.test.ts`: Achieve example 33%, band boundaries 35/36/43/44, zero debts, zero/negative income → NaN, card minimum validation.\n",
+      "doc": {
+        "intro": "# Debt-to-income (DTI) calculator\n\n- **Route:** `/dti` · **Component:** `DtiCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://www.achieve.com/tools/debt-income-ratio-calculator",
+        "lead": "Inputs mirror Achieve: monthly gross income, monthly debt payments, estimated credit card balance. Output DTI % and a neutral band (≤35% good, 36–43% needs work, ≥44% high — the bands displayed on the reference).",
+        "purpose": "Inputs mirror Achieve: monthly gross income, monthly debt payments, estimated credit card balance. Output DTI % and a neutral band (≤35% good, 36–43% needs work, ≥44% high — the bands displayed on the reference).",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "cardMin = cardBalance × cardMin%"
+          },
+          {
+            "label": "Formula",
+            "expr": "debts = monthlyDebts + cardMin"
+          },
+          {
+            "label": "Formula",
+            "expr": "DTI = debts / income × 100"
+          }
+        ],
+        "formulaNotes": "`cardMin = cardBalance × cardMin%` (default 3%); `debts = monthlyDebts + cardMin`; `DTI = debts / income × 100`; band: ≤ goodMax → good, ≤ fairMax → fair, else high.",
+        "workedExample": [
+          "$6,000 income, $1,980 debts, $0 card balance → 1,980/6,000 = **33.0%** → “35% or less”.",
+          "35% of income = $2,100 → $120 headroom."
+        ],
+        "outputs": [
+          "DTI % (primary)",
+          "Band label + neutral explanation",
+          "Monthly debts used, payment level at 35% of income, difference vs 35%"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Gross income; front-end (housing) ratio not computed.",
+          "Band wording is neutral and not a lending criterion or guarantee.",
+          "Card minimum % is an estimate; users who already included card minimums should leave balance at 0.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "None. All defaults are illustrative config values (see assumptions).",
+        "configVsContent": "- `src/config/dti.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`bands`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/dti.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`dti.test.ts`: Achieve example 33%, band boundaries 35/36/43/44, zero debts, zero/negative income → NaN, card minimum validation."
+      },
+      "inputs": [
+        {
+          "key": "monthlyIncome",
+          "label": "Monthly gross income",
+          "type": "number",
+          "default": 6000,
+          "min": 1,
+          "max": 10000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.monthlyIncome"
+        },
+        {
+          "key": "monthlyDebts",
+          "label": "Monthly debt payments",
+          "type": "number",
+          "default": 1980,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.monthlyDebts"
+        },
+        {
+          "key": "cardBalance",
+          "label": "Credit card balances not included above (est.)",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.cardBalance"
+        },
+        {
+          "key": "cardMinPct",
+          "label": "Estimated card minimum (% of balance)",
+          "type": "number",
+          "default": 3,
+          "min": 0,
+          "max": 100,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.cardMinPct"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/dti.content.json",
       "content": {
         "meta": {
@@ -1582,6 +2533,200 @@
       "rateKeys": [],
       "docPath": "docs/calculators/car-insurance.md",
       "docMarkdown": "# Car insurance cost estimator\n\n- **Route:** `/car-insurance` · **Component:** `CarInsuranceCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/car-insurance-calculator/\n\n## Purpose\nElfsight template formula: *Car Insurance Cost = Base Premium + Additional Coverage Costs*. Widget inputs are JS-rendered and not visible, so inputs are inferred from common rating factors: driver age, record, vehicle type, coverage level, deductible, mileage, garaging area, roadside/rental add-ons.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `driverAge` | Primary driver age | select | 25-64 | — | option list |\n| `record` | Driving record (last 3–5 yrs) | select | clean | — | option list |\n| `vehicle` | Vehicle type | select | sedan | — | option list |\n| `coverage` | Coverage level | select | standard | — | option list |\n| `deductible` | Deductible | select | 500 | — | option list |\n| `mileage` | Annual mileage | select | average | — | option list |\n| `area` | Where the car is garaged | select | suburban | — | option list |\n| `roadside` | Roadside assistance | select | no | — | option list |\n| `rental` | Rental reimbursement | select | no | — | option list |\n| `basePremium` | Base annual premium assumption | number | 1800 | 0–100000 | required |\n\nContent labels/hints live in `src/content/car-insurance.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Est. monthly premium (primary)\n- Est. annual, rough range (±15%), combined factor, add-ons\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`annual = base × Π factor_i + Σ addOns`; `monthly = annual / 12`; range = annual × (1 ± rangePct).\n\n### Worked example (defaults)\nDefaults (25–64, clean, sedan, standard, $500 ded., average miles, suburban, no add-ons): factors all 1.0 → $1,800/yr = **$150/mo** (range $1,530–$2,070). A 16–20 driver, full coverage, urban, both add-ons → 1,800 × 2.2 × 1.3 × 1.25 + 90 = $6,525/yr.\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/car-insurance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`factors`, `addOns`, `rangePct`, `note`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/car-insurance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- **No free public quote API exists**; factor table and base premium are transparent, illustrative config values — not actuarial rates, not averages, not quotes.\n- No state rules, credit-based insurance scores, multi-car/bundling discounts, or claims history beyond the record selector.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`insurance.test.ts`: multiply + add-ons, zero base, invalid factors/add-ons → null, lookupFactor default 1.\n",
+      "doc": {
+        "intro": "# Car insurance cost estimator\n\n- **Route:** `/car-insurance` · **Component:** `CarInsuranceCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/car-insurance-calculator/",
+        "lead": "Elfsight template formula: *Car Insurance Cost = Base Premium + Additional Coverage Costs*. Widget inputs are JS-rendered and not visible, so inputs are inferred from common rating factors: driver age, record, vehicle type, coverage level, deductible, mileage, garaging area, roadside/rental add-ons.",
+        "purpose": "Elfsight template formula: *Car Insurance Cost = Base Premium + Additional Coverage Costs*. Widget inputs are JS-rendered and not visible, so inputs are inferred from common rating factors: driver age, record, vehicle type, coverage level, deductible, mileage, garaging area, roadside/rental add-ons.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "annual = base × Π factor_i + Σ addOns"
+          },
+          {
+            "label": "Formula",
+            "expr": "monthly = annual / 12"
+          }
+        ],
+        "formulaNotes": "`annual = base × Π factor_i + Σ addOns`; `monthly = annual / 12`; range = annual × (1 ± rangePct).",
+        "workedExample": [
+          "Defaults (25–64, clean, sedan, standard, $500 ded., average miles, suburban, no add-ons): factors all 1.0 → $1,800/yr = **$150/mo** (range $1,530–$2,070).",
+          "A 16–20 driver, full coverage, urban, both add-ons → 1,800 × 2.2 × 1.3 × 1.25 + 90 = $6,525/yr."
+        ],
+        "outputs": [
+          "Est. monthly premium (primary)",
+          "Est. annual, rough range (±15%), combined factor, add-ons"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "**No free public quote API exists**; factor table and base premium are transparent, illustrative config values — not actuarial rates, not averages, not quotes.",
+          "No state rules, credit-based insurance scores, multi-car/bundling discounts, or claims history beyond the record selector.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "None. All defaults are illustrative config values (see assumptions).",
+        "configVsContent": "- `src/config/car-insurance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`factors`, `addOns`, `rangePct`, `note`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/car-insurance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`insurance.test.ts`: multiply + add-ons, zero base, invalid factors/add-ons → null, lookupFactor default 1."
+      },
+      "inputs": [
+        {
+          "key": "driverAge",
+          "label": "Primary driver age",
+          "type": "enum",
+          "default": "25-64",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "16–20",
+            "21–24",
+            "25–64",
+            "65+"
+          ],
+          "configKey": "defaults.driverAge"
+        },
+        {
+          "key": "record",
+          "label": "Driving record (last 3–5 yrs)",
+          "type": "enum",
+          "default": "clean",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Clean",
+            "Minor ticket(s)",
+            "At-fault accident",
+            "DUI / major violation"
+          ],
+          "configKey": "defaults.record"
+        },
+        {
+          "key": "vehicle",
+          "label": "Vehicle type",
+          "type": "enum",
+          "default": "sedan",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Sedan / hatchback",
+            "SUV / crossover",
+            "Pickup truck",
+            "Electric vehicle",
+            "Sports / performance"
+          ],
+          "configKey": "defaults.vehicle"
+        },
+        {
+          "key": "coverage",
+          "label": "Coverage level",
+          "type": "enum",
+          "default": "standard",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Liability only",
+            "Standard (liability + collision)",
+            "Full (comprehensive + extras)"
+          ],
+          "configKey": "defaults.coverage"
+        },
+        {
+          "key": "deductible",
+          "label": "Deductible",
+          "type": "enum",
+          "default": "500",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "$250",
+            "$500",
+            "$1,000",
+            "$2,000"
+          ],
+          "configKey": "defaults.deductible"
+        },
+        {
+          "key": "mileage",
+          "label": "Annual mileage",
+          "type": "enum",
+          "default": "average",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Under 7,500",
+            "7,500–15,000",
+            "Over 15,000"
+          ],
+          "configKey": "defaults.mileage"
+        },
+        {
+          "key": "area",
+          "label": "Where the car is garaged",
+          "type": "enum",
+          "default": "suburban",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Rural",
+            "Suburban",
+            "Urban"
+          ],
+          "configKey": "defaults.area"
+        },
+        {
+          "key": "roadside",
+          "label": "Roadside assistance",
+          "type": "enum",
+          "default": "no",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "No",
+            "Yes"
+          ],
+          "configKey": "defaults.roadside"
+        },
+        {
+          "key": "rental",
+          "label": "Rental reimbursement",
+          "type": "enum",
+          "default": "no",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "No",
+            "Yes"
+          ],
+          "configKey": "defaults.rental"
+        },
+        {
+          "key": "basePremium",
+          "label": "Base annual premium assumption",
+          "type": "number",
+          "default": 1800,
+          "min": 0,
+          "max": 100000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.basePremium"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/car-insurance.content.json",
       "content": {
         "meta": {
@@ -1889,6 +3034,222 @@
       "rateKeys": [],
       "docPath": "docs/calculators/budget.md",
       "docMarkdown": "# Monthly budget calculator\n\n- **Route:** `/budget` · **Component:** `BudgetCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/financial-budget-calculator/\n\n## Purpose\nElfsight template formula: *Total Budget = Salary and Benefit Costs Total + Other Costs Total* (an organisational budget). For a consumer (bills.com-style) audience we implement a personal monthly budget: income vs categorized spending with a 50/30/20 comparison. Note the shift in NOTES.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `netIncome` | Take-home pay (monthly) | number | 5000 | 0–10000000 | required |\n| `otherIncome` | Other income (monthly) | number | 0 | 0–10000000 | required |\n| `housing` | Housing (rent / mortgage) | number | 1600 | 0–10000000 | required |\n| `utilities` | Utilities & phone | number | 250 | 0–10000000 | required |\n| `groceries` | Groceries | number | 500 | 0–10000000 | required |\n| `transportation` | Transportation | number | 400 | 0–10000000 | required |\n| `insurance` | Insurance premiums | number | 250 | 0–10000000 | required |\n| `debtPayments` | Minimum debt payments | number | 300 | 0–10000000 | required |\n| `dining` | Dining out | number | 250 | 0–10000000 | required |\n| `entertainment` | Entertainment | number | 150 | 0–10000000 | required |\n| `shopping` | Shopping | number | 200 | 0–10000000 | required |\n| `subscriptions` | Subscriptions | number | 50 | 0–10000000 | required |\n| `savings` | Savings / emergency fund | number | 400 | 0–10000000 | required |\n| `retirement` | Retirement contributions (from take-home) | number | 300 | 0–10000000 | required |\n\nContent labels/hints live in `src/content/budget.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Left over each month (primary)\n- Total income; needs / wants / savings with % of income\n- Total outflow, savings rate\n- Table: yours vs 50/30/20 guideline amounts\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`income = Σ income lines`; `cat = Σ lines in category`; `leftover = income − (needs + wants + savings)`; `% = cat / income`; `target = income × guideline%`; savings rate = (savings + max(0, leftover)) / income.\n\n### Worked example (defaults)\nIncome $5,000; needs $3,300 (66%), wants $650 (13%), savings $700 (14%) → leftover **$350**; savings rate 21%; guideline needs $2,500 / wants $1,500 / savings $1,000.\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/budget.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`categories`, `targets`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/budget.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Monthly cadence only; take-home pay (taxes not modeled).\n- 50/30/20 is a rule of thumb; configurable in `features.targets`.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`savings.test.ts › budgetSummary`: totals, leftover, %, targets, savings rate; zero income → NaN %, negative → null.\n",
+      "doc": {
+        "intro": "# Monthly budget calculator\n\n- **Route:** `/budget` · **Component:** `BudgetCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/financial-budget-calculator/",
+        "lead": "Elfsight template formula: *Total Budget = Salary and Benefit Costs Total + Other Costs Total* (an organisational budget). For a consumer (bills.com-style) audience we implement a personal monthly budget: income vs categorized spending with a 50/30/20 comparison. Note the shift in NOTES.",
+        "purpose": "Elfsight template formula: *Total Budget = Salary and Benefit Costs Total + Other Costs Total* (an organisational budget). For a consumer (bills.com-style) audience we implement a personal monthly budget: income vs categorized spending with a 50/30/20 comparison. Note the shift in NOTES.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "income = Σ income lines"
+          },
+          {
+            "label": "Formula",
+            "expr": "cat = Σ lines in category"
+          },
+          {
+            "label": "Formula",
+            "expr": "leftover = income − (needs + wants + savings)"
+          },
+          {
+            "label": "Formula",
+            "expr": "% = cat / income"
+          },
+          {
+            "label": "Formula",
+            "expr": "target = income × guideline%"
+          }
+        ],
+        "formulaNotes": "`income = Σ income lines`; `cat = Σ lines in category`; `leftover = income − (needs + wants + savings)`; `% = cat / income`; `target = income × guideline%`; savings rate = (savings + max(0, leftover)) / income.",
+        "workedExample": [
+          "Income $5,000; needs $3,300 (66%), wants $650 (13%), savings $700 (14%) → leftover **$350**; savings rate 21%; guideline needs $2,500 / wants $1,500 / savings $1,000."
+        ],
+        "outputs": [
+          "Left over each month (primary)",
+          "Total income; needs / wants / savings with % of income",
+          "Total outflow, savings rate",
+          "Table: yours vs 50/30/20 guideline amounts"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Monthly cadence only; take-home pay (taxes not modeled).",
+          "50/30/20 is a rule of thumb; configurable in `features.targets`.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "None. All defaults are illustrative config values (see assumptions).",
+        "configVsContent": "- `src/config/budget.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`categories`, `targets`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/budget.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`savings.test.ts › budgetSummary`: totals, leftover, %, targets, savings rate; zero income → NaN %, negative → null."
+      },
+      "inputs": [
+        {
+          "key": "netIncome",
+          "label": "Take-home pay (monthly)",
+          "type": "number",
+          "default": 5000,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.netIncome"
+        },
+        {
+          "key": "otherIncome",
+          "label": "Other income (monthly)",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.otherIncome"
+        },
+        {
+          "key": "housing",
+          "label": "Housing (rent / mortgage)",
+          "type": "number",
+          "default": 1600,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.housing"
+        },
+        {
+          "key": "utilities",
+          "label": "Utilities & phone",
+          "type": "number",
+          "default": 250,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.utilities"
+        },
+        {
+          "key": "groceries",
+          "label": "Groceries",
+          "type": "number",
+          "default": 500,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.groceries"
+        },
+        {
+          "key": "transportation",
+          "label": "Transportation",
+          "type": "number",
+          "default": 400,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.transportation"
+        },
+        {
+          "key": "insurance",
+          "label": "Insurance premiums",
+          "type": "number",
+          "default": 250,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.insurance"
+        },
+        {
+          "key": "debtPayments",
+          "label": "Minimum debt payments",
+          "type": "number",
+          "default": 300,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.debtPayments"
+        },
+        {
+          "key": "dining",
+          "label": "Dining out",
+          "type": "number",
+          "default": 250,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.dining"
+        },
+        {
+          "key": "entertainment",
+          "label": "Entertainment",
+          "type": "number",
+          "default": 150,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.entertainment"
+        },
+        {
+          "key": "shopping",
+          "label": "Shopping",
+          "type": "number",
+          "default": 200,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.shopping"
+        },
+        {
+          "key": "subscriptions",
+          "label": "Subscriptions",
+          "type": "number",
+          "default": 50,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.subscriptions"
+        },
+        {
+          "key": "savings",
+          "label": "Savings / emergency fund",
+          "type": "number",
+          "default": 400,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.savings"
+        },
+        {
+          "key": "retirement",
+          "label": "Retirement contributions (from take-home)",
+          "type": "number",
+          "default": 300,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.retirement"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/budget.content.json",
       "content": {
         "meta": {
@@ -2172,6 +3533,130 @@
       ],
       "docPath": "docs/calculators/savings.md",
       "docMarkdown": "# Savings calculator\n\n- **Route:** `/savings` · **Component:** `SavingsCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/savings-calculator/\n\n## Purpose\nElfsight formula: *FV = PV × (1 + r)^n*. Extended with monthly contributions, compounding frequency, annual contribution increase, and inflation-adjusted value.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `initial` | Initial deposit | number | 5000 | 0–100000000 | required |\n| `monthly` | Monthly contribution | number | 200 | 0–10000000 | required |\n| `rate` | Annual interest rate (APY) | number | 0.4 | 0–50 | required |\n| `years` | Years to save | number | 10 | 1–80 | required, >0 |\n| `compounding` | Compounding | select | 12 | — | option list |\n| `contributionGrowth` | Annual contribution increase | number | 0 | 0–50 | required |\n| `inflation` | Inflation assumption | number | 3 | 0–50 | required |\n\nContent labels/hints live in `src/content/savings.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Balance at end (primary)\n- Total deposits, interest earned, today's dollars, rate used\n- Year-by-year table\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\nEffective monthly rate `i = (1 + APY/100/n)^(n/12) − 1`; each month `B ← B(1+i) + C` (end-of-month deposits); C grows by g% each year. Today's dollars = `FV / (1 + inflation)^years`.\n\n### Worked example (defaults)\n$5,000 initial, $200/mo, 0.40% (fallback; live default = FDIC SNDR national savings rate, e.g. 0.37%), 10 yrs, monthly → **$29,686** (deposits $29,000, interest $686); at 3% inflation ≈ $22,089 in today's dollars.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `savings` | FDIC national deposit rate, savings (monthly) | `SNDR` | https://fred.stlouisfed.org/series/SNDR |\n| `inflationYoY` | BLS CPI-U, computed YoY % (monthly) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/savings.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`, `inflationKey`, `compoundingOptions`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/savings.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Constant rate; taxes not modeled.\n- National average savings rate is low; high-yield accounts may pay more — users can edit.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`savings.test.ts`: zero rate = sum of deposits, annual compounding = P(1+r)^n, monthly closed form, invalid → null, realValue/yoy.\n",
+      "doc": {
+        "intro": "# Savings calculator\n\n- **Route:** `/savings` · **Component:** `SavingsCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/savings-calculator/",
+        "lead": "Elfsight formula: *FV = PV × (1 + r)^n*. Extended with monthly contributions, compounding frequency, annual contribution increase, and inflation-adjusted value.",
+        "purpose": "Elfsight formula: *FV = PV × (1 + r)^n*. Extended with monthly contributions, compounding frequency, annual contribution increase, and inflation-adjusted value.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "i = (1 + APY/100/n)^(n/12) − 1"
+          },
+          {
+            "label": "Formula",
+            "expr": "B ← B(1+i) + C"
+          }
+        ],
+        "formulaNotes": "Effective monthly rate `i = (1 + APY/100/n)^(n/12) − 1`; each month `B ← B(1+i) + C` (end-of-month deposits); C grows by g% each year. Today's dollars = `FV / (1 + inflation)^years`.",
+        "workedExample": [
+          "$5,000 initial, $200/mo, 0.40% (fallback; live default = FDIC SNDR national savings rate, e.g. 0.37%), 10 yrs, monthly → **$29,686** (deposits $29,000, interest $686); at 3% inflation ≈ $22,089 in today's dollars."
+        ],
+        "outputs": [
+          "Balance at end (primary)",
+          "Total deposits, interest earned, today's dollars, rate used",
+          "Year-by-year table"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Constant rate; taxes not modeled.",
+          "National average savings rate is low; high-yield accounts may pay more — users can edit.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `savings` | FDIC national deposit rate, savings (monthly) | `SNDR` | https://fred.stlouisfed.org/series/SNDR |\n| `inflationYoY` | BLS CPI-U, computed YoY % (monthly) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/savings.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`, `inflationKey`, `compoundingOptions`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/savings.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`savings.test.ts`: zero rate = sum of deposits, annual compounding = P(1+r)^n, monthly closed form, invalid → null, realValue/yoy."
+      },
+      "inputs": [
+        {
+          "key": "initial",
+          "label": "Initial deposit",
+          "type": "number",
+          "default": 5000,
+          "min": 0,
+          "max": 100000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.initial"
+        },
+        {
+          "key": "monthly",
+          "label": "Monthly contribution",
+          "type": "number",
+          "default": 200,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.monthly"
+        },
+        {
+          "key": "rate",
+          "label": "Annual interest rate (APY)",
+          "type": "number",
+          "default": 0.4,
+          "min": 0,
+          "max": 50,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.rate"
+        },
+        {
+          "key": "years",
+          "label": "Years to save",
+          "type": "number",
+          "default": 10,
+          "min": 1,
+          "max": 80,
+          "allowZero": false,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.years"
+        },
+        {
+          "key": "compounding",
+          "label": "Compounding",
+          "type": "enum",
+          "default": "12",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Annually",
+            "Quarterly",
+            "Monthly",
+            "Daily"
+          ],
+          "configKey": "defaults.compounding"
+        },
+        {
+          "key": "contributionGrowth",
+          "label": "Annual contribution increase",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 50,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.contributionGrowth"
+        },
+        {
+          "key": "inflation",
+          "label": "Inflation assumption",
+          "type": "number",
+          "default": 3,
+          "min": 0,
+          "max": 50,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.inflation"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/savings.content.json",
       "content": {
         "meta": {
@@ -2370,6 +3855,156 @@
       ],
       "docPath": "docs/calculators/retirement.md",
       "docMarkdown": "# Retirement savings calculator\n\n- **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/retirement-savings-calculator/\n\n## Purpose\nElfsight formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `currentAge` | Current age | number | 35 | 16–90 | required, >0 |\n| `retireAge` | Retirement age | number | 67 | 30–100 | required, >0 |\n| `currentSavings` | Current retirement savings | number | 50000 | 0–1000000000 | required |\n| `monthlyContribution` | Your monthly contribution | number | 500 | 0–1000000 | required |\n| `employerMonthly` | Employer contribution (monthly) | number | 150 | 0–1000000 | required |\n| `annualReturn` | Expected annual return | number | 6 | 0–20 | required |\n| `inflation` | Inflation assumption | number | 3 | 0–20 | required |\n| `withdrawalRate` | Withdrawal rate in retirement | number | 4 | 0–20 | required |\n| `contributionGrowth` | Annual contribution increase | number | 2 | 0–20 | required |\n\nContent labels/hints live in `src/content/retirement.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Projected balance (primary)\n- Today's dollars, est. monthly income, total contributions, growth\n- Monthly income in today's $, years to retirement\n- Balance by age table (every 5 yrs)\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\nSame monthly FV loop as Savings with `C = yours + employer`, return compounding monthly, contributions grow g%/yr. `real = FV/(1+inf)^years`; `annual income = FV × withdrawal%`.\n\n### Worked example (defaults)\nAge 35→67, $50k saved, $500 + $150 employer, 6%, +2%/yr contributions → **$1,282,842**; ≈ $498,175 in today's $ at 3% inflation; 4% → $4,276/mo (≈ $1,661 today). Live default inflation uses CPI YoY (e.g. 3.71%).\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `inflationYoY` | BLS CPI-U, computed YoY % (monthly) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/retirement.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`inflationKey`, `tableEveryYears`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/retirement.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Expected return is an editable illustrative assumption (no market forecast).\n- No taxes, fees, Social Security, sequence-of-returns risk. Not investment advice.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`savings.test.ts › retirementProjection`: zero return/inflation = template formula (100×12×30 = $36,000), 4% income; retireAge ≤ currentAge → null.\n",
+      "doc": {
+        "intro": "# Retirement savings calculator\n\n- **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/retirement-savings-calculator/",
+        "lead": "Elfsight formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.",
+        "purpose": "Elfsight formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "C = yours + employer"
+          },
+          {
+            "label": "Formula",
+            "expr": "real = FV/(1+inf)^years"
+          },
+          {
+            "label": "Formula",
+            "expr": "annual income = FV × withdrawal%"
+          }
+        ],
+        "formulaNotes": "Same monthly FV loop as Savings with `C = yours + employer`, return compounding monthly, contributions grow g%/yr. `real = FV/(1+inf)^years`; `annual income = FV × withdrawal%`.",
+        "workedExample": [
+          "Age 35→67, $50k saved, $500 + $150 employer, 6%, +2%/yr contributions → **$1,282,842**; ≈ $498,175 in today's $ at 3% inflation",
+          "4% → $4,276/mo (≈ $1,661 today).",
+          "Live default inflation uses CPI YoY (e.g. 3.71%)."
+        ],
+        "outputs": [
+          "Projected balance (primary)",
+          "Today's dollars, est. monthly income, total contributions, growth",
+          "Monthly income in today's $, years to retirement",
+          "Balance by age table (every 5 yrs)"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Expected return is an editable illustrative assumption (no market forecast).",
+          "No taxes, fees, Social Security, sequence-of-returns risk. Not investment advice.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `inflationYoY` | BLS CPI-U, computed YoY % (monthly) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/retirement.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`inflationKey`, `tableEveryYears`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/retirement.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`savings.test.ts › retirementProjection`: zero return/inflation = template formula (100×12×30 = $36,000), 4% income; retireAge ≤ currentAge → null."
+      },
+      "inputs": [
+        {
+          "key": "currentAge",
+          "label": "Current age",
+          "type": "number",
+          "default": 35,
+          "min": 16,
+          "max": 90,
+          "allowZero": false,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.currentAge"
+        },
+        {
+          "key": "retireAge",
+          "label": "Retirement age",
+          "type": "number",
+          "default": 67,
+          "min": 30,
+          "max": 100,
+          "allowZero": false,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.retireAge"
+        },
+        {
+          "key": "currentSavings",
+          "label": "Current retirement savings",
+          "type": "number",
+          "default": 50000,
+          "min": 0,
+          "max": 1000000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.currentSavings"
+        },
+        {
+          "key": "monthlyContribution",
+          "label": "Your monthly contribution",
+          "type": "number",
+          "default": 500,
+          "min": 0,
+          "max": 1000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.monthlyContribution"
+        },
+        {
+          "key": "employerMonthly",
+          "label": "Employer contribution (monthly)",
+          "type": "number",
+          "default": 150,
+          "min": 0,
+          "max": 1000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.employerMonthly"
+        },
+        {
+          "key": "annualReturn",
+          "label": "Expected annual return",
+          "type": "number",
+          "default": 6,
+          "min": 0,
+          "max": 20,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.annualReturn"
+        },
+        {
+          "key": "inflation",
+          "label": "Inflation assumption",
+          "type": "number",
+          "default": 3,
+          "min": 0,
+          "max": 20,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.inflation"
+        },
+        {
+          "key": "withdrawalRate",
+          "label": "Withdrawal rate in retirement",
+          "type": "number",
+          "default": 4,
+          "min": 0,
+          "max": 20,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.withdrawalRate"
+        },
+        {
+          "key": "contributionGrowth",
+          "label": "Annual contribution increase",
+          "type": "number",
+          "default": 2,
+          "min": 0,
+          "max": 20,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.contributionGrowth"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/retirement.content.json",
       "content": {
         "meta": {
@@ -2581,6 +4216,181 @@
       "rateKeys": [],
       "docPath": "docs/calculators/home-insurance.md",
       "docMarkdown": "# Home insurance cost estimator\n\n- **Route:** `/home-insurance` · **Component:** `HomeInsuranceCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/home-insurance-calculator/\n\n## Purpose\nElfsight formula: *Home Insurance Cost = Base Premium + Additional Coverage Costs + Deductible*. Adding the deductible to the premium isn't how premiums work, so we model the deductible as a premium factor (higher deductible → lower premium). Inferred inputs: dwelling coverage, rate per $1,000, area risk, home age, construction, deductible, claims, contents %, liability limit.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `dwelling` | Dwelling coverage (rebuild cost) | number | 350000 | 10000–100000000 | required, >0 |\n| `ratePerThousand` | Base rate per $1,000 of coverage | number | 4 | 0–100 | required |\n| `region` | Area risk profile | select | moderate | — | option list |\n| `homeAge` | Age of home | select | mid | — | option list |\n| `construction` | Construction | select | frame | — | option list |\n| `deductible` | Deductible | select | 1000 | — | option list |\n| `claims` | Claims in last 5 years | select | 0 | — | option list |\n| `contents` | Personal property coverage | select | 50 | — | option list |\n| `liability` | Liability limit | select | 300000 | — | option list |\n\nContent labels/hints live in `src/content/home-insurance.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Est. monthly premium (primary)\n- Annual, rough range (±20%), base, combined factor\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`base = coverage / 1000 × ratePer1000`; `annual = base × Π factors + liabilityAddOn`; `monthly = annual/12`.\n\n### Worked example (defaults)\n$350,000 × $4/1k = $1,400; default factors 1.0; $300k liability +$25 → **$1,425/yr ≈ $118.75/mo** (range $1,140–$1,710).\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/home-insurance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`factors`, `liabilityAddOn`, `rangePct`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/home-insurance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- **No free public quote API**; all factors are transparent illustrative config values, not quotes or published averages.\n- Flood/earthquake excluded.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`insurance.test.ts`: perThousandBase, factorEstimate, lookup defaults, invalid.\n",
+      "doc": {
+        "intro": "# Home insurance cost estimator\n\n- **Route:** `/home-insurance` · **Component:** `HomeInsuranceCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/home-insurance-calculator/",
+        "lead": "Elfsight formula: *Home Insurance Cost = Base Premium + Additional Coverage Costs + Deductible*. Adding the deductible to the premium isn't how premiums work, so we model the deductible as a premium factor (higher deductible → lower premium). Inferred inputs: dwelling coverage, rate per $1,000, area risk, home age, construction, deductible, claims, contents %, liability limit.",
+        "purpose": "Elfsight formula: *Home Insurance Cost = Base Premium + Additional Coverage Costs + Deductible*. Adding the deductible to the premium isn't how premiums work, so we model the deductible as a premium factor (higher deductible → lower premium). Inferred inputs: dwelling coverage, rate per $1,000, area risk, home age, construction, deductible, claims, contents %, liability limit.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "base = coverage / 1000 × ratePer1000"
+          },
+          {
+            "label": "Formula",
+            "expr": "annual = base × Π factors + liabilityAddOn"
+          },
+          {
+            "label": "Formula",
+            "expr": "monthly = annual/12"
+          }
+        ],
+        "formulaNotes": "`base = coverage / 1000 × ratePer1000`; `annual = base × Π factors + liabilityAddOn`; `monthly = annual/12`.",
+        "workedExample": [
+          "$350,000 × $4/1k = $1,400; default factors 1.0",
+          "$300k liability +$25 → **$1,425/yr ≈ $118.75/mo** (range $1,140–$1,710)."
+        ],
+        "outputs": [
+          "Est. monthly premium (primary)",
+          "Annual, rough range (±20%), base, combined factor"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "**No free public quote API**; all factors are transparent illustrative config values, not quotes or published averages.",
+          "Flood/earthquake excluded.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "None. All defaults are illustrative config values (see assumptions).",
+        "configVsContent": "- `src/config/home-insurance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`factors`, `liabilityAddOn`, `rangePct`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/home-insurance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`insurance.test.ts`: perThousandBase, factorEstimate, lookup defaults, invalid."
+      },
+      "inputs": [
+        {
+          "key": "dwelling",
+          "label": "Dwelling coverage (rebuild cost)",
+          "type": "number",
+          "default": 350000,
+          "min": 10000,
+          "max": 100000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.dwelling"
+        },
+        {
+          "key": "ratePerThousand",
+          "label": "Base rate per $1,000 of coverage",
+          "type": "number",
+          "default": 4,
+          "min": 0,
+          "max": 100,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.ratePerThousand"
+        },
+        {
+          "key": "region",
+          "label": "Area risk profile",
+          "type": "enum",
+          "default": "moderate",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Lower risk",
+            "Moderate",
+            "Coastal / high wind",
+            "Wildfire-prone"
+          ],
+          "configKey": "defaults.region"
+        },
+        {
+          "key": "homeAge",
+          "label": "Age of home",
+          "type": "enum",
+          "default": "mid",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Under 10 years",
+            "10–30 years",
+            "Over 30 years"
+          ],
+          "configKey": "defaults.homeAge"
+        },
+        {
+          "key": "construction",
+          "label": "Construction",
+          "type": "enum",
+          "default": "frame",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Masonry / brick",
+            "Wood frame"
+          ],
+          "configKey": "defaults.construction"
+        },
+        {
+          "key": "deductible",
+          "label": "Deductible",
+          "type": "enum",
+          "default": "1000",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "$500",
+            "$1,000",
+            "$2,500",
+            "$5,000"
+          ],
+          "configKey": "defaults.deductible"
+        },
+        {
+          "key": "claims",
+          "label": "Claims in last 5 years",
+          "type": "enum",
+          "default": "0",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "None",
+            "One",
+            "Two or more"
+          ],
+          "configKey": "defaults.claims"
+        },
+        {
+          "key": "contents",
+          "label": "Personal property coverage",
+          "type": "enum",
+          "default": "50",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "50% of dwelling (typical)",
+            "70% of dwelling"
+          ],
+          "configKey": "defaults.contents"
+        },
+        {
+          "key": "liability",
+          "label": "Liability limit",
+          "type": "enum",
+          "default": "300000",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "$100,000",
+            "$300,000",
+            "$500,000"
+          ],
+          "configKey": "defaults.liability"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/home-insurance.content.json",
       "content": {
         "meta": {
@@ -2848,6 +4658,84 @@
       ],
       "docPath": "docs/calculators/loan.md",
       "docMarkdown": "# Loan calculator\n\n- **Route:** `/loan` · **Component:** `LoanCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/loan-calculator/\n\n## Purpose\nElfsight formula: *Installment = (L × R/1200) / (1 − (1 + R/1200)^(−12·T))*. Generic amortizing loan with optional extra monthly payment and yearly schedule. Shares math with PersonalLoan (`amortize`) — kept as a separate route because the template is generic (no fee, years input, extra payments).\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `loanAmount` | Loan amount | number | 15000 | 100–100000000 | required, >0 |\n| `apr` | Interest rate (APR) | number | 12 | 0–99 | required |\n| `termYears` | Loan period | number | 5 | 0.5–40 | required, >0 |\n| `extraMonthly` | Extra monthly payment | number | 0 | 0–1000000 | required |\n\nContent labels/hints live in `src/content/loan.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Monthly installment (primary)\n- Total interest, total repayment, payoff with extra, interest saved\n- Year-by-year schedule\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\nTemplate formula above (identical to standard amortization). Extra: each month pay `M + extra` until balance 0.\n\n### Worked example (defaults)\n$15,000 at 12% (fallback; live default = TERMCBPER24NS e.g. 11.90%), 5 yr → **$333.67/mo**, interest $5,020, total $20,020.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `personalLoan24` | Fed G.19 24-mo personal loan rate, commercial banks (monthly; lags ~2 mo) | `TERMCBPER24NS` | https://fred.stlouisfed.org/series/TERMCBPER24NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Fixed rate; no fees.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`loans.test.ts › payoffWithExtra / yearlySchedule`; `amortize.test.ts`.\n",
+      "doc": {
+        "intro": "# Loan calculator\n\n- **Route:** `/loan` · **Component:** `LoanCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/loan-calculator/",
+        "lead": "Elfsight formula: *Installment = (L × R/1200) / (1 − (1 + R/1200)^(−12·T))*. Generic amortizing loan with optional extra monthly payment and yearly schedule. Shares math with PersonalLoan (`amortize`) — kept as a separate route because the template is generic (no fee, years input, extra payments).",
+        "purpose": "Elfsight formula: *Installment = (L × R/1200) / (1 − (1 + R/1200)^(−12·T))*. Generic amortizing loan with optional extra monthly payment and yearly schedule. Shares math with PersonalLoan (`amortize`) — kept as a separate route because the template is generic (no fee, years input, extra payments).",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "M + extra"
+          }
+        ],
+        "formulaNotes": "Template formula above (identical to standard amortization). Extra: each month pay `M + extra` until balance 0.",
+        "workedExample": [
+          "$15,000 at 12% (fallback; live default = TERMCBPER24NS e.g. 11.90%), 5 yr → **$333.67/mo**, interest $5,020, total $20,020."
+        ],
+        "outputs": [
+          "Monthly installment (primary)",
+          "Total interest, total repayment, payoff with extra, interest saved",
+          "Year-by-year schedule"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Fixed rate; no fees.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `personalLoan24` | Fed G.19 24-mo personal loan rate, commercial banks (monthly; lags ~2 mo) | `TERMCBPER24NS` | https://fred.stlouisfed.org/series/TERMCBPER24NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`loans.test.ts › payoffWithExtra / yearlySchedule`; `amortize.test.ts`."
+      },
+      "inputs": [
+        {
+          "key": "loanAmount",
+          "label": "Loan amount",
+          "type": "number",
+          "default": 15000,
+          "min": 100,
+          "max": 100000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.loanAmount"
+        },
+        {
+          "key": "apr",
+          "label": "Interest rate (APR)",
+          "type": "number",
+          "default": 12,
+          "min": 0,
+          "max": 99,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "termYears",
+          "label": "Loan period",
+          "type": "number",
+          "default": 5,
+          "min": 0.5,
+          "max": 40,
+          "allowZero": false,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.termYears"
+        },
+        {
+          "key": "extraMonthly",
+          "label": "Extra monthly payment",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 1000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.extraMonthly"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/loan.content.json",
       "content": {
         "meta": {
@@ -3006,6 +4894,166 @@
       ],
       "docPath": "docs/calculators/auto-lease.md",
       "docMarkdown": "# Auto lease calculator\n\n- **Route:** `/auto-lease` · **Component:** `AutoLeaseCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/auto-lease-calculator/\n\n## Purpose\nElfsight formula: *Payment = (Vehicle Price − Residual) / Term* (depreciation only). We implement the standard lease formula adding the rent charge (money factor) and tax; with APR 0 and tax 0 it reduces to the template.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `msrp` | Vehicle MSRP | number | 40000 | 1000–10000000 | required, >0 |\n| `price` | Negotiated price (cap cost) | number | 38000 | 1000–10000000 | required, >0 |\n| `down` | Down payment (cap reduction) | number | 3000 | 0–10000000 | required |\n| `tradeIn` | Trade-in credit | number | 0 | 0–10000000 | required |\n| `fees` | Fees rolled in (acquisition, doc) | number | 1000 | 0–100000 | required |\n| `residualPct` | Residual value (% of MSRP) | number | 58 | 1–100 | required, >0 |\n| `apr` | Equivalent APR | number | 6 | 0–40 | required |\n| `termMonths` | Lease term | number | 36 | 6–84 | required, >0 |\n| `salesTax` | Sales tax on payment | number | 7 | 0–25 | required |\n\nContent labels/hints live in `src/content/auto-lease.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Est. monthly payment (primary)\n- Total lease cost, residual, money factor, total rent charge\n- Depreciation / rent / tax per month\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`cap = price + fees − down − tradeIn`; `residual = MSRP × residual%`; `MF = APR/2400`; `dep = (cap − residual)/term`; `rent = (cap + residual) × MF`; `monthly = (dep + rent)(1 + tax%)`; total lease cost = monthly×term + down + trade.\n\n### Worked example (defaults)\nMSRP $40k, price $38k, $3k down, $1k fees → cap $36,000; residual 58% = $23,200; 6% → MF 0.0025; dep $355.56 + rent $148.00 = $503.56 × 1.07 = **$538.80/mo** (live 48-mo auto avg e.g. 7.47% → ~$577.60).\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `auto48` | Fed G.19 48-mo new car loan rate, commercial banks (monthly) | `TERMCBAUTO48NS` | https://fred.stlouisfed.org/series/TERMCBAUTO48NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/auto-lease.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`, `rateNote`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/auto-lease.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Auto-loan average is only a proxy; real money factors are set by the lessor.\n- Mileage overage, disposition, wear fees not modeled; tax-on-payment convention (varies by state).\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`loans.test.ts › leasePayment`: standard example, zero APR = depreciation only (template), cap < residual / zero term → null.\n",
+      "doc": {
+        "intro": "# Auto lease calculator\n\n- **Route:** `/auto-lease` · **Component:** `AutoLeaseCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/auto-lease-calculator/",
+        "lead": "Elfsight formula: *Payment = (Vehicle Price − Residual) / Term* (depreciation only). We implement the standard lease formula adding the rent charge (money factor) and tax; with APR 0 and tax 0 it reduces to the template.",
+        "purpose": "Elfsight formula: *Payment = (Vehicle Price − Residual) / Term* (depreciation only). We implement the standard lease formula adding the rent charge (money factor) and tax; with APR 0 and tax 0 it reduces to the template.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "cap = price + fees − down − tradeIn"
+          },
+          {
+            "label": "Formula",
+            "expr": "residual = MSRP × residual%"
+          },
+          {
+            "label": "Formula",
+            "expr": "MF = APR/2400"
+          },
+          {
+            "label": "Formula",
+            "expr": "dep = (cap − residual)/term"
+          },
+          {
+            "label": "Formula",
+            "expr": "rent = (cap + residual) × MF"
+          },
+          {
+            "label": "Formula",
+            "expr": "monthly = (dep + rent)(1 + tax%)"
+          }
+        ],
+        "formulaNotes": "`cap = price + fees − down − tradeIn`; `residual = MSRP × residual%`; `MF = APR/2400`; `dep = (cap − residual)/term`; `rent = (cap + residual) × MF`; `monthly = (dep + rent)(1 + tax%)`; total lease cost = monthly×term + down + trade.",
+        "workedExample": [
+          "MSRP $40k, price $38k, $3k down, $1k fees → cap $36,000; residual 58% = $23,200",
+          "6% → MF 0.0025; dep $355.56 + rent $148.00 = $503.56 × 1.07 = **$538.80/mo** (live 48-mo auto avg e.g. 7.47% → ~$577.60)."
+        ],
+        "outputs": [
+          "Est. monthly payment (primary)",
+          "Total lease cost, residual, money factor, total rent charge",
+          "Depreciation / rent / tax per month"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Auto-loan average is only a proxy; real money factors are set by the lessor.",
+          "Mileage overage, disposition, wear fees not modeled; tax-on-payment convention (varies by state).",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `auto48` | Fed G.19 48-mo new car loan rate, commercial banks (monthly) | `TERMCBAUTO48NS` | https://fred.stlouisfed.org/series/TERMCBAUTO48NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/auto-lease.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`, `rateNote`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/auto-lease.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`loans.test.ts › leasePayment`: standard example, zero APR = depreciation only (template), cap < residual / zero term → null."
+      },
+      "inputs": [
+        {
+          "key": "msrp",
+          "label": "Vehicle MSRP",
+          "type": "number",
+          "default": 40000,
+          "min": 1000,
+          "max": 10000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.msrp"
+        },
+        {
+          "key": "price",
+          "label": "Negotiated price (cap cost)",
+          "type": "number",
+          "default": 38000,
+          "min": 1000,
+          "max": 10000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.price"
+        },
+        {
+          "key": "down",
+          "label": "Down payment (cap reduction)",
+          "type": "number",
+          "default": 3000,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.down"
+        },
+        {
+          "key": "tradeIn",
+          "label": "Trade-in credit",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.tradeIn"
+        },
+        {
+          "key": "fees",
+          "label": "Fees rolled in (acquisition, doc)",
+          "type": "number",
+          "default": 1000,
+          "min": 0,
+          "max": 100000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.fees"
+        },
+        {
+          "key": "residualPct",
+          "label": "Residual value (% of MSRP)",
+          "type": "number",
+          "default": 58,
+          "min": 1,
+          "max": 100,
+          "allowZero": false,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.residualPct"
+        },
+        {
+          "key": "apr",
+          "label": "Equivalent APR",
+          "type": "number",
+          "default": 6,
+          "min": 0,
+          "max": 40,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "termMonths",
+          "label": "Lease term",
+          "type": "number",
+          "default": 36,
+          "min": 6,
+          "max": 84,
+          "allowZero": false,
+          "unit": "mo",
+          "options": null,
+          "configKey": "defaults.termMonths"
+        },
+        {
+          "key": "salesTax",
+          "label": "Sales tax on payment",
+          "type": "number",
+          "default": 7,
+          "min": 0,
+          "max": 25,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.salesTax"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/auto-lease.content.json",
       "content": {
         "meta": {
@@ -3204,6 +5252,102 @@
       "rateKeys": [],
       "docPath": "docs/calculators/student-loan.md",
       "docMarkdown": "# Student loan calculator\n\n- **Route:** `/student-loan` · **Component:** `StudentLoanCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/student-loan-calculator/\n\n## Purpose\nElfsight formula: *Repayment = (Loan + Interest) / Number of periods*. We use the standard amortizing payment (which satisfies that identity), plus capitalized interest during in-school/grace months and extra-payment payoff.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `balance` | Loan balance | number | 30000 | 100–10000000 | required, >0 |\n| `apr` | Interest rate | number | 6.5 | 0–30 | required |\n| `termYears` | Repayment term | number | 10 | 1–30 | required, >0 |\n| `deferMonths` | Months until repayment starts | number | 0 | 0–120 | required |\n| `extraMonthly` | Extra monthly payment | number | 0 | 0–1000000 | required |\n\nContent labels/hints live in `src/content/student-loan.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Monthly payment (primary)\n- Total interest (incl. capitalized), total repaid, payoff with extra, interest saved\n- Capitalized interest; yearly schedule\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`cap = balance × APR/12 × deferMonths` (simple, unsubsidized); `P = balance + cap`; standard amortization over term; extra-payment loop.\n\n### Worked example (defaults)\n$30,000 at 6.5%, 10 yr → **$340.64/mo**, interest $10,877.27. With 6 deferment months: $975 capitalized.\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/student-loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/student-loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- **No keyless public series for student loan rates is wired** — federal rates are set annually by statute (studentaid.gov); default 6.5% is an illustrative config value and the UI says so.\n- IDR plans, forgiveness, subsidies not modeled.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`loans.test.ts`: capitalizedInterest, payoffWithExtra (savings, zero rate, invalid).\n",
+      "doc": {
+        "intro": "# Student loan calculator\n\n- **Route:** `/student-loan` · **Component:** `StudentLoanCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/student-loan-calculator/",
+        "lead": "Elfsight formula: *Repayment = (Loan + Interest) / Number of periods*. We use the standard amortizing payment (which satisfies that identity), plus capitalized interest during in-school/grace months and extra-payment payoff.",
+        "purpose": "Elfsight formula: *Repayment = (Loan + Interest) / Number of periods*. We use the standard amortizing payment (which satisfies that identity), plus capitalized interest during in-school/grace months and extra-payment payoff.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "cap = balance × APR/12 × deferMonths"
+          },
+          {
+            "label": "Formula",
+            "expr": "P = balance + cap"
+          }
+        ],
+        "formulaNotes": "`cap = balance × APR/12 × deferMonths` (simple, unsubsidized); `P = balance + cap`; standard amortization over term; extra-payment loop.",
+        "workedExample": [
+          "$30,000 at 6.5%, 10 yr → **$340.64/mo**, interest $10,877.27.",
+          "With 6 deferment months: $975 capitalized."
+        ],
+        "outputs": [
+          "Monthly payment (primary)",
+          "Total interest (incl. capitalized), total repaid, payoff with extra, interest saved",
+          "Capitalized interest; yearly schedule"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "**No keyless public series for student loan rates is wired** — federal rates are set annually by statute (studentaid.gov); default 6.5% is an illustrative config value and the UI says so.",
+          "IDR plans, forgiveness, subsidies not modeled.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "None. All defaults are illustrative config values (see assumptions).",
+        "configVsContent": "- `src/config/student-loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/student-loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`loans.test.ts`: capitalizedInterest, payoffWithExtra (savings, zero rate, invalid)."
+      },
+      "inputs": [
+        {
+          "key": "balance",
+          "label": "Loan balance",
+          "type": "number",
+          "default": 30000,
+          "min": 100,
+          "max": 10000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.balance"
+        },
+        {
+          "key": "apr",
+          "label": "Interest rate",
+          "type": "number",
+          "default": 6.5,
+          "min": 0,
+          "max": 30,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "termYears",
+          "label": "Repayment term",
+          "type": "number",
+          "default": 10,
+          "min": 1,
+          "max": 30,
+          "allowZero": false,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.termYears"
+        },
+        {
+          "key": "deferMonths",
+          "label": "Months until repayment starts",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 120,
+          "allowZero": true,
+          "unit": "mo",
+          "options": null,
+          "configKey": "defaults.deferMonths"
+        },
+        {
+          "key": "extraMonthly",
+          "label": "Extra monthly payment",
+          "type": "number",
+          "default": 0,
+          "min": 0,
+          "max": 1000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.extraMonthly"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/student-loan.content.json",
       "content": {
         "meta": {
@@ -3361,6 +5505,142 @@
       ],
       "docPath": "docs/calculators/car-loan.md",
       "docMarkdown": "# Car loan calculator\n\n- **Route:** `/car-loan` · **Component:** `CarLoanCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/car-loan-calculator/\n\n## Purpose\nElfsight formula: standard amortizing payment. Inputs extended to typical auto purchase: price, down, trade-in value/owed, sales tax, fees, term presets 36–84 mo.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `price` | Vehicle price | number | 35000 | 1000–10000000 | required, >0 |\n| `down` | Down payment | number | 4000 | 0–10000000 | required |\n| `apr` | APR | number | 7.5 | 0–40 | required |\n| `termMonths` | Loan term | enum | 60 | — | option list |\n| `tradeIn` | Trade-in value | number | 5000 | 0–10000000 | required |\n| `tradeOwed` | Owed on trade-in | number | 2000 | 0–10000000 | required |\n| `salesTax` | Sales tax | number | 6 | 0–25 | required |\n| `fees` | Title, registration & doc fees | number | 800 | 0–100000 | required |\n\nContent labels/hints live in `src/content/car-loan.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Monthly payment (primary)\n- Loan amount, total interest, total cost, sales tax, trade equity\n- Year-by-year schedule\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`tax = (price − tradeIn) × tax%`; `equity = tradeIn − owed`; `amount = price + tax + fees − down − equity`; standard payment.\n\n### Worked example (defaults)\n$35,000, $4,000 down, $5,000 trade ($2,000 owed), 6% tax, $800 fees → amount **$30,600**; 7.5% (fallback), 60 mo → **$613.16/mo**, interest $6,189.67 (live 48-mo avg e.g. 7.47% → $612.73).\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `auto48` | Fed G.19 48-mo new car loan rate, commercial banks (monthly) | `TERMCBAUTO48NS` | https://fred.stlouisfed.org/series/TERMCBAUTO48NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/car-loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/car-loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Trade-in tax credit applied (varies by state).\n- Rebates/dealer add-ons not modeled.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`loans.test.ts › carLoanAmount`, `yearlySchedule`.\n",
+      "doc": {
+        "intro": "# Car loan calculator\n\n- **Route:** `/car-loan` · **Component:** `CarLoanCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/car-loan-calculator/",
+        "lead": "Elfsight formula: standard amortizing payment. Inputs extended to typical auto purchase: price, down, trade-in value/owed, sales tax, fees, term presets 36–84 mo.",
+        "purpose": "Elfsight formula: standard amortizing payment. Inputs extended to typical auto purchase: price, down, trade-in value/owed, sales tax, fees, term presets 36–84 mo.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "tax = (price − tradeIn) × tax%"
+          },
+          {
+            "label": "Formula",
+            "expr": "equity = tradeIn − owed"
+          },
+          {
+            "label": "Formula",
+            "expr": "amount = price + tax + fees − down − equity"
+          }
+        ],
+        "formulaNotes": "`tax = (price − tradeIn) × tax%`; `equity = tradeIn − owed`; `amount = price + tax + fees − down − equity`; standard payment.",
+        "workedExample": [
+          "$35,000, $4,000 down, $5,000 trade ($2,000 owed), 6% tax, $800 fees → amount **$30,600**",
+          "7.5% (fallback), 60 mo → **$613.16/mo**, interest $6,189.67 (live 48-mo avg e.g. 7.47% → $612.73)."
+        ],
+        "outputs": [
+          "Monthly payment (primary)",
+          "Loan amount, total interest, total cost, sales tax, trade equity",
+          "Year-by-year schedule"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "Trade-in tax credit applied (varies by state).",
+          "Rebates/dealer add-ons not modeled.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `auto48` | Fed G.19 48-mo new car loan rate, commercial banks (monthly) | `TERMCBAUTO48NS` | https://fred.stlouisfed.org/series/TERMCBAUTO48NS |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/car-loan.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/car-loan.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`loans.test.ts › carLoanAmount`, `yearlySchedule`."
+      },
+      "inputs": [
+        {
+          "key": "price",
+          "label": "Vehicle price",
+          "type": "number",
+          "default": 35000,
+          "min": 1000,
+          "max": 10000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.price"
+        },
+        {
+          "key": "down",
+          "label": "Down payment",
+          "type": "number",
+          "default": 4000,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.down"
+        },
+        {
+          "key": "apr",
+          "label": "APR",
+          "type": "number",
+          "default": 7.5,
+          "min": 0,
+          "max": 40,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.apr"
+        },
+        {
+          "key": "termMonths",
+          "label": "termMonths",
+          "type": "string",
+          "default": "60",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": null,
+          "configKey": "defaults.termMonths"
+        },
+        {
+          "key": "tradeIn",
+          "label": "Trade-in value",
+          "type": "number",
+          "default": 5000,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.tradeIn"
+        },
+        {
+          "key": "tradeOwed",
+          "label": "Owed on trade-in",
+          "type": "number",
+          "default": 2000,
+          "min": 0,
+          "max": 10000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.tradeOwed"
+        },
+        {
+          "key": "salesTax",
+          "label": "Sales tax",
+          "type": "number",
+          "default": 6,
+          "min": 0,
+          "max": 25,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.salesTax"
+        },
+        {
+          "key": "fees",
+          "label": "Title, registration & doc fees",
+          "type": "number",
+          "default": 800,
+          "min": 0,
+          "max": 100000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.fees"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/car-loan.content.json",
       "content": {
         "meta": {
@@ -3573,6 +5853,135 @@
       ],
       "docPath": "docs/calculators/refinance.md",
       "docMarkdown": "# Refinance calculator\n\n- **Route:** `/refinance` · **Component:** `RefinanceCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/refinance-calculator/\n\n## Purpose\nElfsight formula: *Savings = (Current Payment − New Payment) × Remaining Payments*. Shown as “simple savings”, alongside break-even on closing costs and true lifetime savings (accounts for a longer new term and costs).\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `balance` | Current loan balance | number | 300000 | 1000–100000000 | required, >0 |\n| `currentRate` | Current interest rate | number | 7.5 | 0–30 | required |\n| `remainingYears` | Years remaining | number | 28 | 1–40 | required, >0 |\n| `newRate` | New interest rate | number | 6.5 | 0–30 | required |\n| `newTermYears` | New loan term | number | 30 | 1–40 | required, >0 |\n| `closingCosts` | Closing costs | number | 6000 | 0–1000000 | required |\n| `rollCosts` | Closing costs | select | cash | — | option list |\n\nContent labels/hints live in `src/content/refinance.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Monthly savings (primary)\n- Current P&I, new P&I, break-even, lifetime savings\n- Simple template savings, remaining interest current vs new\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`current = pmt(balance, curRate, remaining)`; `new = pmt(balance + (roll ? costs : 0), newRate, newTerm)`; `break-even = ceil(costs / savings)`; `lifetime = currentRemainingTotal − (newTotal + cashCosts)`.\n\n### Worked example (defaults)\n$300k, 7.5%, 28 yrs left → $2,138.60; new 6.5% (fallback; live PMMS e.g. 7.40%), 30 yrs → $1,896.20; **$242.40/mo**, break-even 25 mo, lifetime $29,937, simple $81,446.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `mortgage30` | Freddie Mac PMMS 30-yr fixed avg (weekly) | `MORTGAGE30US` | https://fred.stlouisfed.org/series/MORTGAGE30US |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/refinance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/refinance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- P&I only; points, PMI, escrow not modeled.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`loans.test.ts › refinanceCompare`: savings, break-even, rolled costs, zero rate, no savings → NaN, invalid.\n",
+      "doc": {
+        "intro": "# Refinance calculator\n\n- **Route:** `/refinance` · **Component:** `RefinanceCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Reference:** https://elfsight.com/calculator-form-widget/templates/refinance-calculator/",
+        "lead": "Elfsight formula: *Savings = (Current Payment − New Payment) × Remaining Payments*. Shown as “simple savings”, alongside break-even on closing costs and true lifetime savings (accounts for a longer new term and costs).",
+        "purpose": "Elfsight formula: *Savings = (Current Payment − New Payment) × Remaining Payments*. Shown as “simple savings”, alongside break-even on closing costs and true lifetime savings (accounts for a longer new term and costs).",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "current = pmt(balance, curRate, remaining)"
+          },
+          {
+            "label": "Formula",
+            "expr": "new = pmt(balance + (roll ? costs : 0), newRate, newTerm)"
+          },
+          {
+            "label": "Formula",
+            "expr": "break-even = ceil(costs / savings)"
+          },
+          {
+            "label": "Formula",
+            "expr": "lifetime = currentRemainingTotal − (newTotal + cashCosts)"
+          }
+        ],
+        "formulaNotes": "`current = pmt(balance, curRate, remaining)`; `new = pmt(balance + (roll ? costs : 0), newRate, newTerm)`; `break-even = ceil(costs / savings)`; `lifetime = currentRemainingTotal − (newTotal + cashCosts)`.",
+        "workedExample": [
+          "$300k, 7.5%, 28 yrs left → $2,138.60; new 6.5% (fallback; live PMMS e.g. 7.40%), 30 yrs → $1,896.20; **$242.40/mo**, break-even 25 mo, lifetime $29,937, simple $81,446."
+        ],
+        "outputs": [
+          "Monthly savings (primary)",
+          "Current P&I, new P&I, break-even, lifetime savings",
+          "Simple template savings, remaining interest current vs new"
+        ],
+        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "assumptions": [
+          "P&I only; points, PMI, escrow not modeled.",
+          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+        ],
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `mortgage30` | Freddie Mac PMMS 30-yr fixed avg (weekly) | `MORTGAGE30US` | https://fred.stlouisfed.org/series/MORTGAGE30US |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
+        "configVsContent": "- `src/config/refinance.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`rateKey`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/refinance.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`loans.test.ts › refinanceCompare`: savings, break-even, rolled costs, zero rate, no savings → NaN, invalid."
+      },
+      "inputs": [
+        {
+          "key": "balance",
+          "label": "Current loan balance",
+          "type": "number",
+          "default": 300000,
+          "min": 1000,
+          "max": 100000000,
+          "allowZero": false,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.balance"
+        },
+        {
+          "key": "currentRate",
+          "label": "Current interest rate",
+          "type": "number",
+          "default": 7.5,
+          "min": 0,
+          "max": 30,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.currentRate"
+        },
+        {
+          "key": "remainingYears",
+          "label": "Years remaining",
+          "type": "number",
+          "default": 28,
+          "min": 1,
+          "max": 40,
+          "allowZero": false,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.remainingYears"
+        },
+        {
+          "key": "newRate",
+          "label": "New interest rate",
+          "type": "number",
+          "default": 6.5,
+          "min": 0,
+          "max": 30,
+          "allowZero": true,
+          "unit": "%",
+          "options": null,
+          "configKey": "defaults.newRate"
+        },
+        {
+          "key": "newTermYears",
+          "label": "New loan term",
+          "type": "number",
+          "default": 30,
+          "min": 1,
+          "max": 40,
+          "allowZero": false,
+          "unit": "yr",
+          "options": null,
+          "configKey": "defaults.newTermYears"
+        },
+        {
+          "key": "closingCosts",
+          "label": "Closing costs",
+          "type": "number",
+          "default": 6000,
+          "min": 0,
+          "max": 1000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.closingCosts"
+        },
+        {
+          "key": "rollCosts",
+          "label": "rollCosts",
+          "type": "enum",
+          "default": "cash",
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
+          "options": [
+            "Pay in cash",
+            "Roll into loan"
+          ],
+          "configKey": "defaults.rollCosts"
+        }
+      ],
       "contentPath": "packages/calculators/src/content/refinance.content.json",
       "content": {
         "meta": {

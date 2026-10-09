@@ -85,24 +85,34 @@ export const BRAND_TOKENS: Record<ProjectName, BrandTokens> = {
     link: "#3300FF", // .text-blue-560 — inline links ("privacy policy", "How are these numbers calculated?")
     heading: "#2F2F2F", // headings use content-primary, not brand blue
   },
+  /**
+   * bills.com — values extracted from www.bills.com (Oct 2026): homepage "Find a personal loan" slider tool,
+   * /resources/home-equity/heloc-calculator, computed styles + Tailwind bundle. See docs/BRANDS.md.
+   */
   bills: {
-    primary: "#C2410C",
-    primaryHover: "#9A3412",
-    primaryDark: "#9D0208",
-    bg: "#FFF8F3",
-    bgTint: "#FFE8D6",
-    surface: "#FFFFFF",
-    text: "#212529",
-    textSecondary: "#495057",
-    textMuted: "#6C757D",
-    border: "#F1E3D3",
-    borderStrong: "#D4B896",
-    error: "#D00000",
-    focusRing: "rgba(194, 65, 12, 0.35)",
-    radius: "12px",
-    radiusLg: "16px",
-    font: "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    shadow: "0 6px 28px rgba(33, 37, 41, 0.1)",
+    primary: "#0F4C81", // .bg-blue-500 — "Get your rate" pill CTA, active tool tab, slider fill, $30,000 amount
+    primaryHover: "#10385A", // .bg-blue-700 — darker step (bills.com's own hover keeps the fill unchanged)
+    primaryDark: "#10385A", // .bg-blue-700 — "Explore more finance topics" dark band
+    bg: "#F8F8F8", // .bg-gray-130 / .bg-gray-200 — tool section + topic cards background
+    bgTint: "#EFF5FF", // .bg-blue-135 — light blue tinted surfaces
+    surface: "#FFFFFF", // tool card .bg-white
+    text: "#212121", // most-used heading/body color (h3 cards, nav links)
+    textSecondary: "#6E6E6E", // nav section headings / secondary copy
+    textMuted: "#6B7280", // slider min/max labels ($5,000 / $50,000)
+    border: "#E9E9E9", // .border-gray-150
+    borderStrong: "#C7C7CC", // .border-gray-190
+    error: "#D01F1D", // .bg-red-500
+    focusRing: "rgba(0, 123, 255, 0.35)", // input :focus border #007BFF (.border-blue-800)
+    radius: "8px", // .rounded-lg — HELOC "See if you qualify", tool card (mobile)
+    radiusLg: "16px", // .rounded-2xl — tool card (desktop), topic cards
+    // Noto Sans + DM Sans are bills.com's own declared stack (both Google Fonts, self-hosted via next/font there).
+    font: "var(--font-noto-sans, 'Noto Sans'), 'Noto Sans', var(--font-dm-sans, 'DM Sans'), 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif",
+    shadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1)", // HELOC calculator card .shadow-md
+    cta: "#0F4C81", // .bg-blue-500.rounded-full "Get your rate"
+    ctaHover: "#10385A",
+    ctaText: "#FFFFFF", // .text-white.font-bold (8.9:1)
+    link: "#1857F8", // .text-blue-530 inline links
+    heading: "#212121",
   },
 };
 

@@ -110,3 +110,13 @@ Data flow:
 - `TechnicalDetails` renders markdown with `react-markdown` + `remark-gfm` with `skipHtml` (no raw HTML, no
   `dangerouslySetInnerHTML`), JSON as pretty-printed text in collapsible blocks with copy buttons, and the active brand's
   resolved CSS variables via `tokensToCssVars(BRAND_TOKENS[brand])`.
+
+### Technical details v2 (reviewer UX)
+The generator also splits each doc by `## ` headings and stores structured fields in the registry: `doc.lead` (first Purpose
+paragraph), `doc.formulas` (inline-code expressions grouped by the nearest **bold label**), `doc.workedExample` (rows),
+`doc.outputs`, `doc.assumptions`, plus `inputs` derived from `config.defaults` + `config.validation` + `content.form.fields`.
+The panel renders: overview cards → sticky section nav (left rail ≥1024px, chips below; IntersectionObserver highlights the
+active section) → How it works (lead + assumptions callout + collapsible doc sections) → formula cards + worked-example table →
+inputs table (stacked rows <640px) → live data with Live/Fallback badges → JSON viewers (tiny in-file tokenizer, line numbers,
+collapsed after 40 lines, copy with live-region feedback, download, GitHub link) → brand-token swatches with contrast vs white →
+usage snippet, source files and test names.

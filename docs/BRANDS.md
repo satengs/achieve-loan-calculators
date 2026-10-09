@@ -6,7 +6,7 @@
 |---|---|
 | `achieve` | Achieve-inspired blue (`#3300FF`) + DM Sans |
 | `fdr` | Matched to freedomdebtrelief.com: navy `#154199` primary, red `#CB000E` CTA, `#2F2F2F` text, `#F9F9F9` page bg, 8px radius; Ultramarine → DM Sans fallback (see below) |
-| `bills` | Warm orange (`#C2410C` CTA) + system UI |
+| `bills` | Matched to bills.com: blue `#0F4C81` pill CTA, `#212121` text, `#F8F8F8` bg, 8px / 16px radius, Noto Sans + DM Sans (see below) |
 
 Tokens: `packages/calculators/src/brand/tokens.ts`  
 Applied by: `<BrandTheme projectName="…">` / each calculator wraps itself.
@@ -79,3 +79,37 @@ Contrast: white on CTA `#CB000E` 5.92:1; white on primary `#154199` 9.34:1; `#73
 with white (13.26:1).
 
 Not copied: FDR logos, imagery, the Ultramarine font files, trust badges.
+
+## bills.com token sources (extracted Oct 9, 2026)
+
+Extracted from https://www.bills.com/ (homepage "Find a personal loan tailored to meet your needs" slider tool, topic cards)
+and https://www.bills.com/resources/home-equity/heloc-calculator (bills.com HELOC calculator), via headless Chromium
+`getComputedStyle` plus the site's Tailwind CSS (`/_next/static/css/*.css`). Evidence: `/workspace/bills-theme-match/`.
+bills.com is blue-led; the previous orange placeholder (`#C2410C`) was not sourced and has been replaced.
+
+| Token | Value | bills.com source (selector / class) |
+|---|---|---|
+| `primary` / `cta` | `#0F4C81` | `.bg-blue-500` — "Get your rate" `rounded-full` CTA, active tool tab, slider fill, `$30,000` amount |
+| `primaryHover` / `ctaHover` | `#10385A` | `.bg-blue-700`; bills.com's own hover keeps the fill unchanged, darker palette step chosen so hover is visible |
+| `primaryDark` | `#10385A` | `.bg-blue-700` — "Explore more finance topics" dark band (mobile sticky bar, 12.1:1 with white) |
+| `ctaText` | `#FFFFFF` | `.text-white.font-bold` (8.86:1 on `#0F4C81`) |
+| `bg` | `#F8F8F8` | `.bg-gray-130` / `.bg-gray-200` — tool section + topic cards |
+| `bgTint` | `#EFF5FF` | `.bg-blue-135` |
+| `surface` | `#FFFFFF` | tool card `.bg-white` |
+| `text` / `heading` | `#212121` | most-used heading/body color |
+| `textSecondary` | `#6E6E6E` | nav section headings (5.1:1 on white) |
+| `textMuted` | `#6B7280` | slider min/max labels (4.83:1 on white, 4.55:1 on `#F8F8F8`) |
+| `border` / `borderStrong` | `#E9E9E9` / `#C7C7CC` | `.border-gray-150` / `.border-gray-190` |
+| `error` | `#D01F1D` | `.bg-red-500` |
+| `focusRing` | `rgba(0,123,255,0.35)` | HELOC input `:focus` border `#007BFF` |
+| `radius` / `radiusLg` | `8px` / `16px` | `.rounded-lg` (HELOC CTA, inputs area) / `.rounded-2xl` (tool + topic cards) |
+| `font` | `Noto Sans, DM Sans, …` | body `font-family: "Noto Sans", "DM Sans", ui-sans-serif…` — both Google Fonts; loaded via `next/font` (`--font-noto-sans`, `--font-dm-sans`) |
+| `shadow` | `0 4px 6px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.1)` | HELOC calculator card `.shadow-md` |
+| `link` | `#1857F8` | `.text-blue-530` (5.59:1) |
+
+Brand-scoped CSS (`[data-project="bills"]`): pill CTA (`border-radius: 9999px`, 52px, bold); bold headings; eyebrow in
+`#002D87` bold (category label `.text-blue-750`); borderless shadow cards; result/slider values in `#0F4C81`;
+inputs 4px radius with `.shadow` and `#007BFF` focus border.
+
+Contrast: white on CTA 8.86:1 (≥4.5 required by UI/UX); CTA fill vs white card 8.86:1 (≥3). No label adjustment needed.
+Not copied: bills.com logo, imagery, Trustpilot badges.

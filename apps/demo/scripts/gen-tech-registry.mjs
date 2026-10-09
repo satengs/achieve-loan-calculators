@@ -63,6 +63,78 @@ function testInfo(file) {
   return testCache[file];
 }
 
+
+/** Split a calculator doc into "## " sections (title → markdown body). */
+function splitSections(md) {
+  const out = {};
+  let title = "_intro";
+  let buf = [];
+  for (const line of md.split(/\r?\n/)) {
+    const h = line.match(/^## (.+)$/);
+    if (h) {
+      out[title] = buf.join("\n").trim();
+      title = h[1].trim();
+      buf = [];
+    } else buf.push(line);
+  }
+  out[title] = buf.join("\n").trim();
+  return out;
+}
+
+const firstParagraph = (md = "") => md.split(/\n\s*\n/).map((p) => p.trim()).find((p) => p && !p.startsWith("|") && !p.startsWith("-")) ?? "";
+const bullets = (md = "") => md.split(/\r?\n/).filter((l) => /^\s*[-*] /.test(l)).map((l) => l.replace(/^\s*[-*] /, "").trim());
+
+/** Formula items: each `code` span in the Formulas section, labelled by the nearest preceding **Label:**. */
+function parseFormulas(md = "") {
+  const [main, ...rest] = md.split(/^### Worked example.*$/m);
+  const example = rest.join("\n").trim();
+  const items = [];
+  for (const para of main.split(/\n\s*\n/)) {
+    const label = (para.match(/\*\*([^*]+?):?\*\*/) || [])[1]?.replace(/:$/, "") ?? null;
+    const fence = para.match(/```[a-z]*\n([\s\S]*?)```/);
+    if (fence) items.push({ label: label ?? "Formula", expr: fence[1].trim() });
+    for (const m of para.replace(/```[\s\S]*?```/g, "").matchAll(/`([^`]+)`/g)) {
+      items.push({ label: label ?? "Formula", expr: m[1].trim() });
+    }
+  }
+  // Worked example → rows (split on sentence / semicolon boundaries, keep inline markdown).
+  const exampleRows = example
+    .replace(/\n+/g, " ")
+    .replace(/\b(e\.g|i\.e|vs|approx|incl|est)\./g, "$1\u2024")
+    .split(/(?<=[.;])\s+(?=[A-Z$(0-9])/)
+    .map((r) => r.trim().replace(/[;]$/, ""))
+    .filter(Boolean)
+    .map((r) => r.replace(/\u2024/g, "."));
+  return { items: items.filter((i) => /[=←≤≥<>]/.test(i.expr)).length ? items.filter((i) => /[=←≤≥<>]/.test(i.expr)) : items, notes: main.trim(), exampleRows };
+}
+
+/** Inputs from config.defaults + config.validation + content.form.fields (labels/prefix/suffix/options). */
+function deriveInputs(config, content) {
+  const fields = content?.form?.fields ?? {};
+  const validation = config?.validation ?? {};
+  return Object.entries(config?.defaults ?? {}).map(([key, def]) => {
+    const v = validation[key] ?? {};
+    const f = fields[key] ?? {};
+    const options = Array.isArray(f.options)
+      ? f.options.map((o) => (typeof o === "object" && o ? String(o.label ?? o.value) : String(o)))
+      : f.options && typeof f.options === "object"
+        ? Object.values(f.options).map(String)
+        : null;
+    return {
+      key,
+      label: f.label ?? v.label ?? key,
+      type: typeof def === "number" ? "number" : typeof def === "boolean" ? "boolean" : options ? "enum" : typeof def,
+      default: def,
+      min: v.min ?? null,
+      max: v.max ?? null,
+      allowZero: v.allowZero ?? null,
+      unit: f.prefix ?? f.suffix ?? null,
+      options,
+      configKey: `defaults.${key}`,
+    };
+  });
+}
+
 const read = (p) => readFileSync(join(repoRoot, p), "utf8");
 
 const entries = {};
@@ -75,6 +147,11 @@ for (const [slug, m] of Object.entries(meta.calculators)) {
     if (!(describe in info.counts)) throw new Error(`[tech-registry] ${slug}: describe "${describe}" not found in ${file}`);
     return { file, describe, count: info.counts[describe], titles: info.titles[describe] };
   });
+  const docMarkdown = read(docPath);
+  const content = JSON.parse(read(contentPath));
+  const config = JSON.parse(read(configPath));
+  const sections = splitSections(docMarkdown);
+  const formulas = parseFormulas(sections["Formulas"]);
   entries[slug] = {
     slug,
     title: m.title,
@@ -83,11 +160,26 @@ for (const [slug, m] of Object.entries(meta.calculators)) {
     calcModules: m.calcModules,
     rateKeys: m.rateKeys,
     docPath,
-    docMarkdown: read(docPath),
+    docMarkdown,
+    doc: {
+      intro: sections["_intro"] ?? "",
+      lead: firstParagraph(sections["Purpose"]),
+      purpose: sections["Purpose"] ?? "",
+      formulas: formulas.items,
+      formulaNotes: formulas.notes,
+      workedExample: formulas.exampleRows,
+      outputs: bullets(sections["Outputs"]),
+      outputsNote: (sections["Outputs"] ?? "").split(/\r?\n/).filter((l) => l.trim() && !/^\s*[-*] /.test(l)).join("\n"),
+      assumptions: bullets(sections["Assumptions & limitations"]),
+      dataSources: sections["Data sources / APIs"] ?? "",
+      configVsContent: sections["Config vs content"] ?? "",
+      tests: sections["Tests"] ?? "",
+    },
+    inputs: deriveInputs(config, content),
     contentPath,
-    content: JSON.parse(read(contentPath)),
+    content,
     configPath,
-    config: JSON.parse(read(configPath)),
+    config,
     tests,
     testCount: tests.reduce((a, t) => a + t.count, 0),
   };

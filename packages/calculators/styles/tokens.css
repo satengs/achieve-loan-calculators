@@ -762,3 +762,48 @@
 [data-project="fdr"] .lc-segmented input:checked + span {
   background: var(--lc-primary);
 }
+
+/* ── bills.com brand-scoped treatments ──
+ * Values sourced from bills.com computed styles; see docs/BRANDS.md. Achieve/FDR untouched. */
+[data-project="bills"] .lc-header h1 {
+  font-weight: 700; /* hero / section headings are bold */
+  color: var(--lc-heading);
+}
+
+[data-project="bills"] .lc-eyebrow {
+  /* category label "Loans": 12px bold #002D87 (.text-blue-750) */
+  color: #002d87;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+[data-project="bills"] .lc-card {
+  border-color: transparent; /* bills cards: no border, shadow only */
+}
+
+[data-project="bills"] .lc-btn {
+  /* "Get your rate": rounded-full, py-4, 16px bold */
+  border-radius: 9999px;
+  min-height: 52px;
+  font-weight: 700;
+}
+
+[data-project="bills"] .lc-result-value,
+[data-project="bills"] .lc-slider-value {
+  color: var(--lc-primary); /* "$30,000" amount: 36px bold #0F4C81 */
+}
+
+[data-project="bills"] .lc-link-label {
+  color: var(--lc-primary);
+  font-weight: 700;
+}
+
+[data-project="bills"] .lc-input {
+  border-radius: 4px; /* HELOC inputs .rounded */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); /* .shadow */
+}
+
+[data-project="bills"] .lc-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px var(--lc-focus-ring);
+}

@@ -13,6 +13,32 @@ export type TechEntry = {
   rateKeys: RateKey[];
   docPath: string;
   docMarkdown: string;
+  doc: {
+    intro: string;
+    lead: string;
+    purpose: string;
+    formulas: Array<{ label: string; expr: string }>;
+    formulaNotes: string;
+    workedExample: string[];
+    outputs: string[];
+    outputsNote: string;
+    assumptions: string[];
+    dataSources: string;
+    configVsContent: string;
+    tests: string;
+  };
+  inputs: Array<{
+    key: string;
+    label: string;
+    type: string;
+    default: unknown;
+    min: number | null;
+    max: number | null;
+    allowZero: boolean | null;
+    unit: string | null;
+    options: string[] | null;
+    configKey: string;
+  }>;
   contentPath: string;
   content: unknown;
   configPath: string;

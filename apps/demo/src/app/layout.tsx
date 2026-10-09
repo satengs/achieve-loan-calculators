@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Noto_Sans } from "next/font/google";
 import { DemoShell } from "@/components/DemoShell";
 import "./globals.css";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-dm-sans",
+  display: "swap",
+});
+
+/** bills.com theme font (bills.com declares "Noto Sans", "DM Sans"). Exposed as a variable only. */
+const notoSans = Noto_Sans({
+  subsets: ["latin"],
+  variable: "--font-noto-sans",
   display: "swap",
 });
 
@@ -25,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={dmSans.variable}>
+    <html lang="en" className={`${dmSans.variable} ${notoSans.variable}`}>
       <body style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}>
         <DemoShell>{children}</DemoShell>
       </body>
