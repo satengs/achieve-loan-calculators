@@ -73,8 +73,8 @@ export {
   DataTable,
 } from "./components";
 
-export { resolveRate } from "./rates";
-export type { RateKey, RateInfo, MarketRates, ResolvedRate } from "./rates";
+export { resolveRate, parseFredCsv, yoyFromObservations, sameDayPriorYear } from "./rates";
+export type { RateKey, RateInfo, MarketRates, ResolvedRate, FredObservation } from "./rates";
 
 export {
   getCalculatorContent,

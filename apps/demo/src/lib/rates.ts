@@ -1,4 +1,11 @@
-import type { MarketRates, RateInfo, RateKey } from "@loan-calculators/core";
+import {
+  parseFredCsv,
+  yoyFromObservations,
+  type FredObservation,
+  type MarketRates,
+  type RateInfo,
+  type RateKey,
+} from "@loan-calculators/core";
 
 /**
  * Server-side market-rate layer for the demo.
@@ -14,7 +21,7 @@ type SeriesSpec = {
   key: RateKey;
   seriesId: string;
   label: string;
-  /** "level" = latest value; "yoy" = % change vs 12 observations earlier (monthly series). */
+  /** "level" = latest value; "yoy" = % change vs the observation dated exactly 12 months earlier. */
   mode: "level" | "yoy";
 };
 
@@ -29,7 +36,7 @@ export const RATE_SERIES: SeriesSpec[] = [
   { key: "inflationYoY", seriesId: "CPIAUCSL", label: "BLS CPI-U, year-over-year change (FRED CPIAUCSL)", mode: "yoy" },
 ];
 
-type Obs = { date: string; value: number };
+type Obs = FredObservation;
 
 function seriesUrl(id: string) {
   return `https://fred.stlouisfed.org/series/${id}`;
@@ -39,7 +46,7 @@ async function fetchObservations(seriesId: string): Promise<Obs[]> {
   const key = process.env.FRED_API_KEY;
   const init = { next: { revalidate: RATES_REVALIDATE_SECONDS } } as RequestInit;
   if (key) {
-    const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${encodeURIComponent(seriesId)}&api_key=${encodeURIComponent(key)}&file_type=json&sort_order=desc&limit=30`;
+    const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${encodeURIComponent(seriesId)}&api_key=${encodeURIComponent(key)}&file_type=json&sort_order=desc&limit=40`;
     const res = await fetch(url, init);
     if (!res.ok) throw new Error(`FRED API ${seriesId} ${res.status}`);
     const json = (await res.json()) as { observations?: Array<{ date: string; value: string }> };
@@ -53,26 +60,16 @@ async function fetchObservations(seriesId: string): Promise<Obs[]> {
   return parseFredCsv(await res.text());
 }
 
-/** Parse FRED CSV ("observation_date,SERIES\n2026-10-01,7.28"); skips blanks and ".". */
-export function parseFredCsv(text: string): Obs[] {
-  const out: Obs[] = [];
-  for (const line of text.trim().split(/\r?\n/).slice(1)) {
-    const [date, raw] = line.split(",");
-    const value = Number(raw);
-    if (date && raw && raw !== "." && Number.isFinite(value)) out.push({ date, value });
-  }
-  return out;
-}
-
 async function resolveSeries(spec: SeriesSpec): Promise<RateInfo | null> {
   const obs = await fetchObservations(spec.seriesId);
   if (obs.length === 0) return null;
   const last = obs[obs.length - 1];
   let value = last.value;
   if (spec.mode === "yoy") {
-    const prior = obs[obs.length - 13];
-    if (!prior || prior.value <= 0) return null;
-    value = Math.round((last.value / prior.value - 1) * 10000) / 100;
+    // Match by date (not row offset): FRED gap rows (e.g. CPI 2025-10) are dropped on parse.
+    const yoy = yoyFromObservations(obs);
+    if (!yoy) return null;
+    value = yoy.value;
   }
   return {
     value,
