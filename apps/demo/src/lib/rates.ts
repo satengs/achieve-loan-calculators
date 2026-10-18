@@ -14,8 +14,11 @@ import {
  * official JSON API; otherwise we use the keyless public CSV download endpoint.
  * Results are cached with Next.js fetch revalidation (daily). Any failure simply
  * omits that key so calculators fall back to config JSON values with a visible note.
+ * Each FRED request is capped at FRED_TIMEOUT_MS so a slow upstream can't stall a render
+ * or build; a timeout is treated like any other failure (config fallback).
  */
 export const RATES_REVALIDATE_SECONDS = 86400;
+export const FRED_TIMEOUT_MS = 4000;
 
 type SeriesSpec = {
   key: RateKey;
@@ -44,7 +47,10 @@ function seriesUrl(id: string) {
 
 async function fetchObservations(seriesId: string): Promise<Obs[]> {
   const key = process.env.FRED_API_KEY;
-  const init = { next: { revalidate: RATES_REVALIDATE_SECONDS } } as RequestInit;
+  const init = {
+    next: { revalidate: RATES_REVALIDATE_SECONDS },
+    signal: AbortSignal.timeout(FRED_TIMEOUT_MS),
+  } as RequestInit;
   if (key) {
     const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${encodeURIComponent(seriesId)}&api_key=${encodeURIComponent(key)}&file_type=json&sort_order=desc&limit=40`;
     const res = await fetch(url, init);
