@@ -29,3 +29,29 @@ describe("insurance factor estimator", () => {
     assert.equal(lifePremiumEstimate(1000, 0)!.annual, 0);
   });
 });
+
+import { lifePremiumRatePer1000, termMultiplierFor } from "./life";
+
+describe("life premium term multiplier (M4)", () => {
+  const table = { "10": 0.85, "20": 1.0, "30": 1.45 };
+  it("uses table points exactly", () => {
+    assert.equal(termMultiplierFor(10, table), 0.85);
+    assert.equal(termMultiplierFor(20, table), 1);
+    assert.equal(termMultiplierFor(30, table), 1.45);
+  });
+  it("interpolates in-between terms instead of silently using ×1", () => {
+    assert.ok(Math.abs(termMultiplierFor(15, table) - 0.925) < 1e-9);
+    assert.ok(Math.abs(termMultiplierFor(25, table) - 1.225) < 1e-9);
+  });
+  it("clamps outside the table; empty table → 1", () => {
+    assert.equal(termMultiplierFor(5, table), 0.85);
+    assert.equal(termMultiplierFor(40, table), 1.45);
+    assert.equal(termMultiplierFor(20, {}), 1);
+  });
+  it("rate per $1k = age × term × tobacco; unknown age → null", () => {
+    const t = { premiumRatePer1000ByAge: { "30-39": 0.75 }, termMultiplier: table, tobaccoMultiplier: 2.5 };
+    assert.equal(lifePremiumRatePer1000({ ageBand: "30-39", termYears: 20, tobacco: false }, t), 0.75);
+    assert.ok(Math.abs(lifePremiumRatePer1000({ ageBand: "30-39", termYears: 30, tobacco: true }, t)! - 0.75 * 1.45 * 2.5) < 1e-9);
+    assert.equal(lifePremiumRatePer1000({ ageBand: "90-99", termYears: 20, tobacco: false }, t), null);
+  });
+});

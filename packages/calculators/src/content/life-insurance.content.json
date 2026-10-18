@@ -11,7 +11,7 @@
   "demoBanner": {
     "icon": "ℹ️",
     "strong": "Illustrative only — not a quote or underwriting decision.",
-    "body": "Uses a simple DIME-style heuristic (Debt, Income, Mortgage/debts, Education + final expenses − assets/existing cover). Actual needs and premiums vary widely; talk to a licensed professional for advice."
+    "body": "Uses a simple DIME-style heuristic (Debt, Income, Mortgage/debts, Education + final expenses − assets/existing cover). The premium is an illustrative estimate from a demo rate table, not a carrier rate. Actual needs and premiums vary widely; talk to a licensed professional for advice."
   },
   "form": {
     "heading": "Your inputs",
@@ -47,7 +47,7 @@
         "prefix": "$"
       },
       "termYears": {
-        "label": "Preferred term length (informational)",
+        "label": "Term length (for illustrative premium)",
         "ariaLabel": "Term length",
         "presetLabels": {
           "10": "10 yr",
@@ -93,7 +93,7 @@
     "emptyPlaceholder": "—",
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
     "summaryMessage": "Heuristic only. Rounded for readability. Not a premium quote or guarantee of coverage.",
-    "premiumNote": "Premium = coverage ÷ 1,000 × an illustrative rate per $1,000 (by age band, term and tobacco). Not a quote — real premiums depend on underwriting."
+    "premiumNote": "Premium = coverage ÷ 1,000 × an illustrative rate per $1,000 for your age band × a term-length factor (longer terms cost more; in-between terms are interpolated) × a tobacco factor. Not a quote — real premiums depend on underwriting."
   },
   "cta": {
     "label": "Learn about coverage options",
@@ -101,6 +101,6 @@
     "note": "Placeholder CTA — not a quote, application, or guarantee of insurability."
   },
   "footer": {
-    "note": "This tool does not sell insurance, calculate premiums, or guarantee issue. Achieve-styled demo for product exploration only."
+    "note": "This tool does not sell insurance, quote real premiums, or guarantee issue. The premium shown is an illustrative estimate from a demo rate table. Achieve-styled demo for product exploration only."
   }
 }

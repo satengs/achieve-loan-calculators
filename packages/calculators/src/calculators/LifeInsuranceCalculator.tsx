@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { lifeCoverageEstimate, lifePremiumEstimate, validateRange } from "../calc";
+import { lifeCoverageEstimate, lifePremiumEstimate, lifePremiumRatePer1000, validateRange } from "../calc";
 import { SelectField } from "../components/SelectField";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
@@ -74,11 +74,11 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
       existingCoverage: values.existingCoverage,
       liquidAssets: values.liquidAssets,
     });
-    const ratePer1000 =
-      Number(feats.premiumRatePer1000ByAge?.[ageBand] ?? 1) *
-      Number(feats.termMultiplier?.[termYears] ?? 1) *
-      (tobacco === "yes" ? Number(feats.tobaccoMultiplier ?? 1) : 1);
-    const premium = lifePremiumEstimate(est.netNeed, ratePer1000);
+    const ratePer1000 = lifePremiumRatePer1000(
+      { ageBand, termYears: Number(termYears), tobacco: tobacco === "yes" },
+      feats,
+    );
+    const premium = ratePer1000 == null ? null : lifePremiumEstimate(est.netNeed, ratePer1000);
     const termDisplay = String(results.termDisplay || "{{years}} years").replace("{{years}}", termYears);
     return {
       err,

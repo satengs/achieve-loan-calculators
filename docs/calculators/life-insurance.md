@@ -16,7 +16,7 @@ Existing DIME-style need estimator kept; Elfsight template formula is *Premium =
 | `educationFund` | Education / other goals fund | number | 50000 | 0–100000000 | required |
 | `existingCoverage` | Existing life coverage | number | 100000 | 0–1000000000 | required |
 | `liquidAssets` | Liquid assets available to survivors | number | 25000 | 0–1000000000 | required |
-| `termYears` | Preferred term length (informational) | number | 20 | — | option list |
+| `termYears` | Term length (for illustrative premium) | number | 20 | — | option list |
 | `ageBand` | Age (for illustrative premium) | select | 30-39 | — | option list |
 | `tobacco` | Tobacco use | select | no | — | option list |
 
@@ -30,7 +30,9 @@ Content labels/hints live in `src/content/life-insurance.content.json → form.f
 All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.
 
 ## Formulas
-`need = income×years + debts + final + education − existing − assets` (≥0). `premium/yr = need/1000 × rate(age) × termMult × (tobacco ? 2.5 : 1)`.
+`need = income×years + debts + final + education − existing − assets` (≥0). `premium/yr = need/1000 × rate(age) × termMult(term) × (tobacco ? 2.5 : 1)`.
+
+`termMult` comes from `features.termMultiplier` via `termMultiplierFor()`: exact table points are used as-is (10→0.85, 20→1.0, 30→1.45); terms between points are linearly interpolated (e.g. 15 yr → 0.925, 25 yr → 1.225) and terms outside the table clamp to the nearest end. Before this fix any term not in the table (e.g. a CMS-added 15 or 25 yr preset) silently used ×1. An age band missing from the table shows “—” instead of defaulting to $1/1k.
 
 ### Worked example (defaults)
 Defaults → need **$940,000**; age 30–39 (0.75/$1k), 20-yr (×1.0), non-tobacco → $705/yr ≈ **$58.75/mo**.
@@ -49,4 +51,4 @@ None. All defaults are illustrative config values (see assumptions).
 - Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.
 
 ## Tests
-`amortize.test.ts › lifeCoverageEstimate`, `insurance.test.ts › lifePremiumEstimate` (per-$1k, invalid, zero rate).
+`amortize.test.ts › lifeCoverageEstimate`, `insurance.test.ts › lifePremiumEstimate` (per-$1k, invalid, zero rate), `insurance.test.ts › life premium term multiplier (M4)` (table points, interpolation, clamping, unknown age band).
