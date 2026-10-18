@@ -1454,3 +1454,24 @@ code.lc-tt-ov-value {
 .lc-landing-section[id] {
   scroll-margin-top: calc(var(--lc-brand-bar-offset, 3.25rem) + 0.75rem);
 }
+
+/* Prerendered tab fallback + ?tab=tech: <head> script sets html[data-lc-tab="tech"] so the
+   static HTML shows the Technical details panel before hydration (replaced by the live tabs). */
+html[data-lc-tab="tech"] [data-prerender-tabs] [data-panel="calc"] {
+  display: none !important;
+}
+html[data-lc-tab="tech"] [data-prerender-tabs] [data-panel="tech"] {
+  display: block !important;
+}
+html[data-lc-tab="tech"] [data-prerender-tabs] .lc-demo-tab[data-tab="tech"] {
+  color: var(--lc-primary, #3300ff);
+  background: var(--lc-surface, #fff);
+  border-color: var(--lc-border, #e7ecf3);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.12);
+}
+html[data-lc-tab="tech"] [data-prerender-tabs] .lc-demo-tab[data-tab="calc"] {
+  color: var(--lc-text-secondary, #42546b);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}

@@ -1,4 +1,3 @@
-/** Request header the proxy uses to pass ?brand= to the server render (no deps: imported by proxy.ts). */
-export const BRAND_HEADER = "x-lc-brand";
-/** Request header the proxy uses to pass ?tab= so the tab-bar Suspense fallback opens the right panel. */
-export const TAB_HEADER = "x-lc-tab";
+/** Brand ids + cookie name shared by proxy.ts (edge, no deps) and the app. */
+export const BRAND_IDS = ["achieve", "fdr", "bills"] as const;
+export const BRAND_COOKIE_NAME = "lc-demo-brand";

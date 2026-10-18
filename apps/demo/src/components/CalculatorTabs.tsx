@@ -1,12 +1,11 @@
 "use client";
 
 import { Suspense, useCallback, useId, useRef, type KeyboardEvent, type ReactNode } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DEMO_CONFIG } from "@/config/demo.config";
 import type { TechEntry, TechRateRow } from "@/lib/tech";
 import { TechnicalDetails } from "./TechnicalDetails";
 import { CalculatorBreadcrumb } from "./CalculatorBreadcrumb";
-import { useRequestHints } from "./RequestHints";
 import { CalcIcon, CodeIcon } from "./TechIcons";
 
 export const TAB_QUERY_KEY = "tab";
@@ -38,11 +37,11 @@ export function CalculatorTabs(props: Props) {
 }
 
 function TabsWithUrl(props: Props) {
-  // useSearchParams needs a Suspense boundary; the fallback renders the same tab UI with the
-  // tab the server saw in ?tab= (via proxy header), so the first paint already shows the right panel.
-  const { initialTab } = useRequestHints();
+  // useSearchParams needs a Suspense boundary. Pages are prerendered, so the fallback is what
+  // the HTML contains: it renders both panels and a <head> script sets html[data-lc-tab="tech"]
+  // for ?tab=tech, letting CSS show the right panel before hydration (no calc→tech swap).
   return (
-    <Suspense fallback={<TabsView {...props} active={initialTab} onSelect={() => {}} />}>
+    <Suspense fallback={<TabsView {...props} active="calc" onSelect={() => {}} prerender />}>
       <UrlTabs {...props} />
     </Suspense>
   );
@@ -51,7 +50,6 @@ function TabsWithUrl(props: Props) {
 function UrlTabs(props: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
   const active: TabId = searchParams.get(TAB_QUERY_KEY) === "tech" ? "tech" : "calc";
 
   const select = useCallback(
@@ -60,9 +58,11 @@ function UrlTabs(props: Props) {
       if (id === "tech") params.set(TAB_QUERY_KEY, "tech");
       else params.delete(TAB_QUERY_KEY);
       const qs = params.toString();
+      // Browser path, not the proxy-rewritten /[brand]/… route path.
+      const pathname = window.location.pathname;
       router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
     },
-    [pathname, router, searchParams],
+    [router, searchParams],
   );
 
   return <TabsView {...props} active={active} onSelect={select} />;
@@ -74,7 +74,8 @@ function TabsView({
   rateRows,
   active,
   onSelect,
-}: Props & { active: TabId; onSelect: (id: TabId) => void }) {
+  prerender = false,
+}: Props & { active: TabId; onSelect: (id: TabId) => void; prerender?: boolean }) {
   const baseId = useId();
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const select = (id: TabId, focus = false) => {
@@ -95,7 +96,7 @@ function TabsView({
   };
 
   return (
-    <div className="lc-demo-tabs-wrap">
+    <div className="lc-demo-tabs-wrap" data-prerender-tabs={prerender ? "" : undefined}>
       {/* Fixed-height row (SSR + Suspense fallback render the same markup) so nothing below shifts. */}
       <div className="lc-demo-tabs">
         <div className="lc-demo-tablist" role="tablist" aria-label={`${tech.title} calculator views`}>
@@ -113,6 +114,7 @@ function TabsView({
                 aria-selected={selected}
                 aria-controls={`${baseId}-panel-${t.id}`}
                 tabIndex={selected ? 0 : -1}
+                data-tab={t.id}
                 className={selected ? "lc-demo-tab lc-demo-tab-active" : "lc-demo-tab"}
                 onClick={() => select(t.id)}
                 onKeyDown={(e) => onKeyDown(e, i)}
@@ -133,6 +135,7 @@ function TabsView({
         role="tabpanel"
         id={`${baseId}-panel-calc`}
         aria-labelledby={`${baseId}-tab-calc`}
+        data-panel="calc"
         hidden={active !== "calc"}
       >
         {children}
@@ -141,10 +144,11 @@ function TabsView({
         role="tabpanel"
         id={`${baseId}-panel-tech`}
         aria-labelledby={`${baseId}-tab-tech`}
+        data-panel="tech"
         hidden={active !== "tech"}
         tabIndex={0}
       >
-        {active === "tech" ? <TechnicalDetails tech={tech} rateRows={rateRows} /> : null}
+        {active === "tech" || prerender ? <TechnicalDetails tech={tech} rateRows={rateRows} /> : null}
       </div>
     </div>
   );

@@ -1,22 +1,24 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { BRAND_COOKIE_NAME, BRAND_IDS } from "./lib/brand-header";
 
 /**
- * Forward the requested brand (?brand=) to the server render as a request header so the
- * initial HTML is already themed for that brand (no Achieve→brand swap after hydration).
+ * Resolve the brand for this request (?brand= → lc-demo-brand cookie → achieve) and rewrite
+ * to the matching statically generated variant, e.g. /mortgage?brand=fdr → /fdr/mortgage.
+ * The URL in the browser is unchanged. Pages under app/[brand] are prerendered per brand
+ * (generateStaticParams) with ISR, so the root layout no longer reads headers()/cookies()
+ * (M1) and the first paint is still the right brand (no Achieve→brand swap).
  */
-import { BRAND_HEADER, TAB_HEADER } from "./lib/brand-header";
-const BRANDS = new Set(["achieve", "fdr", "bills"]);
+const BRANDS = new Set<string>(BRAND_IDS);
 
 export function proxy(request: NextRequest) {
-  const brand = request.nextUrl.searchParams.get("brand");
-  const headers = new Headers(request.headers);
-  headers.delete(BRAND_HEADER);
-  if (brand && BRANDS.has(brand)) headers.set(BRAND_HEADER, brand);
-  headers.delete(TAB_HEADER);
-  if (request.nextUrl.searchParams.get("tab") === "tech") headers.set(TAB_HEADER, "tech");
-  return NextResponse.next({ request: { headers } });
+  const fromQuery = request.nextUrl.searchParams.get("brand");
+  const fromCookie = request.cookies.get(BRAND_COOKIE_NAME)?.value;
+  const brand = fromQuery && BRANDS.has(fromQuery) ? fromQuery : fromCookie && BRANDS.has(fromCookie) ? fromCookie : "achieve";
+  const url = request.nextUrl.clone();
+  url.pathname = `/${brand}${url.pathname === "/" ? "" : url.pathname}`;
+  return NextResponse.rewrite(url);
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|icon.png|icon-192.png|apple-touch-icon.png).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|icon.png|icon-192.png|apple-touch-icon.png|robots.txt|sitemap.xml).*)"],
 };
