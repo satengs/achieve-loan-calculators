@@ -56,6 +56,8 @@ $20,000, band Good (offsets +2..+8 on 24-mo avg 11.90% → 13.90–19.90%), 60 m
 - Home equity availability ignores actual equity/CLTV (see HELOC calculator).
 - Thresholds ($50k PL max, $15k HE min, $7.5k program min) are config values inspired by the reference's availability text.
 - Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.
+- **Debt-resolution caveats (M6):** `content.programCaveats` (heading + text-only `items[]`) renders as a list under the options table, and the banner points to it. It gives general, widely published consumer-protection points (e.g. CFPB/FTC consumer guidance): you usually stop paying creditors and save instead, missed payments can hurt credit scores and lead to fees, collections or lawsuits, creditors don't have to settle, fees are part of the cost, forgiven debt may be taxable, and programs aren't available in every state. It makes no claims about any specific provider. Edit the wording in the CMS.
+- **Minimums that never pay off (M8):** if the minimum-payment simulation hits the 1,200-month cap, the term shows “Not paid off in 100 yrs” (`table.cappedTime`) instead of “100 yr”.
 
 ## Tests
 `loans.test.ts › consolidationOptions`: range ordering, program flat payment, availability by min/max debt, zero debt → null. Minimums reuse `debt.test.ts`.

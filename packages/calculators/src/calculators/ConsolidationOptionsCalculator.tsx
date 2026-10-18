@@ -11,7 +11,7 @@ import { ResultsPanel } from "../components/ResultsPanel";
 import { SelectField } from "../components/SelectField";
 import { SliderField } from "../components/SliderField";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, interpolate, months, optionsFrom, pct, useCalculatorSetup } from "./common";
+import { CalculatorCta, interpolate, months, optionsFrom, payoffTime, pct, useCalculatorSetup } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -30,6 +30,7 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
   const inputs = useNumberInputs(config, KEYS);
   const [band, setBand] = useState(String(config.defaults.creditBand ?? "good"));
   const table = (content.table || {}) as Record<string, any>;
+  const caveats = (content.programCaveats || {}) as { heading?: string; items?: unknown[] };
   const optLabels = (results.optionLabels || {}) as Record<string, string>;
   const pl = features.personalLoan;
   const he = features.homeEquity;
@@ -80,7 +81,7 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
               ]
             : [optLabels[o.id], unavailable(o), "—", "—", "—"],
         ),
-        [optLabels.minimums, `${whole(computed.minimum.firstPayment)}/mo (first)`, months(computed.minimum.months), whole(computed.minimum.totalPaid), pct(cardRate.value, 2)],
+        [optLabels.minimums, `${whole(computed.minimum.firstPayment)}/mo (first)`, payoffTime(computed.minimum, table.cappedTime), whole(computed.minimum.totalPaid), pct(cardRate.value, 2)],
       ]
     : [];
 
@@ -135,7 +136,7 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
           summary={
             computed
               ? [
-                  { label: labels.minMonths, value: months(computed.minimum.months) },
+                  { label: labels.minMonths, value: payoffTime(computed.minimum, table.cappedTime) },
                   { label: labels.minTotal, value: whole(computed.minimum.totalPaid) },
                 ]
               : []
@@ -147,6 +148,18 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
       <div className="lc-card lc-amort-card">
         <h2>{table.heading}</h2>
         <DataTable caption={table.heading} columns={table.columns || []} rows={rows} emptyText={String(results.invalidMessage)} />
+        {computed && Array.isArray(caveats.items) ? (
+          <div className="lc-note lc-caveats">
+            <p>
+              <strong>{String(caveats.heading || "")}</strong>
+            </p>
+            <ul>
+              {caveats.items.map((item, i) => (
+                <li key={i}>{String(item)}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
     </CalculatorShell>
   );

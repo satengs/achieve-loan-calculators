@@ -806,3 +806,17 @@
   border-color: #007bff;
   box-shadow: 0 0 0 3px var(--lc-focus-ring);
 }
+
+/* Factual caveat list under a results table (e.g. debt-resolution notes on consolidation). */
+.lc-caveats {
+  margin-top: 1rem;
+}
+.lc-caveats p {
+  margin: 0 0 0.35rem;
+}
+.lc-caveats ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.3rem;
+}
