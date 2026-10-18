@@ -6,7 +6,7 @@
   "header": {
     "eyebrow": "Debt payoff",
     "title": "Debt payoff calculator",
-    "intro": "Compare paying only credit card minimums, waiting three months, following your own fixed payoff plan, and an illustrative debt-resolution style program."
+    "intro": "Compare paying only credit card minimums, waiting {{months}} months before starting, following your own fixed payoff plan, and an illustrative debt-resolution style program."
   },
   "demoBanner": {
     "icon": "ℹ️",
@@ -47,11 +47,6 @@
       "programMonths": {
         "label": "Program length",
         "suffix": "mo"
-      },
-      "waitGrowthPct": {
-        "label": "Debt growth if you wait 3 months",
-        "suffix": "%",
-        "hint": "Illustrative assumption for the “If you wait” column."
       }
     }
   },
@@ -65,10 +60,11 @@
       "planSaved": "Interest saved on your plan",
       "programTotal": "Illustrative program total",
       "firstMin": "First minimum payment",
-      "waitTotal": "If you wait 3 months — total paid"
+      "waitTotal": "If you wait {{months}} months — total paid"
     },
     "summaryMessage": "Minimum payments decline as the balance falls (interest + principal %), which stretches payoff. Program figures are a flat illustrative assumption, not an estimate of any provider’s results.",
-    "planInvalid": "Your plan payment must be larger than the first month’s interest."
+    "planInvalid": "Your plan payment must be larger than the first month’s interest.",
+    "cappedMessage": "At least one scenario is not paid off within {{years}} years: the payment barely covers interest, so the balance shrinks very slowly. Its interest and total paid show only the first {{years}} years, with a balance still remaining."
   },
   "cta": {
     "label": "See your options",
@@ -89,12 +85,14 @@
     ],
     "rows": {
       "minimum": "Minimum payments (current)",
-      "wait": "If you wait 3 months",
+      "wait": "If you wait {{months}} months",
       "plan": "Your fixed payoff plan",
       "program": "Debt-resolution style program (illustrative)"
     },
     "programCostLabel": "Program cost",
-    "firstPaymentNote": "first month"
+    "firstPaymentNote": "first month",
+    "cappedTime": "Not paid off in {{years}} yrs",
+    "waitNote": "“If you wait” assumes no payments and no new charges for {{months}} months while interest builds at your card APR (compounded monthly), then minimum payments. Its time to pay off includes the {{months}}-month wait. Late fees and penalty APRs are not modeled."
   },
   "months": "{{months}} mo"
 }

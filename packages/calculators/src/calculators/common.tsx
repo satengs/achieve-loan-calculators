@@ -29,6 +29,17 @@ export function months(n: number): string {
   return m === 0 ? `${y} yr` : `${y} yr ${m} mo`;
 }
 
+/**
+ * Payoff time for a simulation that may hit its month cap (e.g. 1,200 = 100 yrs).
+ * A capped result is not a payoff time, so show the CMS template (e.g. "Not paid off in
+ * {{years}} yrs") instead of a misleading "100 yr".
+ */
+export function payoffTime(r: { months: number; capped: boolean }, cappedTemplate?: string): string {
+  if (!r.capped) return months(r.months);
+  const years = Math.floor(r.months / 12);
+  return interpolate(String(cappedTemplate || "Not paid off in {{years}} yrs"), { years });
+}
+
 export const pct = (n: number, d = 1) => formatPercent(n, d);
 export { interpolate };
 

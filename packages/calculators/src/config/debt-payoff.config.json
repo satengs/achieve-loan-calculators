@@ -9,8 +9,7 @@
     "minPrincipalPct": 1,
     "minFloor": 35,
     "programCostPct": 90,
-    "programMonths": 48,
-    "waitGrowthPct": 10
+    "programMonths": 48
   },
   "validation": {
     "debtAmount": {
@@ -54,12 +53,6 @@
       "max": 120,
       "label": "Program length",
       "allowZero": false
-    },
-    "waitGrowthPct": {
-      "min": 0,
-      "max": 100,
-      "label": "Growth %",
-      "allowZero": true
     }
   },
   "features": {
@@ -69,7 +62,8 @@
       "step": 1000
     },
     "rateKey": "creditCard",
-    "maxMonths": 1200
+    "maxMonths": 1200,
+    "waitMonths": 3
   },
   "cta": {
     "enabled": true,

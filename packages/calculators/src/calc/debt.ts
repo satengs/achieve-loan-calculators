@@ -96,8 +96,12 @@ export function programEstimate(debt: number, a: ProgramAssumptions) {
   return { total, months, monthly: total / months };
 }
 
-/** Projected balance after waiting, using an illustrative growth percent. */
-export function waitBalance(debt: number, growthPct: number): number {
-  if (!Number.isFinite(debt) || !Number.isFinite(growthPct) || debt < 0 || growthPct < 0) return NaN;
-  return debt * (1 + growthPct / 100);
+/**
+ * Balance after waiting `months` with no payments and no new charges: interest compounds
+ * monthly at the card APR, i.e. debt × (1 + APR/12)^months. Derived from the APR (not a
+ * fixed growth %), so 22.77% APR over 3 months ≈ +5.8%. Fees/penalty APRs are not modeled.
+ */
+export function balanceAfterWaiting(debt: number, aprPct: number, months: number): number {
+  if (![debt, aprPct, months].every(Number.isFinite) || debt < 0 || aprPct < 0 || months < 0) return NaN;
+  return debt * Math.pow(1 + aprPct / 100 / 12, Math.round(months));
 }
