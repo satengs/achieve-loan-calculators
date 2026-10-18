@@ -1,10 +1,10 @@
 # Mortgage calculator (extended)
 
 - **Route:** `/mortgage` · **Component:** `MortgageCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/mortgage-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Existing calculator already covers the Elfsight template (P&I via standard formula + taxes) and more (PITI, HOA, down payment %/$, amortization snapshot). Extension: APR default now comes from Freddie Mac PMMS via FRED with as-of display.
+Existing calculator already covers the reference template (P&I via standard formula + taxes) and more (PITI, HOA, down payment %/$, amortization snapshot). Extension: APR default now comes from Freddie Mac PMMS via FRED with as-of display.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

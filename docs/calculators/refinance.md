@@ -1,10 +1,10 @@
 # Refinance calculator
 
 - **Route:** `/refinance` · **Component:** `RefinanceCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/refinance-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: *Savings = (Current Payment − New Payment) × Remaining Payments*. Shown as “simple savings”, alongside break-even on closing costs and true lifetime savings (accounts for a longer new term and costs).
+Reference formula: *Savings = (Current Payment − New Payment) × Remaining Payments*. Shown as “simple savings”, alongside break-even on closing costs and true lifetime savings (accounts for a longer new term and costs).
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

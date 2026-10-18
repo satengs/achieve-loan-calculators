@@ -1,10 +1,10 @@
 # Home insurance cost estimator
 
 - **Route:** `/home-insurance` · **Component:** `HomeInsuranceCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/home-insurance-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: *Home Insurance Cost = Base Premium + Additional Coverage Costs + Deductible*. Adding the deductible to the premium isn't how premiums work, so we model the deductible as a premium factor (higher deductible → lower premium). Inferred inputs: dwelling coverage, rate per $1,000, area risk, home age, construction, deductible, claims, contents %, liability limit.
+Reference formula: *Home Insurance Cost = Base Premium + Additional Coverage Costs + Deductible*. Adding the deductible to the premium isn't how premiums work, so we model the deductible as a premium factor (higher deductible → lower premium). Inferred inputs: dwelling coverage, rate per $1,000, area risk, home age, construction, deductible, claims, contents %, liability limit.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

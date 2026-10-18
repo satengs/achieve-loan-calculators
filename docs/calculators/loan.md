@@ -1,10 +1,10 @@
 # Loan calculator
 
 - **Route:** `/loan` · **Component:** `LoanCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/loan-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: *Installment = (L × R/1200) / (1 − (1 + R/1200)^(−12·T))*. Generic amortizing loan with optional extra monthly payment and yearly schedule. Shares math with PersonalLoan (`amortize`) — kept as a separate route because the template is generic (no fee, years input, extra payments).
+Reference formula: *Installment = (L × R/1200) / (1 − (1 + R/1200)^(−12·T))*. Generic amortizing loan with optional extra monthly payment and yearly schedule. Shares math with PersonalLoan (`amortize`) — kept as a separate route because the template is generic (no fee, years input, extra payments).
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

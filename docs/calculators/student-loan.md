@@ -1,10 +1,10 @@
 # Student loan calculator
 
 - **Route:** `/student-loan` · **Component:** `StudentLoanCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/student-loan-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: *Repayment = (Loan + Interest) / Number of periods*. We use the standard amortizing payment (which satisfies that identity), plus capitalized interest during in-school/grace months and extra-payment payoff.
+Reference formula: *Repayment = (Loan + Interest) / Number of periods*. We use the standard amortizing payment (which satisfies that identity), plus capitalized interest during in-school/grace months and extra-payment payoff.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

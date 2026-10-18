@@ -1,10 +1,10 @@
 # Savings calculator
 
 - **Route:** `/savings` · **Component:** `SavingsCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/savings-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: *FV = PV × (1 + r)^n*. Extended with monthly contributions, compounding frequency, annual contribution increase, and inflation-adjusted value.
+Reference formula: *FV = PV × (1 + r)^n*. Extended with monthly contributions, compounding frequency, annual contribution increase, and inflation-adjusted value.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

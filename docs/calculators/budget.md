@@ -1,10 +1,10 @@
 # Monthly budget calculator
 
 - **Route:** `/budget` · **Component:** `BudgetCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/financial-budget-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight template formula: *Total Budget = Salary and Benefit Costs Total + Other Costs Total* (an organisational budget). For a consumer (bills.com-style) audience we implement a personal monthly budget: income vs categorized spending with a 50/30/20 comparison. Note the shift in NOTES.
+Reference template formula: *Total Budget = Salary and Benefit Costs Total + Other Costs Total* (an organisational budget). For a consumer (bills.com-style) audience we implement a personal monthly budget: income vs categorized spending with a 50/30/20 comparison. Note the shift in NOTES.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

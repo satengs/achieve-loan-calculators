@@ -2,6 +2,8 @@
 
 One doc per calculator: purpose, reference, inputs/outputs, formulas with worked example, data sources, config vs content, assumptions, tests.
 
+> The **Reference** column is an internal design note (formula templates we compared against). This README is not rendered in the demo; per-calculator docs are, so they don't name third-party vendors, and `apps/demo/scripts/gen-tech-registry.mjs` fails the build if a blocked vendor name reaches the Technical details registry.
+
 | Calculator | Route | Component | Live rate keys | Reference |
 |---|---|---|---|---|
 | [Debt payoff calculator](debt-payoff.md) | `/debt-payoff` | `DebtPayoffCalculator` | creditCard | https://www.achieve.com/tools/debt-payoff-calculator |

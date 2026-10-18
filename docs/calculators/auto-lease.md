@@ -1,10 +1,10 @@
 # Auto lease calculator
 
 - **Route:** `/auto-lease` · **Component:** `AutoLeaseCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/auto-lease-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: *Payment = (Vehicle Price − Residual) / Term* (depreciation only). We implement the standard lease formula adding the rent charge (money factor) and tax; with APR 0 and tax 0 it reduces to the template.
+Reference formula: *Payment = (Vehicle Price − Residual) / Term* (depreciation only). We implement the standard lease formula adding the rent charge (money factor) and tax; with APR 0 and tax 0 it reduces to the template.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

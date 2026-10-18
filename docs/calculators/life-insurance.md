@@ -1,10 +1,10 @@
 # Life insurance coverage estimator (extended)
 
 - **Route:** `/life-insurance` · **Component:** `LifeInsuranceCalculator (extended)` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/life-insurance-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Existing DIME-style need estimator kept; Elfsight template formula is *Premium = Coverage × Premium Rate / 100*. Added age band + tobacco selects and an **illustrative premium** on the computed need (rate per $1,000 by age band × term multiplier × tobacco multiplier). Not a near-duplicate route.
+Existing DIME-style need estimator kept; the reference template formula is *Premium = Coverage × Premium Rate / 100*. Added age band + tobacco selects and an **illustrative premium** on the computed need (rate per $1,000 by age band × term multiplier × tobacco multiplier). Not a near-duplicate route.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

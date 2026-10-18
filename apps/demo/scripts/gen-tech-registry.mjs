@@ -186,5 +186,15 @@ for (const [slug, m] of Object.entries(meta.calculators)) {
 }
 
 mkdirSync(dirname(outFile), { recursive: true });
-writeFileSync(outFile, JSON.stringify({ generatedFrom: "apps/demo/scripts/gen-tech-registry.mjs", entries }, null, 2) + "\n");
+const registryJson = JSON.stringify({ generatedFrom: "apps/demo/scripts/gen-tech-registry.mjs", entries }, null, 2) + "\n";
+// The registry is rendered in the demo UI: third-party vendor names must never reach it
+// (reference links live only in docs/calculators/README.md, which is not read here).
+const BLOCKED_TERMS = [/elfsight/i];
+for (const re of BLOCKED_TERMS) {
+  if (re.test(registryJson)) {
+    console.error(`[tech-registry] blocked term ${re} found in docs/content/config feeding the UI — remove it`);
+    process.exit(1);
+  }
+}
+writeFileSync(outFile, registryJson);
 console.log(`[tech-registry] wrote ${Object.keys(entries).length} entries → ${outFile.replace(repoRoot + "/", "")}`);

@@ -1,10 +1,10 @@
 # Retirement savings calculator
 
 - **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/retirement-savings-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.
+Reference formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

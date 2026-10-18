@@ -1,10 +1,10 @@
 # Car insurance cost estimator
 
 - **Route:** `/car-insurance` · **Component:** `CarInsuranceCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/car-insurance-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight template formula: *Car Insurance Cost = Base Premium + Additional Coverage Costs*. Widget inputs are JS-rendered and not visible, so inputs are inferred from common rating factors: driver age, record, vehicle type, coverage level, deductible, mileage, garaging area, roadside/rental add-ons.
+Reference template formula: *Car Insurance Cost = Base Premium + Additional Coverage Costs*. Widget inputs are JS-rendered and not visible, so inputs are inferred from common rating factors: driver age, record, vehicle type, coverage level, deductible, mileage, garaging area, roadside/rental add-ons.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |

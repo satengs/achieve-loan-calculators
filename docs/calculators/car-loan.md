@@ -1,10 +1,10 @@
 # Car loan calculator
 
 - **Route:** `/car-loan` · **Component:** `CarLoanCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Reference:** https://elfsight.com/calculator-form-widget/templates/car-loan-calculator/
+- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
 
 ## Purpose
-Elfsight formula: standard amortizing payment. Inputs extended to typical auto purchase: price, down, trade-in value/owed, sales tax, fees, term presets 36–84 mo.
+Reference formula: standard amortizing payment. Inputs extended to typical auto purchase: price, down, trade-in value/owed, sales tax, fees, term presets 36–84 mo.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |
