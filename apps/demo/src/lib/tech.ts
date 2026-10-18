@@ -1,5 +1,6 @@
 import registry from "@/generated/tech-registry.json";
 import type { MarketRates, RateKey } from "@loan-calculators/core";
+import { DEMO_CONFIG } from "@/config/demo.config";
 import { RATE_SERIES } from "./rates";
 
 export type TechTest = { file: string; describe: string; count: number; titles: string[] };
@@ -64,7 +65,43 @@ const entries = (registry as unknown as { entries: Record<string, TechEntry> }).
 export function getTechEntry(slug: string): TechEntry {
   const e = entries[slug];
   if (!e) throw new Error(`No technical registry entry for "${slug}" — run npm run gen:tech -w @loan-calculators/demo`);
+  // Tab off (production): ship only what the breadcrumb needs, never docs/config/test internals.
+  if (!DEMO_CONFIG.showTechnicalTab) return publicStub(e);
   return e;
+}
+
+function publicStub(e: TechEntry): TechEntry {
+  return {
+    slug: e.slug,
+    title: e.title,
+    component: "",
+    componentPath: "",
+    calcModules: [],
+    rateKeys: [],
+    docPath: "",
+    docMarkdown: "",
+    doc: {
+      intro: "",
+      lead: "",
+      purpose: "",
+      formulas: [],
+      formulaNotes: "",
+      workedExample: [],
+      outputs: [],
+      outputsNote: "",
+      assumptions: [],
+      dataSources: "",
+      configVsContent: "",
+      tests: "",
+    },
+    inputs: [],
+    contentPath: "",
+    content: null,
+    configPath: "",
+    config: null,
+    tests: [],
+    testCount: 0,
+  };
 }
 
 export function buildRateRows(
@@ -72,6 +109,7 @@ export function buildRateRows(
   rates: MarketRates,
   errors: Partial<Record<RateKey, string>>,
 ): TechRateRow[] {
+  if (!DEMO_CONFIG.showTechnicalTab) return [];
   return keys.map((key) => {
     const spec = RATE_SERIES.find((s) => s.key === key);
     const live = rates[key];
