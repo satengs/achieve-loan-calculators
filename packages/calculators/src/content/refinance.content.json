@@ -57,14 +57,17 @@
     "labels": {
       "currentPayment": "Current P&I",
       "newPayment": "New P&I",
-      "breakEven": "Break-even",
+      "breakEven": "Break-even (incl. balance)",
       "lifetime": "Lifetime savings (after costs)",
       "simple": "Savings over remaining term (simple)",
       "currentInterest": "Remaining interest — current",
-      "newInterest": "Interest — new loan"
+      "newInterest": "Interest — new loan",
+      "lifetimeCost": "Extra total cost (after costs)",
+      "monthlyIncrease": "Monthly payment increase"
     },
-    "breakEvenNever": "No monthly savings",
-    "summaryMessage": "Principal & interest only; taxes, insurance, PMI and points are not modeled. Extending the term can lower payments but raise lifetime interest."
+    "breakEvenNever": "Doesn’t break even",
+    "summaryMessage": "Principal & interest only; taxes, insurance, PMI and points are not modeled. Break-even is the month your payment savings plus any lower loan balance cover cash closing costs, or the costs rolled into the new loan.",
+    "costsOutweigh": "Costs outweigh savings: your monthly payment may drop, but over the life of the new loan you’d pay about {{amount}} more in total (longer term and/or closing costs)."
   },
   "cta": {
     "label": "See refinance options",

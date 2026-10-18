@@ -82,6 +82,39 @@ describe("refinanceCompare", () => {
     assert.equal(refinanceCompare({ ...base, rollCosts: true })!.newPrincipal, 306000);
     assert.ok(refinanceCompare({ ...base, newRatePct: 0 })!.newInterest === 0);
   });
+  it("monthly savings vs lifetime cost are separate (M7)", () => {
+    const r = refinanceCompare(base)!;
+    // Lower payment, but a 30-yr term on a 28-yr balance costs more overall.
+    assert.ok(r.monthlySavings > 0);
+    assert.ok(Math.abs(r.lifetimeCostChange - (r.newTotal - r.currentRemainingTotal)) < 1e-6);
+    assert.equal(r.lifetimeSavings, -r.lifetimeCostChange);
+    const shorter = refinanceCompare({ ...base, newTermMonths: 240 })!;
+    assert.equal(shorter.lowerPaymentHigherCost, false);
+    assert.ok(shorter.lifetimeCostChange < 0); // shorter term + lower rate saves overall
+  });
+  it("break-even with cash costs ≈ costs ÷ (savings + extra principal paid)", () => {
+    const r = refinanceCompare(base)!;
+    assert.ok(r.breakEvenMonths >= 20 && r.breakEvenMonths <= 25, String(r.breakEvenMonths));
+    assert.equal(r.simpleBreakEvenMonths, 25);
+  });
+  it("break-even with rolled-in costs accounts for the higher balance (M7)", () => {
+    const rolled = refinanceCompare({ ...base, rollCosts: true })!;
+    assert.equal(rolled.upfrontCosts, 0);
+    assert.ok(Number.isFinite(rolled.breakEvenMonths) && rolled.breakEvenMonths > 1);
+    // Same rate & term, costs rolled in: you never come out ahead.
+    const sameRate = refinanceCompare({ ...base, newRatePct: 7.5, newTermMonths: 336, rollCosts: true })!;
+    assert.ok(Number.isNaN(sameRate.breakEvenMonths));
+    // Independent check: brute-force net position at the reported month and the month before.
+    const net = (n: number) => {
+      const cur = amortize(300000, 7.5, 336)!.schedule;
+      const nw = amortize(306000, 6.5, 360)!.schedule;
+      let c = 0;
+      for (let i = 0; i < n; i++) c += cur[i].payment - nw[i].payment;
+      return c + cur[n - 1].balance - nw[n - 1].balance;
+    };
+    assert.ok(net(rolled.breakEvenMonths) >= -0.005);
+    assert.ok(net(rolled.breakEvenMonths - 1) < 0);
+  });
   it("no savings → NaN break-even; invalid → null", () => {
     assert.ok(Number.isNaN(refinanceCompare({ ...base, newRatePct: 9 })!.breakEvenMonths));
     assert.equal(refinanceCompare({ ...base, balance: 0 }), null);

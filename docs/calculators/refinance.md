@@ -21,16 +21,19 @@ Content labels/hints live in `src/content/refinance.content.json → form.fields
 
 ## Outputs
 - Monthly savings (primary)
-- Current P&I, new P&I, break-even, lifetime savings
+- Current P&I, new P&I, break-even (balance-adjusted), and lifetime result: **Lifetime savings (after costs)** when the refinance costs less in total, or **Extra total cost (after costs)** in the error colour plus a “Costs outweigh savings…” message when it costs more. It is never shown as negative “savings”.
+- If the new payment is higher, the primary label switches to “Monthly payment increase” and shows the absolute value.
 - Simple template savings, remaining interest current vs new
 
 All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.
 
 ## Formulas
-`current = pmt(balance, curRate, remaining)`; `new = pmt(balance + (roll ? costs : 0), newRate, newTerm)`; `break-even = ceil(costs / savings)`; `lifetime = currentRemainingTotal − (newTotal + cashCosts)`.
+`current = pmt(balance, curRate, remaining)`; `new = pmt(balance + (roll ? costs : 0), newRate, newTerm)`; `lifetimeCostChange = (newTotalP&I + cashCosts) − currentRemainingTotal` (positive = costs more); `lifetimeSavings = −lifetimeCostChange`.
+
+**Break-even (M7), balance-adjusted, same rule for cash and rolled-in costs:** the first month `n` where `Σ(currentPmt − newPmt) − cashCosts + (currentBalance_n − newBalance_n) ≥ 0` (`refinanceBreakEven`). Rolled-in costs aren't paid up front, but they start the new balance higher and accrue interest. The old `costs ÷ monthly savings` shortcut ignored that (and the principal-paydown difference). “Doesn’t break even” means you never come out ahead within the longer of the two terms. `simpleBreakEvenMonths = ceil(costs / savings)` is still returned for reference.
 
 ### Worked example (defaults)
-$300k, 7.5%, 28 yrs left → $2,138.60; new 6.5% (fallback; live PMMS e.g. 7.40%), 30 yrs → $1,896.20; **$242.40/mo**, break-even 25 mo, lifetime $29,937, simple $81,446.
+$300k, 7.5%, 28 yrs left → $2,138.60; new 6.5% (fallback; live PMMS e.g. 7.40%), 30 yrs → $1,896.20; **$242.40/mo**, break-even 25 mo (cash; 28 mo with costs rolled in), lifetime savings $29,937, simple $81,446. With a higher new rate (e.g. 7.2%) the monthly payment still drops, but the 30-yr term costs more overall, so the result shows “Extra total cost” in red with the costs-outweigh message.
 
 ## Data sources / APIs
 | Rate key | Meaning | FRED series | Source page |
@@ -52,4 +55,4 @@ $300k, 7.5%, 28 yrs left → $2,138.60; new 6.5% (fallback; live PMMS e.g. 7.40%
 - Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.
 
 ## Tests
-`loans.test.ts › refinanceCompare`: savings, break-even, rolled costs, zero rate, no savings → NaN, invalid.
+`loans.test.ts › refinanceCompare`: savings, monthly vs lifetime separation, cash break-even, rolled-in break-even checked against a brute-force net-position calculation, same-rate rolled costs never break even (NaN), zero rate, no savings → NaN, invalid.

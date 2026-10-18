@@ -9,7 +9,7 @@ import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, months, useCalculatorSetup } from "./common";
+import { CalculatorCta, interpolate, months, useCalculatorSetup } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -41,6 +41,7 @@ export function RefinanceCalculator({ projectName = "achieve", rates }: Refinanc
       rollCosts: roll === "roll",
     });
   }, [inputs.ok, inputs.values, roll]);
+  const costsMore = !!computed && computed.lifetimeCostChange > 0.5;
 
   return (
     <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
@@ -67,8 +68,8 @@ export function RefinanceCalculator({ projectName = "achieve", rates }: Refinanc
         </section>
         <ResultsPanel
           heading={String(results.heading)}
-          primaryLabel={String(results.primaryLabel)}
-          primaryValue={computed ? money(computed.monthlySavings) : PLACEHOLDER}
+          primaryLabel={computed && computed.monthlySavings < 0 ? String(labels.monthlyIncrease || results.primaryLabel) : String(results.primaryLabel)}
+          primaryValue={computed ? money(Math.abs(computed.monthlySavings)) : PLACEHOLDER}
           items={[
             { label: labels.currentPayment, value: computed ? money(computed.currentPayment) : PLACEHOLDER },
             { label: labels.newPayment, value: computed ? money(computed.newPayment) : PLACEHOLDER },
@@ -76,18 +77,24 @@ export function RefinanceCalculator({ projectName = "achieve", rates }: Refinanc
               label: labels.breakEven,
               value: computed ? (Number.isFinite(computed.breakEvenMonths) ? months(computed.breakEvenMonths) : String(results.breakEvenNever)) : PLACEHOLDER,
             },
-            { label: labels.lifetime, value: computed ? whole(computed.lifetimeSavings) : PLACEHOLDER },
+            // M7: lifetime is a separate question from monthly savings; a higher total cost is
+            // labelled and styled as a cost, never shown as negative "savings".
+            costsMore
+              ? { label: labels.lifetimeCost, value: whole(computed!.lifetimeCostChange), tone: "negative" as const }
+              : { label: labels.lifetime, value: computed ? whole(Math.max(0, computed.lifetimeSavings)) : PLACEHOLDER },
           ]}
-          summary={
+          summary={[
+            { label: labels.simple, value: computed ? whole(computed.simpleSavings) : PLACEHOLDER },
+            { label: labels.currentInterest, value: computed ? whole(computed.currentInterest) : PLACEHOLDER },
+            { label: labels.newInterest, value: computed ? whole(computed.newInterest) : PLACEHOLDER },
+          ]}
+          message={
             computed
-              ? [
-                  { label: labels.simple, value: whole(computed.simpleSavings) },
-                  { label: labels.currentInterest, value: whole(computed.currentInterest) },
-                  { label: labels.newInterest, value: whole(computed.newInterest) },
-                ]
-              : []
+              ? [costsMore ? interpolate(String(results.costsOutweigh || ""), { amount: whole(computed.lifetimeCostChange) }) : "", String(results.summaryMessage)]
+                  .filter(Boolean)
+                  .join(" ")
+              : String(results.invalidMessage)
           }
-          message={computed ? String(results.summaryMessage) : String(results.invalidMessage)}
           cta={<CalculatorCta id="refinance" />}
         />
       </div>

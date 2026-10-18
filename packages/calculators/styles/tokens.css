@@ -820,3 +820,13 @@
   display: grid;
   gap: 0.3rem;
 }
+
+/* A result that is a cost/loss (e.g. refinance costs more over its life): never green/brand-positive. */
+.lc-result-item--negative .lc-result-value {
+  color: var(--lc-error);
+}
+.lc-result-item-note {
+  font-size: 0.75rem;
+  color: var(--lc-text-muted);
+  margin-top: 0.15rem;
+}

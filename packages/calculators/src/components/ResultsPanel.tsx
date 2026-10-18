@@ -1,6 +1,13 @@
 import type { ReactNode } from "react";
 
-type ResultItem = { label: string; value: string };
+type ResultItem = {
+  label: string;
+  value: string;
+  /** "negative" renders the value as a cost/loss (error colour), never as a saving. */
+  tone?: "negative";
+  /** Optional short explanation under the value (text only). */
+  note?: string;
+};
 
 type ResultsPanelProps = {
   heading: string;
@@ -36,9 +43,10 @@ export function ResultsPanel({
         {items.length > 0 ? (
           <div className="lc-result-grid">
             {items.map((item) => (
-              <div className="lc-result-item" key={item.label}>
+              <div className={item.tone === "negative" ? "lc-result-item lc-result-item--negative" : "lc-result-item"} key={item.label}>
                 <div className="lc-result-label">{item.label}</div>
                 <div className="lc-result-value">{item.value}</div>
+                {item.note ? <div className="lc-result-item-note">{item.note}</div> : null}
               </div>
             ))}
           </div>

@@ -116,7 +116,23 @@ export function leasePayment(o: {
   };
 }
 
-/** Refinance comparison with closing costs paid in cash or rolled into the new loan. */
+/**
+ * Refinance comparison with closing costs paid in cash or rolled into the new loan.
+ *
+ * Two different questions are answered separately (M7):
+ * - monthly: `monthlySavings` = current P&I − new P&I (can be negative).
+ * - lifetime: `lifetimeCostChange` = (new total P&I + cash costs) − current remaining total.
+ *   Positive means the refinance costs MORE over its life (e.g. a longer term), even when
+ *   the monthly payment drops. `lifetimeSavings` = −lifetimeCostChange (kept for callers).
+ *
+ * Break-even is balance-adjusted and works the same way for cash and rolled-in costs: the
+ * first month n where
+ *   Σ(payment savings so far) − cash costs + (current balance_n − new balance_n) ≥ 0.
+ * With rolled-in costs nothing is paid up front, but the new balance starts higher by the
+ * costs (and accrues interest on them), so the old `costs ÷ monthly savings` shortcut was
+ * wrong for that case. NaN when you never come out ahead within the longer of the two terms.
+ * `simpleBreakEvenMonths` (cash costs ÷ monthly savings) is kept for reference.
+ */
 export function refinanceCompare(o: {
   balance: number;
   currentRatePct: number;
@@ -134,7 +150,8 @@ export function refinanceCompare(o: {
   if (!current || !next) return null;
   const monthlySavings = current.payment - next.payment;
   const upfront = o.rollCosts ? 0 : o.closingCosts;
-  const breakEvenMonths = monthlySavings > 0 ? Math.ceil(o.closingCosts / monthlySavings) : NaN;
+  const newTotal = next.totalPaid + upfront;
+  const lifetimeCostChange = newTotal - current.totalPaid;
   return {
     currentPayment: current.payment,
     newPayment: next.payment,
@@ -142,13 +159,35 @@ export function refinanceCompare(o: {
     /** Simple template formula: (current − new) × remaining payments. */
     simpleSavings: monthlySavings * o.remainingMonths,
     currentRemainingTotal: current.totalPaid,
-    newTotal: next.totalPaid + upfront,
-    lifetimeSavings: current.totalPaid - (next.totalPaid + upfront),
+    newTotal,
+    lifetimeCostChange,
+    lifetimeSavings: -lifetimeCostChange,
+    /** True when monthly payments fall but the refinance costs more in total. */
+    lowerPaymentHigherCost: monthlySavings > 0 && lifetimeCostChange > 0,
     currentInterest: current.totalInterest,
     newInterest: next.totalInterest,
-    breakEvenMonths,
+    breakEvenMonths: refinanceBreakEven(current.schedule, next.schedule, upfront),
+    simpleBreakEvenMonths: monthlySavings > 0 ? Math.ceil(o.closingCosts / monthlySavings) : NaN,
+    upfrontCosts: upfront,
     newPrincipal,
   };
+}
+
+type ScheduleRow = { payment: number; balance: number };
+
+/** Balance-adjusted break-even month (see refinanceCompare). NaN when never ahead. */
+export function refinanceBreakEven(current: ScheduleRow[], next: ScheduleRow[], upfrontCosts: number): number {
+  const horizon = Math.max(current.length, next.length);
+  let cumulative = -upfrontCosts;
+  for (let n = 0; n < horizon; n++) {
+    const cur = current[n];
+    const nw = next[n];
+    cumulative += (cur ? cur.payment : 0) - (nw ? nw.payment : 0);
+    const curBal = cur ? cur.balance : 0;
+    const newBal = nw ? nw.balance : 0;
+    if (cumulative + (curBal - newBal) >= -0.005) return n + 1;
+  }
+  return NaN;
 }
 
 /** HELOC with interest-only draw period followed by amortizing repayment period. */
