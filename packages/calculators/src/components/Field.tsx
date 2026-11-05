@@ -26,7 +26,7 @@ export function Field({
 }: FieldProps) {
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
-  const describedBy = [hint ? hintId : null, errorId].filter(Boolean).join(" ");
+  const describedBy = [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") || undefined;
   const classes = ["lc-input", prefix ? "has-prefix" : "", suffix ? "has-suffix" : ""]
     .filter(Boolean)
     .join(" ");
@@ -65,9 +65,11 @@ export function Field({
           {hint}
         </p>
       ) : null}
-      <p className="lc-error-text" id={errorId} role="alert">
-        {error || ""}
-      </p>
+      {error ? (
+        <p className="lc-error-text" id={errorId} role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

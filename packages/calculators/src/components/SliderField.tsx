@@ -54,7 +54,7 @@ export function SliderField({ id, label, hint, error, value, onChange, min, max,
           onChange={(e) => onChange(e.target.value)}
           autoComplete="off"
           aria-invalid={error ? "true" : "false"}
-          aria-describedby={[hint ? hintId : null, errorId].filter(Boolean).join(" ")}
+          aria-describedby={[hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") || undefined}
         />
       </div>
       {hint ? (
@@ -62,9 +62,11 @@ export function SliderField({ id, label, hint, error, value, onChange, min, max,
           {hint}
         </p>
       ) : null}
-      <p className="lc-error-text" id={errorId} role="alert">
-        {error || ""}
-      </p>
+      {error ? (
+        <p className="lc-error-text" id={errorId} role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
