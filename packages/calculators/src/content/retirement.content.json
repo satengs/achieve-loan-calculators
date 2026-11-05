@@ -1,72 +1,56 @@
 {
   "meta": {
-    "title": "Retirement savings calculator | Multi-brand demo",
-    "description": "Retirement savings projection."
+    "title": "Retirement withdrawal calculator | Multi-brand demo",
+    "description": "See how long retirement savings could last with monthly withdrawals."
   },
   "header": {
     "eyebrow": "Retirement",
-    "title": "Retirement savings calculator",
-    "intro": "Project your retirement balance from current savings, monthly and employer contributions, and an assumed return — plus an illustrative monthly income using a withdrawal rate."
+    "title": "Retirement withdrawal calculator",
+    "intro": "Estimate how long your savings could last if you withdraw a set amount each month — with an optional annual raise to keep up with prices."
   },
   "demoBanner": {
     "icon": "ℹ️",
     "strong": "Sample figures for demo only — not an offer.",
-    "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+    "body": "Estimates are illustrative for education and UX prototyping. Actual returns, taxes, fees, and spending vary. Not investment, tax, or financial advice."
   },
   "form": {
-    "heading": "Your retirement plan",
+    "heading": "Your withdrawals",
     "fields": {
-      "currentAge": {
-        "label": "Current age"
+      "startAge": {
+        "label": "Age when you start withdrawals"
       },
-      "retireAge": {
-        "label": "Retirement age"
-      },
-      "currentSavings": {
-        "label": "Current retirement savings",
+      "savings": {
+        "label": "Retirement savings",
         "prefix": "$"
       },
-      "monthlyContribution": {
-        "label": "Your monthly contribution",
-        "prefix": "$"
-      },
-      "employerMonthly": {
-        "label": "Employer contribution (monthly)",
+      "monthlyWithdrawal": {
+        "label": "Monthly withdrawal",
         "prefix": "$"
       },
       "annualReturn": {
-        "label": "Expected annual return",
+        "label": "Return rate",
         "suffix": "%",
         "hint": "Illustrative assumption — not a forecast. Investments can lose value."
-      },
-      "inflation": {
-        "label": "Inflation assumption",
-        "suffix": "%"
-      },
-      "withdrawalRate": {
-        "label": "Withdrawal rate in retirement",
-        "suffix": "%",
-        "hint": "A commonly cited planning rule of thumb is ~4%."
-      },
-      "contributionGrowth": {
-        "label": "Annual contribution increase",
-        "suffix": "%"
       }
-    }
+    },
+    "inflationRaise": {
+      "labelTemplate": "Raise my withdrawal {{pct}}% a year to keep up with prices"
+    },
+    "resetLabel": "Reset to typical numbers"
   },
   "results": {
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
-    "heading": "Projected at retirement",
-    "primaryLabel": "Projected balance",
+    "stickyLabel": "Could last",
+    "headlineTemplate": "Your {{savings}} could last {{duration}}, until about age {{endAge}}.",
+    "headlineCappedTemplate": "Your {{savings}} could last beyond age {{maxAge}} at this withdrawal rate.",
     "labels": {
-      "real": "In today’s dollars",
-      "monthlyIncome": "Est. monthly income",
-      "monthlyIncomeToday": "Monthly income (today’s $)",
-      "contributions": "Total contributions",
-      "growth": "Investment growth",
-      "years": "Years to retirement"
+      "takeOut": "You take out",
+      "growth": "Growth along the way"
     },
-    "summaryMessage": "Constant-return projection for illustration. Does not model taxes, fees, Social Security, or market volatility. Not investment advice."
+    "chartAria": "Savings balance by age while withdrawing",
+    "tipRunsOutTemplate": "At this rate the money runs out before {{warnAge}}. Taking out about {{suggested}} a month would make it last until {{targetAge}}.",
+    "tipLastsTemplate": "At this rate the money could last to about age {{endAge}}. A higher withdrawal shortens the runway; a lower one stretches it.",
+    "summaryMessage": "Constant-return spend-down for illustration. Does not model taxes, fees, Social Security, sequence-of-returns risk, or market volatility. Not investment advice."
   },
   "cta": {
     "label": "Talk to a planner",
@@ -75,14 +59,5 @@
   },
   "footer": {
     "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
-  },
-  "table": {
-    "heading": "Balance by age",
-    "columns": [
-      "Age",
-      "Contributions (yr)",
-      "Growth (yr)",
-      "Balance"
-    ]
   }
 }

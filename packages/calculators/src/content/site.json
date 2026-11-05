@@ -1,16 +1,16 @@
 {
   "meta": {
     "title": "Loan Calculators | Multi-brand demos",
-    "description": "Self-contained debt, loan, home, auto, savings, and insurance calculators. Sample rates are illustrative only — not offers."
+    "description": "Self-contained debt, loan, home, auto, savings, and insurance calculators. Sample rates are illustrative only \u2014 not offers."
   },
   "header": {
     "eyebrow": "Multi-brand demos",
     "title": "Loan, savings & coverage calculators",
-    "intro": "Self-contained prototypes for UX and product exploration. Sample rates and defaults are illustrative only — not offers, quotes, or guarantees."
+    "intro": "Self-contained prototypes for UX and product exploration. Sample rates and defaults are illustrative only \u2014 not offers, quotes, or guarantees."
   },
   "demoBanner": {
-    "icon": "ℹ️",
-    "strong": "Sample / demo only — not an offer.",
+    "icon": "\u2139\ufe0f",
+    "strong": "Sample / demo only \u2014 not an offer.",
     "body": "These tools do not constitute loan offers, rate locks, insurance quotes, or compliance guarantees."
   },
   "cards": [
@@ -21,7 +21,7 @@
       "eyebrow": "Debt payoff",
       "title": "Debt payoff calculator",
       "description": "Compare paying minimums, waiting, your own payoff plan, and an illustrative program cost.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "consolidation-options",
@@ -30,7 +30,7 @@
       "eyebrow": "Consolidation options",
       "title": "Consolidation options estimator",
       "description": "Slide your debt amount to compare indicative personal loan, home equity, and program ranges.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "dti",
@@ -39,7 +39,7 @@
       "eyebrow": "DTI ratio",
       "title": "Debt-to-income calculator",
       "description": "See your DTI and where it falls in commonly used ranges.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "personal-loan",
@@ -47,7 +47,7 @@
       "eyebrow": "Personal loan",
       "title": "Personal loan calculator",
       "description": "Estimate monthly payments, total interest, and total cost with optional origination fee (financed).",
-      "linkLabel": "Open calculator →",
+      "linkLabel": "Open calculator \u2192",
       "section": "debt"
     },
     {
@@ -57,7 +57,7 @@
       "eyebrow": "Loan",
       "title": "Loan calculator",
       "description": "Monthly installment, total interest, and the effect of extra payments.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "student-loan",
@@ -66,7 +66,7 @@
       "eyebrow": "Student loan",
       "title": "Student loan calculator",
       "description": "Standard repayment, capitalized interest, and extra-payment payoff.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "mortgage",
@@ -74,7 +74,7 @@
       "eyebrow": "Home loan",
       "title": "Mortgage calculator",
       "description": "Estimate principal & interest, optional PITI, total interest, and loan amount from price and down payment.",
-      "linkLabel": "Open calculator →",
+      "linkLabel": "Open calculator \u2192",
       "section": "home"
     },
     {
@@ -84,7 +84,7 @@
       "eyebrow": "Refinance",
       "title": "Refinance calculator",
       "description": "Monthly savings, break-even on closing costs, and lifetime cost difference.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "heloc",
@@ -92,7 +92,7 @@
       "eyebrow": "Home equity",
       "title": "HELOC calculator",
       "description": "Estimate borrowing power, interest-only, fixed P&I, or draw-then-repay payments, and LTV / CLTV.",
-      "linkLabel": "Open calculator →",
+      "linkLabel": "Open calculator \u2192",
       "section": "home"
     },
     {
@@ -102,7 +102,7 @@
       "eyebrow": "Car loan",
       "title": "Car loan calculator",
       "description": "Payment with sales tax, fees, down payment, and trade-in equity.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "auto-lease",
@@ -111,7 +111,7 @@
       "eyebrow": "Auto lease",
       "title": "Auto lease calculator",
       "description": "Lease payment from residual, money factor, term, and tax.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "budget",
@@ -120,7 +120,7 @@
       "eyebrow": "Budget",
       "title": "Monthly budget calculator",
       "description": "Income vs spending with a 50/30/20 comparison.",
-      "linkLabel": "Open calculator →"
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "savings",
@@ -128,17 +128,17 @@
       "section": "savings",
       "eyebrow": "Savings",
       "title": "Savings calculator",
-      "description": "Compound growth of deposits, in nominal and today’s dollars.",
-      "linkLabel": "Open calculator →"
+      "description": "Compound growth of deposits, in nominal and today\u2019s dollars.",
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "retirement",
       "href": "/retirement",
       "section": "savings",
       "eyebrow": "Retirement",
-      "title": "Retirement savings calculator",
-      "description": "Projected balance and an illustrative retirement income.",
-      "linkLabel": "Open calculator →"
+      "title": "Retirement withdrawal calculator",
+      "description": "See how long savings could last with monthly withdrawals.",
+      "linkLabel": "Open calculator \u2192"
     },
     {
       "id": "life-insurance",
@@ -146,7 +146,7 @@
       "eyebrow": "Life insurance",
       "title": "Coverage need estimator",
       "description": "Illustrative DIME-style coverage need plus an illustrative premium range.",
-      "linkLabel": "Open estimator →",
+      "linkLabel": "Open estimator \u2192",
       "section": "insurance"
     },
     {
@@ -156,7 +156,7 @@
       "eyebrow": "Car insurance",
       "title": "Car insurance cost estimator",
       "description": "Rough premium from a transparent, editable factor table.",
-      "linkLabel": "Open estimator →"
+      "linkLabel": "Open estimator \u2192"
     },
     {
       "id": "home-insurance",
@@ -165,7 +165,7 @@
       "eyebrow": "Home insurance",
       "title": "Home insurance cost estimator",
       "description": "Rough homeowners premium from coverage and editable factors.",
-      "linkLabel": "Open estimator →"
+      "linkLabel": "Open estimator \u2192"
     }
   ],
   "footer": {
@@ -195,7 +195,7 @@
     {
       "id": "insurance",
       "title": "Insurance",
-      "description": "Rough, illustrative coverage and cost estimates — not quotes."
+      "description": "Rough, illustrative coverage and cost estimates \u2014 not quotes."
     }
   ]
 }

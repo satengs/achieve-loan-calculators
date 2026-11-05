@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { futureValue, monthlyRateFromNominal, realValue, retirementProjection, yoyPct } from "./savings";
+import { futureValue, formatDurationMonths, monthlyRateFromNominal, realValue, retirementDrawdown, retirementProjection, withdrawalToLastUntil, yoyPct } from "./savings";
 import { budgetSummary } from "./budget";
 
 describe("futureValue", () => {
@@ -68,5 +68,106 @@ describe("budgetSummary", () => {
   it("zero income → NaN percents; negatives → null", () => {
     assert.ok(Number.isNaN(budgetSummary([0], [])!.pctOfIncome.needs));
     assert.equal(budgetSummary([-1], []), null);
+  });
+});
+
+describe("retirementDrawdown", () => {
+  it("zero return depletes in savings/withdrawal months", () => {
+    const r = retirementDrawdown({
+      startAge: 65,
+      savings: 12000,
+      monthlyWithdrawal: 1000,
+      annualReturnPct: 0,
+    })!;
+    assert.equal(r.monthsLasted, 12);
+    assert.equal(r.capped, false);
+    assert.ok(Math.abs(r.endAge - 66) < 1e-9);
+    assert.equal(r.totalWithdrawn, 12000);
+    assert.equal(r.totalGrowth, 0);
+  });
+
+  it("growth extends runway vs zero return", () => {
+    const zero = retirementDrawdown({
+      startAge: 67,
+      savings: 500000,
+      monthlyWithdrawal: 2500,
+      annualReturnPct: 0,
+    })!;
+    const growth = retirementDrawdown({
+      startAge: 67,
+      savings: 500000,
+      monthlyWithdrawal: 2500,
+      annualReturnPct: 5,
+    })!;
+    assert.ok(growth.monthsLasted > zero.monthsLasted);
+    assert.ok(growth.totalGrowth > 0);
+    assert.ok(growth.bars.length >= 2);
+  });
+
+  it("inflation raise shortens runway", () => {
+    const flat = retirementDrawdown({
+      startAge: 67,
+      savings: 500000,
+      monthlyWithdrawal: 2500,
+      annualReturnPct: 5,
+      withdrawalInflationPct: 0,
+    })!;
+    const raised = retirementDrawdown({
+      startAge: 67,
+      savings: 500000,
+      monthlyWithdrawal: 2500,
+      annualReturnPct: 5,
+      withdrawalInflationPct: 3,
+    })!;
+    assert.ok(raised.monthsLasted < flat.monthsLasted);
+  });
+
+  it("invalid → null", () => {
+    assert.equal(
+      retirementDrawdown({ startAge: 90, savings: 1, monthlyWithdrawal: 1, annualReturnPct: 5, maxAge: 90 }),
+      null,
+    );
+    assert.equal(
+      retirementDrawdown({ startAge: 65, savings: -1, monthlyWithdrawal: 1, annualReturnPct: 5 }),
+      null,
+    );
+  });
+});
+
+describe("withdrawalToLastUntil + formatDurationMonths", () => {
+  it("finds a withdrawal that lasts to target age", () => {
+    const w = withdrawalToLastUntil({
+      startAge: 67,
+      savings: 500000,
+      annualReturnPct: 5,
+      withdrawalInflationPct: 3,
+      targetAge: 95,
+    })!;
+    assert.ok(w > 0);
+    const trial = retirementDrawdown({
+      startAge: 67,
+      savings: 500000,
+      monthlyWithdrawal: w,
+      annualReturnPct: 5,
+      withdrawalInflationPct: 3,
+      maxAge: 96,
+    })!;
+    assert.ok(trial.monthsLasted >= (95 - 67) * 12 - 1);
+    const over = retirementDrawdown({
+      startAge: 67,
+      savings: 500000,
+      monthlyWithdrawal: w * 1.15,
+      annualReturnPct: 5,
+      withdrawalInflationPct: 3,
+      maxAge: 96,
+    })!;
+    assert.ok(over.monthsLasted < trial.monthsLasted || over.endAge < 95);
+  });
+
+  it("formats duration", () => {
+    assert.equal(formatDurationMonths(0), "0 months");
+    assert.equal(formatDurationMonths(1), "1 month");
+    assert.equal(formatDurationMonths(12), "1 year");
+    assert.equal(formatDurationMonths(250), "20 years, 10 months");
   });
 });

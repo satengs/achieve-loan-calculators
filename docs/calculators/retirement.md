@@ -1,59 +1,51 @@
-# Retirement savings calculator
+# Retirement withdrawal calculator
 
 - **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: "achieve" | "fdr" | "bills"`, `rates?: MarketRates`)
-- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)
+- **Presentation:** shared spend-down layout (`PresentationResults`, row `SliderField`, `MicroStats`, `DepletionChart`, `TipCallout`) — reusable by other calculators later.
 
 ## Purpose
-Reference formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.
+Estimate how long a retirement nest egg could last given a monthly withdrawal, an assumed return, and an optional annual raise tied to CPI. Presentation mirrors a two-column form + tinted results card (sentence headline, micro-stats, depletion bars, tip).
+
+The earlier accumulation helper `retirementProjection` remains in `calc/savings.ts` for tests and other hosts; the demo UI is spend-down first.
 
 ## Inputs
 | Key | Label | Type | Default | Min–max | Validation |
 |---|---|---|---|---|---|
-| `currentAge` | Current age | number | 35 | 16–90 | required, >0 |
-| `retireAge` | Retirement age | number | 67 | 30–100 | required, >0 |
-| `currentSavings` | Current retirement savings | number | 50000 | 0–1000000000 | required |
-| `monthlyContribution` | Your monthly contribution | number | 500 | 0–1000000 | required |
-| `employerMonthly` | Employer contribution (monthly) | number | 150 | 0–1000000 | required |
-| `annualReturn` | Expected annual return | number | 6 | 0–20 | required |
-| `inflation` | Inflation assumption | number | 3 | 0–20 | required |
-| `withdrawalRate` | Withdrawal rate in retirement | number | 4 | 0–20 | required |
-| `contributionGrowth` | Annual contribution increase | number | 2 | 0–20 | required |
+| `startAge` | Age when you start withdrawals | number | 67 | 40–90 | required |
+| `savings` | Retirement savings | number | 500000 | 0–1e9 | required |
+| `monthlyWithdrawal` | Monthly withdrawal | number | 2500 | 0–1e6 | required |
+| `annualReturn` | Return rate | number | 5 | 0–20 | required |
+| raise checkbox | Raise withdrawal with inflation | bool | on | — | uses live CPI YoY |
 
-Content labels/hints live in `src/content/retirement.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).
+Content labels live in `src/content/retirement.content.json`. Slider ranges live in `config.features.sliders`.
 
 ## Outputs
-- Projected balance (primary)
-- Today's dollars, est. monthly income, total contributions, growth
-- Monthly income in today's $, years to retirement
-- Balance by age table (every 5 yrs)
-
-All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.
+- Sentence headline with duration emphasized
+- Micro-stats: You take out / Growth along the way
+- Depletion bar chart by age
+- Tip callout (suggests a monthly amount to last until a target age when runway ends before the warn age)
+- Mobile sticky duration bar; desktop sticky tinted results card
 
 ## Formulas
-Same monthly FV loop as Savings with `C = yours + employer`, return compounding monthly, contributions grow g%/yr. `real = FV/(1+inf)^years`; `annual income = FV × withdrawal%`.
+Monthly loop: apply effective monthly return, then withdraw. Optional annual raise: `withdrawal *= (1 + inflationPct/100)` each year. Totals: withdrawn sum and interest sum. Chart samples balance at year boundaries. `withdrawalToLastUntil` binary-searches a starting monthly withdrawal that lasts to `tipTargetAge`.
 
 ### Worked example (defaults)
-Age 35→67, $50k saved, $500 + $150 employer, 6%, +2%/yr contributions → **$1,282,842**; ≈ $498,175 in today's $ at 3% inflation; 4% → $4,276/mo (≈ $1,661 today). Live default inflation uses CPI YoY (e.g. 3.72%).
+Age 67, $500,000, $2,500/mo, 5% return, ~3.72% CPI raise → runway on the order of ~20 years (exact months depend on live CPI). Growth along the way is the cumulative interest credited before withdrawals.
 
 ## Data sources / APIs
 | Rate key | Meaning | FRED series | Source page |
 |---|---|---|---|
 | `inflationYoY` | BLS CPI-U YoY % (latest vs observation dated exactly 12 months earlier) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |
 
-- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.
-- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.
-- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.
-- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.
+Used only when the inflation-raise checkbox is on.
 
 ## Config vs content
-- `src/config/retirement.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`inflationKey`, `tableEveryYears`), `cta` (enabled / preventDefault). Numbers/assumptions only.
-- `src/content/retirement.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.
-- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.
+- `retirement.config.json`: defaults, validation, slider ranges, tip ages, maxAge, cta.
+- `retirement.content.json`: CMS text only (headline/tip templates with `{{vars}}`, field labels, disclaimers). Never HTML.
 
 ## Assumptions & limitations
-- Expected return is an editable illustrative assumption (no market forecast).
-- No taxes, fees, Social Security, sequence-of-returns risk. Not investment advice.
-- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.
+- Constant return; no taxes, fees, Social Security, or sequence-of-returns risk.
+- Illustrative only — not advice or an offer.
 
 ## Tests
-`savings.test.ts › retirementProjection`: zero return/inflation = template formula (100×12×30 = $36,000), 4% income; retireAge ≤ currentAge → null.
+`savings.test.ts › retirementDrawdown`, `withdrawalToLastUntil + formatDurationMonths`; legacy `retirementProjection` kept.

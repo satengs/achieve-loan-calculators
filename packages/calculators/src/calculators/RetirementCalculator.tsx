@@ -1,96 +1,221 @@
 "use client";
 
-import { useMemo } from "react";
-import { retirementProjection } from "../calc";
+import { useMemo, useState } from "react";
+import {
+  formatDurationMonths,
+  retirementDrawdown,
+  withdrawalToLastUntil,
+} from "../calc";
+import { interpolate } from "../calc/format";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
-import { DataTable } from "../components/DataTable";
-import { MoreOptions } from "../components/MoreOptions";
+import { DepletionChart } from "../components/DepletionChart";
+import { PresentationResults } from "../components/PresentationResults";
 import { RateNote } from "../components/RateNote";
-import { ResultsPanel } from "../components/ResultsPanel";
+import { SliderField } from "../components/SliderField";
 import { resolveRate, type MarketRates } from "../rates/types";
 import { CalculatorCta, useCalculatorSetup } from "./common";
-import { NumberFields, useNumberInputs } from "./useNumberInputs";
+import { useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
 export type RetirementCalculatorProps = {
   projectName?: ProjectName | string;
-  /** Live rates: inflationYoY (CPI). */
+  /** Live rates: inflationYoY (CPI) drives the optional withdrawal raise. */
   rates?: MarketRates;
 };
 
-const KEYS = ["currentAge", "retireAge", "currentSavings", "monthlyContribution", "employerMonthly", "annualReturn", "inflation", "withdrawalRate", "contributionGrowth"] as const;
+const KEYS = ["startAge", "savings", "monthlyWithdrawal", "annualReturn"] as const;
 
 export function RetirementCalculator({ projectName = "achieve", rates }: RetirementCalculatorProps) {
   const brand = resolveProjectName(projectName);
   const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("retirement");
-  const infl = resolveRate(rates, "inflationYoY", Number(config.defaults.inflation));
-  const inputs = useNumberInputs(config, KEYS, { inflation: infl.value });
-  const table = (content.table || {}) as Record<string, any>;
-  const every = Number(features.tableEveryYears ?? 5);
+  const infl = resolveRate(rates, "inflationYoY", Number(features.fallbackInflationPct ?? config.defaults.inflation ?? 3));
+  const inputs = useNumberInputs(config, KEYS);
+  const [raiseWithInflation, setRaiseWithInflation] = useState(Number(config.defaults.raiseWithInflation ?? 1) === 1);
 
-  const ageErr = inputs.ok && inputs.values.retireAge <= inputs.values.currentAge ? "Retirement age must be greater than current age." : "";
-  const errors: Record<string, string> = { ...inputs.errors, retireAge: inputs.errors.retireAge || ageErr };
+  const formCopy = content.form as Record<string, any>;
+  const sliders = (features.sliders || {}) as Record<string, { min: number; max: number; step: number }>;
+  const tipWarnAge = Number(features.tipWarnAge ?? 90);
+  const tipTargetAge = Number(features.tipTargetAge ?? 95);
+  const maxAge = Number(features.maxAge ?? 120);
+  const inflationPct = raiseWithInflation ? infl.value : 0;
 
   const computed = useMemo(() => {
     if (!inputs.ok) return null;
     const v = inputs.values;
-    return retirementProjection({
-      currentAge: v.currentAge,
-      retireAge: v.retireAge,
-      currentSavings: v.currentSavings,
-      monthlyContribution: v.monthlyContribution,
-      employerMonthly: v.employerMonthly,
+    const drawdown = retirementDrawdown({
+      startAge: v.startAge,
+      savings: v.savings,
+      monthlyWithdrawal: v.monthlyWithdrawal,
       annualReturnPct: v.annualReturn,
-      inflationPct: v.inflation,
-      withdrawalRatePct: v.withdrawalRate,
-      contributionGrowthPct: v.contributionGrowth,
+      withdrawalInflationPct: inflationPct,
+      maxAge,
     });
-  }, [inputs.ok, inputs.values]);
+    if (!drawdown) return null;
+    const suggested =
+      !drawdown.capped && drawdown.endAgeWhole < tipWarnAge
+        ? withdrawalToLastUntil({
+            startAge: v.startAge,
+            savings: v.savings,
+            annualReturnPct: v.annualReturn,
+            withdrawalInflationPct: inflationPct,
+            targetAge: tipTargetAge,
+          })
+        : null;
+    return { drawdown, suggested };
+  }, [inputs.ok, inputs.values, inflationPct, maxAge, tipWarnAge, tipTargetAge]);
 
-  const rows = computed
-    ? computed.rows
-        .filter((r, i) => r.year % every === 0 || i === computed.rows.length - 1)
-        .map((r) => [String(inputs.values.currentAge + r.year), whole(r.contributions), whole(r.interest), whole(r.balance)])
-    : [];
+  const duration = computed ? formatDurationMonths(computed.drawdown.monthsLasted) : PLACEHOLDER;
+  const stickyValue = computed
+    ? computed.drawdown.capped
+      ? `Beyond ${maxAge}`
+      : duration
+    : PLACEHOLDER;
+
+  const headline = (() => {
+    if (!computed) return String(results.invalidMessage);
+    const savings = whole(inputs.values.savings);
+    if (computed.drawdown.capped) {
+      return interpolate(String(results.headlineCappedTemplate), { savings, maxAge });
+    }
+    const endAge = String(computed.drawdown.endAgeWhole);
+    const template = String(results.headlineTemplate);
+    const parts = template.split("{{duration}}");
+    if (parts.length === 2) {
+      return (
+        <>
+          {interpolate(parts[0], { savings, endAge })}
+          <span className="lc-headline-em">{duration}</span>
+          {interpolate(parts[1], { savings, endAge })}
+        </>
+      );
+    }
+    return interpolate(template, { savings, duration, endAge });
+  })();
+
+  const tip = (() => {
+    if (!computed) return null;
+    const d = computed.drawdown;
+    if (!d.capped && d.endAgeWhole < tipWarnAge && computed.suggested != null) {
+      return interpolate(String(results.tipRunsOutTemplate), {
+        warnAge: tipWarnAge,
+        suggested: whole(computed.suggested),
+        targetAge: tipTargetAge,
+      });
+    }
+    return interpolate(String(results.tipLastsTemplate), {
+      endAge: d.capped ? maxAge : d.endAgeWhole,
+    });
+  })();
+
+  const raiseLabel = interpolate(String(formCopy.inflationRaise?.labelTemplate || "Raise my withdrawal {{pct}}% a year"), {
+    pct: Number.isFinite(infl.value) ? infl.value.toFixed(infl.value >= 10 ? 0 : 2).replace(/\.00$/, "") : "3",
+  });
 
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell
+      projectName={brand}
+      eyebrow={content.header.eyebrow}
+      title={content.header.title}
+      intro={content.header.intro}
+      banner={content.demoBanner}
+      footerNote={content.footer.note}
+    >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="rt" keys={["currentAge", "retireAge", "currentSavings", "monthlyContribution", "employerMonthly"]} fields={fields} inputs={inputs} errors={errors} />
-          <MoreOptions>
-            <NumberFields idPrefix="rt" keys={["annualReturn", "inflation"]} fields={fields} inputs={inputs} errors={errors} />
-            <RateNote rate={infl} subject="inflation (CPI-U, year over year)" />
-            <NumberFields idPrefix="rt" keys={["withdrawalRate", "contributionGrowth"]} fields={fields} inputs={inputs} errors={errors} />
-          </MoreOptions>
+          <h2>{formCopy.heading}</h2>
+          <SliderField
+            layout="row"
+            id="rt-startAge"
+            label={fields.startAge?.label || "Age when you start withdrawals"}
+            min={sliders.startAge?.min ?? 40}
+            max={sliders.startAge?.max ?? 90}
+            step={sliders.startAge?.step ?? 1}
+            value={inputs.state.startAge}
+            onChange={(v) => inputs.set("startAge", v)}
+            error={inputs.errors.startAge}
+          />
+          <SliderField
+            layout="row"
+            id="rt-savings"
+            label={fields.savings?.label || "Retirement savings"}
+            prefix={fields.savings?.prefix || "$"}
+            min={sliders.savings?.min ?? 0}
+            max={sliders.savings?.max ?? 2000000}
+            step={sliders.savings?.step ?? 5000}
+            value={inputs.state.savings}
+            onChange={(v) => inputs.set("savings", v)}
+            error={inputs.errors.savings}
+          />
+          <SliderField
+            layout="row"
+            id="rt-monthlyWithdrawal"
+            label={fields.monthlyWithdrawal?.label || "Monthly withdrawal"}
+            prefix={fields.monthlyWithdrawal?.prefix || "$"}
+            min={sliders.monthlyWithdrawal?.min ?? 0}
+            max={sliders.monthlyWithdrawal?.max ?? 20000}
+            step={sliders.monthlyWithdrawal?.step ?? 50}
+            value={inputs.state.monthlyWithdrawal}
+            onChange={(v) => inputs.set("monthlyWithdrawal", v)}
+            error={inputs.errors.monthlyWithdrawal}
+          />
+          <SliderField
+            layout="row"
+            id="rt-annualReturn"
+            label={fields.annualReturn?.label || "Return rate"}
+            suffix={fields.annualReturn?.suffix || "%"}
+            hint={fields.annualReturn?.hint}
+            min={sliders.annualReturn?.min ?? 0}
+            max={sliders.annualReturn?.max ?? 12}
+            step={sliders.annualReturn?.step ?? 0.25}
+            value={inputs.state.annualReturn}
+            onChange={(v) => inputs.set("annualReturn", v)}
+            error={inputs.errors.annualReturn}
+          />
+          <label className="lc-check-row">
+            <input
+              type="checkbox"
+              checked={raiseWithInflation}
+              onChange={(e) => setRaiseWithInflation(e.target.checked)}
+            />
+            <span>{raiseLabel}</span>
+          </label>
+          {raiseWithInflation ? <RateNote rate={infl} subject="inflation raise (CPI-U, year over year)" /> : null}
+          <button type="button" className="lc-reset-link" onClick={() => {
+            inputs.reset();
+            setRaiseWithInflation(Number(config.defaults.raiseWithInflation ?? 1) === 1);
+          }}>
+            {String(formCopy.resetLabel || "Reset to typical numbers")}
+          </button>
         </section>
-        <ResultsPanel
-          heading={String(results.heading)}
-          primaryLabel={String(results.primaryLabel)}
-          primaryValue={computed ? whole(computed.balance) : PLACEHOLDER}
-          items={[
-            { label: labels.real, value: computed ? whole(computed.realBalance) : PLACEHOLDER },
-            { label: labels.monthlyIncome, value: computed ? whole(computed.monthlyIncome) : PLACEHOLDER },
-            { label: labels.contributions, value: computed ? whole(computed.contributions) : PLACEHOLDER },
-            { label: labels.growth, value: computed ? whole(computed.growth) : PLACEHOLDER },
-          ]}
-          summary={
+        <PresentationResults
+          stickyLabel={String(results.stickyLabel || "Could last")}
+          stickyValue={stickyValue}
+          headline={headline}
+          stats={
             computed
               ? [
-                  { label: labels.monthlyIncomeToday, value: whole(computed.monthlyIncomeToday) },
-                  { label: labels.years, value: String(computed.years) },
+                  { label: String(labels.takeOut || "You take out"), value: whole(computed.drawdown.totalWithdrawn) },
+                  {
+                    label: String(labels.growth || "Growth along the way"),
+                    value: whole(computed.drawdown.totalGrowth),
+                    accent: "growth",
+                  },
                 ]
-              : []
+              : [
+                  { label: String(labels.takeOut || "You take out"), value: PLACEHOLDER },
+                  { label: String(labels.growth || "Growth along the way"), value: PLACEHOLDER, accent: "growth" },
+                ]
           }
-          message={computed ? String(results.summaryMessage) : String(results.invalidMessage)}
+          chart={
+            computed ? (
+              <DepletionChart bars={computed.drawdown.bars} ariaLabel={String(results.chartAria || "")} />
+            ) : null
+          }
+          tip={tip}
+          message={computed ? String(results.summaryMessage) : undefined}
           cta={<CalculatorCta id="retirement" />}
         />
-      </div>
-      <div className="lc-card lc-amort-card">
-        <h2>{table.heading}</h2>
-        <DataTable caption={table.heading} columns={table.columns || []} rows={rows} emptyText={String(results.invalidMessage)} />
       </div>
     </CalculatorShell>
   );

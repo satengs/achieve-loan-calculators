@@ -3880,7 +3880,7 @@
     },
     "retirement": {
       "slug": "retirement",
-      "title": "Retirement savings",
+      "title": "Retirement withdrawal",
       "component": "RetirementCalculator",
       "componentPath": "packages/calculators/src/calculators/RetirementCalculator.tsx",
       "calcModules": [
@@ -3891,113 +3891,80 @@
         "inflationYoY"
       ],
       "docPath": "docs/calculators/retirement.md",
-      "docMarkdown": "# Retirement savings calculator\n\n- **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)\n\n## Purpose\nReference formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `currentAge` | Current age | number | 35 | 16–90 | required, >0 |\n| `retireAge` | Retirement age | number | 67 | 30–100 | required, >0 |\n| `currentSavings` | Current retirement savings | number | 50000 | 0–1000000000 | required |\n| `monthlyContribution` | Your monthly contribution | number | 500 | 0–1000000 | required |\n| `employerMonthly` | Employer contribution (monthly) | number | 150 | 0–1000000 | required |\n| `annualReturn` | Expected annual return | number | 6 | 0–20 | required |\n| `inflation` | Inflation assumption | number | 3 | 0–20 | required |\n| `withdrawalRate` | Withdrawal rate in retirement | number | 4 | 0–20 | required |\n| `contributionGrowth` | Annual contribution increase | number | 2 | 0–20 | required |\n\nContent labels/hints live in `src/content/retirement.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- Projected balance (primary)\n- Today's dollars, est. monthly income, total contributions, growth\n- Monthly income in today's $, years to retirement\n- Balance by age table (every 5 yrs)\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\nSame monthly FV loop as Savings with `C = yours + employer`, return compounding monthly, contributions grow g%/yr. `real = FV/(1+inf)^years`; `annual income = FV × withdrawal%`.\n\n### Worked example (defaults)\nAge 35→67, $50k saved, $500 + $150 employer, 6%, +2%/yr contributions → **$1,282,842**; ≈ $498,175 in today's $ at 3% inflation; 4% → $4,276/mo (≈ $1,661 today). Live default inflation uses CPI YoY (e.g. 3.72%).\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `inflationYoY` | BLS CPI-U YoY % (latest vs observation dated exactly 12 months earlier) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.\n\n## Config vs content\n- `src/config/retirement.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`inflationKey`, `tableEveryYears`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/retirement.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Expected return is an editable illustrative assumption (no market forecast).\n- No taxes, fees, Social Security, sequence-of-returns risk. Not investment advice.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`savings.test.ts › retirementProjection`: zero return/inflation = template formula (100×12×30 = $36,000), 4% income; retireAge ≤ currentAge → null.\n",
+      "docMarkdown": "# Retirement withdrawal calculator\n\n- **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Presentation:** shared spend-down layout (`PresentationResults`, row `SliderField`, `MicroStats`, `DepletionChart`, `TipCallout`) — reusable by other calculators later.\n\n## Purpose\nEstimate how long a retirement nest egg could last given a monthly withdrawal, an assumed return, and an optional annual raise tied to CPI. Presentation mirrors a two-column form + tinted results card (sentence headline, micro-stats, depletion bars, tip).\n\nThe earlier accumulation helper `retirementProjection` remains in `calc/savings.ts` for tests and other hosts; the demo UI is spend-down first.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `startAge` | Age when you start withdrawals | number | 67 | 40–90 | required |\n| `savings` | Retirement savings | number | 500000 | 0–1e9 | required |\n| `monthlyWithdrawal` | Monthly withdrawal | number | 2500 | 0–1e6 | required |\n| `annualReturn` | Return rate | number | 5 | 0–20 | required |\n| raise checkbox | Raise withdrawal with inflation | bool | on | — | uses live CPI YoY |\n\nContent labels live in `src/content/retirement.content.json`. Slider ranges live in `config.features.sliders`.\n\n## Outputs\n- Sentence headline with duration emphasized\n- Micro-stats: You take out / Growth along the way\n- Depletion bar chart by age\n- Tip callout (suggests a monthly amount to last until a target age when runway ends before the warn age)\n- Mobile sticky duration bar; desktop sticky tinted results card\n\n## Formulas\nMonthly loop: apply effective monthly return, then withdraw. Optional annual raise: `withdrawal *= (1 + inflationPct/100)` each year. Totals: withdrawn sum and interest sum. Chart samples balance at year boundaries. `withdrawalToLastUntil` binary-searches a starting monthly withdrawal that lasts to `tipTargetAge`.\n\n### Worked example (defaults)\nAge 67, $500,000, $2,500/mo, 5% return, ~3.72% CPI raise → runway on the order of ~20 years (exact months depend on live CPI). Growth along the way is the cumulative interest credited before withdrawals.\n\n## Data sources / APIs\n| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `inflationYoY` | BLS CPI-U YoY % (latest vs observation dated exactly 12 months earlier) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\nUsed only when the inflation-raise checkbox is on.\n\n## Config vs content\n- `retirement.config.json`: defaults, validation, slider ranges, tip ages, maxAge, cta.\n- `retirement.content.json`: CMS text only (headline/tip templates with `{{vars}}`, field labels, disclaimers). Never HTML.\n\n## Assumptions & limitations\n- Constant return; no taxes, fees, Social Security, or sequence-of-returns risk.\n- Illustrative only — not advice or an offer.\n\n## Tests\n`savings.test.ts › retirementDrawdown`, `withdrawalToLastUntil + formatDurationMonths`; legacy `retirementProjection` kept.\n",
       "doc": {
-        "intro": "# Retirement savings calculator\n\n- **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Formula reference:** public calculator template (source links are listed in `docs/calculators/README.md`, internal)",
-        "lead": "Reference formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.",
-        "purpose": "Reference formula: *Retirement Savings = Monthly Savings × Number of Years + Initial Investment* (no growth). We implement compound growth plus employer contributions, inflation and a withdrawal-rate income estimate; the zero-return case reduces to the template formula.",
+        "intro": "# Retirement withdrawal calculator\n\n- **Route:** `/retirement` · **Component:** `RetirementCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n- **Presentation:** shared spend-down layout (`PresentationResults`, row `SliderField`, `MicroStats`, `DepletionChart`, `TipCallout`) — reusable by other calculators later.",
+        "lead": "Estimate how long a retirement nest egg could last given a monthly withdrawal, an assumed return, and an optional annual raise tied to CPI. Presentation mirrors a two-column form + tinted results card (sentence headline, micro-stats, depletion bars, tip).",
+        "purpose": "Estimate how long a retirement nest egg could last given a monthly withdrawal, an assumed return, and an optional annual raise tied to CPI. Presentation mirrors a two-column form + tinted results card (sentence headline, micro-stats, depletion bars, tip).\n\nThe earlier accumulation helper `retirementProjection` remains in `calc/savings.ts` for tests and other hosts; the demo UI is spend-down first.",
         "formulas": [
           {
             "label": "Formula",
-            "expr": "C = yours + employer"
-          },
-          {
-            "label": "Formula",
-            "expr": "real = FV/(1+inf)^years"
-          },
-          {
-            "label": "Formula",
-            "expr": "annual income = FV × withdrawal%"
+            "expr": "withdrawal *= (1 + inflationPct/100)"
           }
         ],
-        "formulaNotes": "Same monthly FV loop as Savings with `C = yours + employer`, return compounding monthly, contributions grow g%/yr. `real = FV/(1+inf)^years`; `annual income = FV × withdrawal%`.",
+        "formulaNotes": "Monthly loop: apply effective monthly return, then withdraw. Optional annual raise: `withdrawal *= (1 + inflationPct/100)` each year. Totals: withdrawn sum and interest sum. Chart samples balance at year boundaries. `withdrawalToLastUntil` binary-searches a starting monthly withdrawal that lasts to `tipTargetAge`.",
         "workedExample": [
-          "Age 35→67, $50k saved, $500 + $150 employer, 6%, +2%/yr contributions → **$1,282,842**; ≈ $498,175 in today's $ at 3% inflation",
-          "4% → $4,276/mo (≈ $1,661 today).",
-          "Live default inflation uses CPI YoY (e.g. 3.72%)."
+          "Age 67, $500,000, $2,500/mo, 5% return, ~3.72% CPI raise → runway on the order of ~20 years (exact months depend on live CPI).",
+          "Growth along the way is the cumulative interest credited before withdrawals."
         ],
         "outputs": [
-          "Projected balance (primary)",
-          "Today's dollars, est. monthly income, total contributions, growth",
-          "Monthly income in today's $, years to retirement",
-          "Balance by age table (every 5 yrs)"
+          "Sentence headline with duration emphasized",
+          "Micro-stats: You take out / Growth along the way",
+          "Depletion bar chart by age",
+          "Tip callout (suggests a monthly amount to last until a target age when runway ends before the warn age)",
+          "Mobile sticky duration bar; desktop sticky tinted results card"
         ],
-        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "outputsNote": "",
         "assumptions": [
-          "Expected return is an editable illustrative assumption (no market forecast).",
-          "No taxes, fees, Social Security, sequence-of-returns risk. Not investment advice.",
-          "Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown."
+          "Constant return; no taxes, fees, Social Security, or sequence-of-returns risk.",
+          "Illustrative only — not advice or an offer."
         ],
-        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `inflationYoY` | BLS CPI-U YoY % (latest vs observation dated exactly 12 months earlier) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\n- Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.\n- Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.\n- UI: `RateNote` renders “Default … based on <source>, as of <date> (value). Illustrative only — not an offer or rate quote.” with a Source link.\n- Fallback: if the series fails, the component uses the config default and shows “illustrative fallback from config (live data unavailable)”.",
-        "configVsContent": "- `src/config/retirement.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`inflationKey`, `tableEveryYears`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/retirement.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`, `table`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
-        "tests": "`savings.test.ts › retirementProjection`: zero return/inflation = template formula (100×12×30 = $36,000), 4% income; retireAge ≤ currentAge → null."
+        "dataSources": "| Rate key | Meaning | FRED series | Source page |\n|---|---|---|---|\n| `inflationYoY` | BLS CPI-U YoY % (latest vs observation dated exactly 12 months earlier) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |\n\nUsed only when the inflation-raise checkbox is on.",
+        "configVsContent": "- `retirement.config.json`: defaults, validation, slider ranges, tip ages, maxAge, cta.\n- `retirement.content.json`: CMS text only (headline/tip templates with `{{vars}}`, field labels, disclaimers). Never HTML.",
+        "tests": "`savings.test.ts › retirementDrawdown`, `withdrawalToLastUntil + formatDurationMonths`; legacy `retirementProjection` kept."
       },
       "inputs": [
         {
-          "key": "currentAge",
-          "label": "Current age",
+          "key": "startAge",
+          "label": "Age when you start withdrawals",
           "type": "number",
-          "default": 35,
-          "min": 16,
+          "default": 67,
+          "min": 40,
           "max": 90,
           "allowZero": false,
           "unit": null,
           "options": null,
-          "configKey": "defaults.currentAge"
+          "configKey": "defaults.startAge"
         },
         {
-          "key": "retireAge",
-          "label": "Retirement age",
+          "key": "savings",
+          "label": "Retirement savings",
           "type": "number",
-          "default": 67,
-          "min": 30,
-          "max": 100,
-          "allowZero": false,
-          "unit": null,
-          "options": null,
-          "configKey": "defaults.retireAge"
-        },
-        {
-          "key": "currentSavings",
-          "label": "Current retirement savings",
-          "type": "number",
-          "default": 50000,
+          "default": 500000,
           "min": 0,
           "max": 1000000000,
           "allowZero": true,
           "unit": "$",
           "options": null,
-          "configKey": "defaults.currentSavings"
+          "configKey": "defaults.savings"
         },
         {
-          "key": "monthlyContribution",
-          "label": "Your monthly contribution",
+          "key": "monthlyWithdrawal",
+          "label": "Monthly withdrawal",
           "type": "number",
-          "default": 500,
+          "default": 2500,
           "min": 0,
           "max": 1000000,
           "allowZero": true,
           "unit": "$",
           "options": null,
-          "configKey": "defaults.monthlyContribution"
-        },
-        {
-          "key": "employerMonthly",
-          "label": "Employer contribution (monthly)",
-          "type": "number",
-          "default": 150,
-          "min": 0,
-          "max": 1000000,
-          "allowZero": true,
-          "unit": "$",
-          "options": null,
-          "configKey": "defaults.employerMonthly"
+          "configKey": "defaults.monthlyWithdrawal"
         },
         {
           "key": "annualReturn",
-          "label": "Expected annual return",
+          "label": "Return rate",
           "type": "number",
-          "default": 6,
+          "default": 5,
           "min": 0,
           "max": 20,
           "allowZero": true,
@@ -4006,112 +3973,72 @@
           "configKey": "defaults.annualReturn"
         },
         {
-          "key": "inflation",
-          "label": "Inflation assumption",
+          "key": "raiseWithInflation",
+          "label": "raiseWithInflation",
           "type": "number",
-          "default": 3,
-          "min": 0,
-          "max": 20,
-          "allowZero": true,
-          "unit": "%",
+          "default": 1,
+          "min": null,
+          "max": null,
+          "allowZero": null,
+          "unit": null,
           "options": null,
-          "configKey": "defaults.inflation"
-        },
-        {
-          "key": "withdrawalRate",
-          "label": "Withdrawal rate in retirement",
-          "type": "number",
-          "default": 4,
-          "min": 0,
-          "max": 20,
-          "allowZero": true,
-          "unit": "%",
-          "options": null,
-          "configKey": "defaults.withdrawalRate"
-        },
-        {
-          "key": "contributionGrowth",
-          "label": "Annual contribution increase",
-          "type": "number",
-          "default": 2,
-          "min": 0,
-          "max": 20,
-          "allowZero": true,
-          "unit": "%",
-          "options": null,
-          "configKey": "defaults.contributionGrowth"
+          "configKey": "defaults.raiseWithInflation"
         }
       ],
       "contentPath": "packages/calculators/src/content/retirement.content.json",
       "content": {
         "meta": {
-          "title": "Retirement savings calculator | Multi-brand demo",
-          "description": "Retirement savings projection."
+          "title": "Retirement withdrawal calculator | Multi-brand demo",
+          "description": "See how long retirement savings could last with monthly withdrawals."
         },
         "header": {
           "eyebrow": "Retirement",
-          "title": "Retirement savings calculator",
-          "intro": "Project your retirement balance from current savings, monthly and employer contributions, and an assumed return — plus an illustrative monthly income using a withdrawal rate."
+          "title": "Retirement withdrawal calculator",
+          "intro": "Estimate how long your savings could last if you withdraw a set amount each month — with an optional annual raise to keep up with prices."
         },
         "demoBanner": {
           "icon": "ℹ️",
           "strong": "Sample figures for demo only — not an offer.",
-          "body": "Estimates are illustrative for education and UX prototyping. Actual rates, terms, fees, and eligibility depend on credit review and provider terms."
+          "body": "Estimates are illustrative for education and UX prototyping. Actual returns, taxes, fees, and spending vary. Not investment, tax, or financial advice."
         },
         "form": {
-          "heading": "Your retirement plan",
+          "heading": "Your withdrawals",
           "fields": {
-            "currentAge": {
-              "label": "Current age"
+            "startAge": {
+              "label": "Age when you start withdrawals"
             },
-            "retireAge": {
-              "label": "Retirement age"
-            },
-            "currentSavings": {
-              "label": "Current retirement savings",
+            "savings": {
+              "label": "Retirement savings",
               "prefix": "$"
             },
-            "monthlyContribution": {
-              "label": "Your monthly contribution",
-              "prefix": "$"
-            },
-            "employerMonthly": {
-              "label": "Employer contribution (monthly)",
+            "monthlyWithdrawal": {
+              "label": "Monthly withdrawal",
               "prefix": "$"
             },
             "annualReturn": {
-              "label": "Expected annual return",
+              "label": "Return rate",
               "suffix": "%",
               "hint": "Illustrative assumption — not a forecast. Investments can lose value."
-            },
-            "inflation": {
-              "label": "Inflation assumption",
-              "suffix": "%"
-            },
-            "withdrawalRate": {
-              "label": "Withdrawal rate in retirement",
-              "suffix": "%",
-              "hint": "A commonly cited planning rule of thumb is ~4%."
-            },
-            "contributionGrowth": {
-              "label": "Annual contribution increase",
-              "suffix": "%"
             }
-          }
+          },
+          "inflationRaise": {
+            "labelTemplate": "Raise my withdrawal {{pct}}% a year to keep up with prices"
+          },
+          "resetLabel": "Reset to typical numbers"
         },
         "results": {
           "invalidMessage": "Fix the highlighted fields to see an estimate.",
-          "heading": "Projected at retirement",
-          "primaryLabel": "Projected balance",
+          "stickyLabel": "Could last",
+          "headlineTemplate": "Your {{savings}} could last {{duration}}, until about age {{endAge}}.",
+          "headlineCappedTemplate": "Your {{savings}} could last beyond age {{maxAge}} at this withdrawal rate.",
           "labels": {
-            "real": "In today’s dollars",
-            "monthlyIncome": "Est. monthly income",
-            "monthlyIncomeToday": "Monthly income (today’s $)",
-            "contributions": "Total contributions",
-            "growth": "Investment growth",
-            "years": "Years to retirement"
+            "takeOut": "You take out",
+            "growth": "Growth along the way"
           },
-          "summaryMessage": "Constant-return projection for illustration. Does not model taxes, fees, Social Security, or market volatility. Not investment advice."
+          "chartAria": "Savings balance by age while withdrawing",
+          "tipRunsOutTemplate": "At this rate the money runs out before {{warnAge}}. Taking out about {{suggested}} a month would make it last until {{targetAge}}.",
+          "tipLastsTemplate": "At this rate the money could last to about age {{endAge}}. A higher withdrawal shortens the runway; a lower one stretches it.",
+          "summaryMessage": "Constant-return spend-down for illustration. Does not model taxes, fees, Social Security, sequence-of-returns risk, or market volatility. Not investment advice."
         },
         "cta": {
           "label": "Talk to a planner",
@@ -4120,15 +4047,6 @@
         },
         "footer": {
           "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
-        },
-        "table": {
-          "heading": "Balance by age",
-          "columns": [
-            "Age",
-            "Contributions (yr)",
-            "Growth (yr)",
-            "Balance"
-          ]
         }
       },
       "configPath": "packages/calculators/src/config/retirement.config.json",
@@ -4137,45 +4055,29 @@
         "locale": "en-US",
         "currency": "USD",
         "defaults": {
-          "currentAge": 35,
-          "retireAge": 67,
-          "currentSavings": 50000,
-          "monthlyContribution": 500,
-          "employerMonthly": 150,
-          "annualReturn": 6,
-          "inflation": 3,
-          "withdrawalRate": 4,
-          "contributionGrowth": 2
+          "startAge": 67,
+          "savings": 500000,
+          "monthlyWithdrawal": 2500,
+          "annualReturn": 5,
+          "raiseWithInflation": 1
         },
         "validation": {
-          "currentAge": {
-            "min": 16,
+          "startAge": {
+            "min": 40,
             "max": 90,
-            "label": "Current age",
+            "label": "Start age",
             "allowZero": false
           },
-          "retireAge": {
-            "min": 30,
-            "max": 100,
-            "label": "Retirement age",
-            "allowZero": false
-          },
-          "currentSavings": {
+          "savings": {
             "min": 0,
             "max": 1000000000,
-            "label": "Current savings",
+            "label": "Retirement savings",
             "allowZero": true
           },
-          "monthlyContribution": {
+          "monthlyWithdrawal": {
             "min": 0,
             "max": 1000000,
-            "label": "Monthly contribution",
-            "allowZero": true
-          },
-          "employerMonthly": {
-            "min": 0,
-            "max": 1000000,
-            "label": "Employer contribution",
+            "label": "Monthly withdrawal",
             "allowZero": true
           },
           "annualReturn": {
@@ -4183,29 +4085,36 @@
             "max": 20,
             "label": "Return",
             "allowZero": true
-          },
-          "inflation": {
-            "min": 0,
-            "max": 20,
-            "label": "Inflation",
-            "allowZero": true
-          },
-          "withdrawalRate": {
-            "min": 0,
-            "max": 20,
-            "label": "Withdrawal rate",
-            "allowZero": true
-          },
-          "contributionGrowth": {
-            "min": 0,
-            "max": 20,
-            "label": "Contribution increase",
-            "allowZero": true
           }
         },
         "features": {
           "inflationKey": "inflationYoY",
-          "tableEveryYears": 5
+          "fallbackInflationPct": 3,
+          "tipWarnAge": 90,
+          "tipTargetAge": 95,
+          "maxAge": 120,
+          "sliders": {
+            "startAge": {
+              "min": 40,
+              "max": 90,
+              "step": 1
+            },
+            "savings": {
+              "min": 0,
+              "max": 2000000,
+              "step": 5000
+            },
+            "monthlyWithdrawal": {
+              "min": 0,
+              "max": 20000,
+              "step": 50
+            },
+            "annualReturn": {
+              "min": 0,
+              "max": 12,
+              "step": 0.25
+            }
+          }
         },
         "cta": {
           "enabled": true,
@@ -4213,6 +4122,26 @@
         }
       },
       "tests": [
+        {
+          "file": "packages/calculators/src/calc/savings.test.ts",
+          "describe": "retirementDrawdown",
+          "count": 4,
+          "titles": [
+            "zero return depletes in savings/withdrawal months",
+            "growth extends runway vs zero return",
+            "inflation raise shortens runway",
+            "invalid → null"
+          ]
+        },
+        {
+          "file": "packages/calculators/src/calc/savings.test.ts",
+          "describe": "withdrawalToLastUntil + formatDurationMonths",
+          "count": 2,
+          "titles": [
+            "finds a withdrawal that lasts to target age",
+            "formats duration"
+          ]
+        },
         {
           "file": "packages/calculators/src/calc/savings.test.ts",
           "describe": "retirementProjection",
@@ -4261,7 +4190,7 @@
           ]
         }
       ],
-      "testCount": 12
+      "testCount": 18
     },
     "home-insurance": {
       "slug": "home-insurance",

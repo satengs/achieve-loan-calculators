@@ -20,6 +20,11 @@ export function useNumberInputs(
     Object.fromEntries(keys.map((k) => [k, String(initial[k] ?? config.defaults[k] ?? "")])),
   );
   const set = useCallback((k: string, v: string) => setState((s) => ({ ...s, [k]: v })), []);
+  // initial is often a default `{}` — omit from deps on purpose.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const reset = useCallback(() => {
+    setState(Object.fromEntries(keys.map((k) => [k, String(initial[k] ?? config.defaults[k] ?? "")])));
+  }, [keys, config]);
   const parsed = useMemo(() => {
     const values: Record<string, number> = {};
     const errors: Record<string, string> = {};
@@ -33,7 +38,7 @@ export function useNumberInputs(
     return { values, errors, ok };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, config]);
-  return { state, set, ...parsed };
+  return { state, set, reset, ...parsed };
 }
 
 type NumberFieldsProps = {

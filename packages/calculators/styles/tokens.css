@@ -836,3 +836,216 @@
   color: var(--lc-text-muted);
   margin-top: 0.15rem;
 }
+
+
+/* ── Presentation layout (retirement spend-down and reusable) ── */
+.lc-slider-field--row {
+  margin-bottom: 0.55rem;
+}
+
+.lc-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lc-slider-row .lc-range {
+  flex: 1 1 auto;
+  margin: 0;
+  min-width: 0;
+}
+
+.lc-slider-input {
+  flex: 0 0 7.25rem;
+  width: 7.25rem;
+}
+
+.lc-slider-input .lc-input {
+  height: 40px;
+  font-size: 0.9375rem;
+  text-align: right;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.lc-slider-input .lc-input.has-prefix {
+  padding-left: 1.35rem;
+  text-align: left;
+}
+
+.lc-slider-input .lc-input.has-suffix {
+  padding-right: 1.5rem;
+}
+
+.lc-slider-input .lc-input-prefix {
+  left: 0.45rem;
+  font-size: 0.8125rem;
+}
+
+.lc-slider-input .lc-input-suffix {
+  right: 0.4rem;
+  font-size: 0.8125rem;
+}
+
+.lc-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--lc-text);
+  line-height: 1.35;
+}
+
+.lc-check-row input[type="checkbox"] {
+  margin-top: 0.15rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--lc-primary);
+  flex-shrink: 0;
+}
+
+.lc-reset-link {
+  display: inline-block;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--lc-link, var(--lc-primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.lc-reset-link:hover {
+  color: var(--lc-primary-hover);
+}
+
+.lc-results--presentation {
+  background: var(--lc-bg-tint);
+  border-color: color-mix(in srgb, var(--lc-primary) 12%, var(--lc-border));
+}
+
+.lc-presentation-headline {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 0.85rem;
+  color: var(--lc-text);
+}
+
+.lc-presentation-headline .lc-headline-em {
+  color: var(--lc-heading, var(--lc-primary-dark));
+}
+
+.lc-micro-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  margin: 0 0 0.9rem;
+}
+
+.lc-micro-stat-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lc-text-muted);
+  margin-bottom: 0.2rem;
+  padding-left: 0.45rem;
+  border-left: 3px solid var(--lc-primary);
+  line-height: 1.2;
+}
+
+.lc-micro-stat--growth .lc-micro-stat-label {
+  border-left-color: color-mix(in srgb, var(--lc-primary) 45%, #9AE6B4);
+}
+
+.lc-micro-stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--lc-primary-dark);
+  font-variant-numeric: tabular-nums;
+}
+
+.lc-depletion {
+  margin: 0 0 0.85rem;
+}
+
+.lc-depletion-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 7.5rem;
+  padding: 0.15rem 0 0.35rem;
+}
+
+.lc-depletion-col {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.lc-depletion-bar {
+  width: 100%;
+  border-radius: 3px 3px 1px 1px;
+  background: color-mix(in srgb, var(--lc-primary) 35%, #B7E4C7);
+  min-height: 2px;
+}
+
+.lc-depletion-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  font-size: 0.65rem;
+  color: var(--lc-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lc-depletion-age {
+  flex: 1 1 0;
+  text-align: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.lc-depletion-age--spacer {
+  visibility: hidden;
+}
+
+.lc-tip-callout {
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: var(--lc-radius);
+  background: #FFF4E5;
+  color: var(--lc-text);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  border: 1px solid color-mix(in srgb, #E8A85C 35%, var(--lc-border));
+}
+
+[data-project="fdr"] .lc-micro-stat-value,
+[data-project="bills"] .lc-micro-stat-value {
+  color: var(--lc-heading, var(--lc-primary-dark));
+}
+
+[data-project="fdr"] .lc-depletion-bar {
+  background: color-mix(in srgb, var(--lc-primary) 40%, #C5D4F5);
+}
+
+[data-project="bills"] .lc-depletion-bar {
+  background: color-mix(in srgb, var(--lc-primary) 40%, #C8E6C9);
+}
+
+@media (min-width: 860px) {
+  .lc-results--presentation {
+    position: sticky;
+    top: calc(var(--lc-brand-bar-offset, 0px) + 0.5rem);
+  }
+}

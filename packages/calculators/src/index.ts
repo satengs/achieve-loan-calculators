@@ -71,7 +71,12 @@ export {
   MoreOptions,
   RateNote,
   DataTable,
+  PresentationResults,
+  MicroStats,
+  TipCallout,
+  DepletionChart,
 } from "./components";
+export type { MicroStat, DepletionBar } from "./components";
 
 export { resolveRate, parseFredCsv, yoyFromObservations, sameDayPriorYear } from "./rates";
 export type { RateKey, RateInfo, MarketRates, ResolvedRate, FredObservation } from "./rates";

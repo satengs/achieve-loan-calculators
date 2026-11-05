@@ -3,45 +3,29 @@
   "locale": "en-US",
   "currency": "USD",
   "defaults": {
-    "currentAge": 35,
-    "retireAge": 67,
-    "currentSavings": 50000,
-    "monthlyContribution": 500,
-    "employerMonthly": 150,
-    "annualReturn": 6,
-    "inflation": 3,
-    "withdrawalRate": 4,
-    "contributionGrowth": 2
+    "startAge": 67,
+    "savings": 500000,
+    "monthlyWithdrawal": 2500,
+    "annualReturn": 5,
+    "raiseWithInflation": 1
   },
   "validation": {
-    "currentAge": {
-      "min": 16,
+    "startAge": {
+      "min": 40,
       "max": 90,
-      "label": "Current age",
+      "label": "Start age",
       "allowZero": false
     },
-    "retireAge": {
-      "min": 30,
-      "max": 100,
-      "label": "Retirement age",
-      "allowZero": false
-    },
-    "currentSavings": {
+    "savings": {
       "min": 0,
       "max": 1000000000,
-      "label": "Current savings",
+      "label": "Retirement savings",
       "allowZero": true
     },
-    "monthlyContribution": {
+    "monthlyWithdrawal": {
       "min": 0,
       "max": 1000000,
-      "label": "Monthly contribution",
-      "allowZero": true
-    },
-    "employerMonthly": {
-      "min": 0,
-      "max": 1000000,
-      "label": "Employer contribution",
+      "label": "Monthly withdrawal",
       "allowZero": true
     },
     "annualReturn": {
@@ -49,29 +33,20 @@
       "max": 20,
       "label": "Return",
       "allowZero": true
-    },
-    "inflation": {
-      "min": 0,
-      "max": 20,
-      "label": "Inflation",
-      "allowZero": true
-    },
-    "withdrawalRate": {
-      "min": 0,
-      "max": 20,
-      "label": "Withdrawal rate",
-      "allowZero": true
-    },
-    "contributionGrowth": {
-      "min": 0,
-      "max": 20,
-      "label": "Contribution increase",
-      "allowZero": true
     }
   },
   "features": {
     "inflationKey": "inflationYoY",
-    "tableEveryYears": 5
+    "fallbackInflationPct": 3,
+    "tipWarnAge": 90,
+    "tipTargetAge": 95,
+    "maxAge": 120,
+    "sliders": {
+      "startAge": { "min": 40, "max": 90, "step": 1 },
+      "savings": { "min": 0, "max": 2000000, "step": 5000 },
+      "monthlyWithdrawal": { "min": 0, "max": 20000, "step": 50 },
+      "annualReturn": { "min": 0, "max": 12, "step": 0.25 }
+    }
   },
   "cta": {
     "enabled": true,
