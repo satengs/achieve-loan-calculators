@@ -41,7 +41,7 @@ Monthly rate r = APR/100/12.
 **Program (illustrative):** `total = debt × costPct`, `monthly = total / months`.
 
 ### Worked example (defaults)
-Defaults (fallback APR 22.77%, live default uses FRED TERMCBCCALLNS e.g. 21.19%): $20,000, plan $700. At 22.77%: first minimum = 20,000×(0.018975+0.01) = **$579.50**; minimums take **336 months**, total paid **$56,430.83** (interest $36,430.83). Wait (+10% → $22,000): 346 months, $62,225.88. Plan $700: **42 months**, interest $9,093.08. Program 90% × $20,000 = **$18,000** over 48 mo = **$375/mo**.
+Defaults (fallback APR 22.77%, live default uses FRED TERMCBCCALLNS e.g. 21.19%): $20,000, plan $700. At 22.77%: first minimum = 20,000×(0.018975+0.01) = **$579.50**; minimums take **336 months**, total paid **$56,430.83** (interest $36,430.83). Wait 3 months at APR (balance → **$21,160.24**, ≈ +5.8%): **345 months** incl. wait, total paid **$59,792.70**. Plan $700: **42 months**, interest $9,093.08. Program 90% × $20,000 = **$18,000** over 48 mo = **$375/mo**.
 
 ## Data sources / APIs
 | Rate key | Meaning | FRED series | Source page |
@@ -61,7 +61,7 @@ Defaults (fallback APR 22.77%, live default uses FRED TERMCBCCALLNS e.g. 21.19%)
 ## Assumptions & limitations
 - Credit card debt only; a single blended APR.
 - Program cost % and length are editable illustrative assumptions, NOT Achieve/FDR median offers (those come from a private API). Program impacts (credit, taxes, fees timing, settlement risk) are not modeled.
-- Wait growth % is illustrative (Achieve uses observed median increases; not public).
+- Wait growth is derived from the card APR compounded monthly over `features.waitMonths` (default 3); late fees and penalty APRs are not modeled.
 - No new charges, fees, or rate changes during payoff.
 - Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.
 

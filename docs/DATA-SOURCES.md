@@ -11,7 +11,7 @@ All live market inputs come from **FRED** (Federal Reserve Bank of St. Louis), w
 | `prime` | [DPRIME](https://fred.stlouisfed.org/series/DPRIME) | Federal Reserve H.15 | daily | heloc, consolidation-options (home equity) | + illustrative margin by credit band | heloc `apr` 8.5 (prime 7.0 + 1.5); consolidation base 7.5 |
 | `creditCard` | [TERMCBCCALLNS](https://fred.stlouisfed.org/series/TERMCBCCALLNS) | Federal Reserve G.19 | monthly | debt-payoff, consolidation-options (minimums) | none | 22.77 |
 | `savings` | [SNDR](https://fred.stlouisfed.org/series/SNDR) | FDIC national rate (savings) | monthly | savings | none | 0.40 |
-| `inflationYoY` | [CPIAUCSL](https://fred.stlouisfed.org/series/CPIAUCSL) | BLS CPI-U | monthly | savings, retirement | YoY % = latest / 12-obs-prior − 1 | 3.0 |
+| `inflationYoY` | [CPIAUCSL](https://fred.stlouisfed.org/series/CPIAUCSL) | BLS CPI-U | monthly | savings, retirement | YoY % = latest / observation dated exactly 12 months earlier − 1 (date match, not row offset; gap rows fall back to config) | 3.0 |
 
 ## Endpoints
 

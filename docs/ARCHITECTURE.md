@@ -98,21 +98,12 @@ initial input value + <RateNote> (“based on <source>, as of <date>” | fallba
 
 Every calculator page in `apps/demo` renders `CalculatorTabs` (Calculator | Technical details). Tab state is `?tab=tech`
 next to `?brand=`; WAI-ARIA tabs with ←/→/Home/End. Gated by `DEMO_CONFIG.showTechnicalTab`
-(`apps/demo/src/config/demo.config.ts`), resolved **at build time** in `apps/demo/next.config.ts`:
-
-| Build | Default |
-|---|---|
-| Vercel `VERCEL_ENV=production` | **off** |
-| Vercel preview / development | on |
-| local `next dev` | on |
-| local `next build` (no `VERCEL_ENV`) | off |
-
-Override for any environment with `SHOW_TECHNICAL_TAB=true|false` (or `NEXT_PUBLIC_SHOW_TECHNICAL_TAB`) in that
-environment's Vercel env vars, then redeploy. When off: no tab bar, `?tab=tech` is ignored, the home-page reviewer
-callout and card "Technical details" links are not rendered, and `getTechEntry()` returns a stub, so docs, config and
-test internals are not in the HTML/RSC payload. Because the flag is baked in at build time, promoting a *preview* build
-to production must rebuild it (`vercel promote` / "Promote" on Vercel rebuilds with production env). Don't alias a
-preview URL to the production domain. Package components are unchanged.
+(`apps/demo/src/config/demo.config.ts`), resolved **at build time** in `apps/demo/next.config.ts`. **ON by default**
+in every environment (including Vercel production). Set `SHOW_TECHNICAL_TAB=false` (or
+`NEXT_PUBLIC_SHOW_TECHNICAL_TAB=false`) in that environment's Vercel env vars and redeploy to hide. When off: no tab
+bar, `?tab=tech` is ignored, the home-page reviewer callout and card "Technical details" links are not rendered, and
+`getTechEntry()` returns a stub, so docs, config and test internals are not in the HTML/RSC payload. Package
+components are unchanged.
 
 Data flow:
 - `apps/demo/scripts/gen-tech-registry.mjs` runs on `predev` / `prebuild` and writes `apps/demo/src/generated/tech-registry.json`

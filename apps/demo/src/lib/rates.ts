@@ -36,7 +36,7 @@ export const RATE_SERIES: SeriesSpec[] = [
   { key: "prime", seriesId: "DPRIME", label: "Bank prime loan rate (FRED DPRIME)", mode: "level" },
   { key: "creditCard", seriesId: "TERMCBCCALLNS", label: "Federal Reserve G.19, credit card plan rate, all accounts (FRED TERMCBCCALLNS)", mode: "level" },
   { key: "savings", seriesId: "SNDR", label: "FDIC national deposit rate, savings (FRED SNDR)", mode: "level" },
-  { key: "inflationYoY", seriesId: "CPIAUCSL", label: "BLS CPI-U, year-over-year change (FRED CPIAUCSL)", mode: "yoy" },
+  { key: "inflationYoY", seriesId: "CPIAUCSL", label: "BLS CPI-U, year-over-year change vs same month prior year (FRED CPIAUCSL)", mode: "yoy" },
 ];
 
 type Obs = FredObservation;

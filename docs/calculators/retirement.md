@@ -33,12 +33,12 @@ All values render in the light estimate card (`ResultsPanel`) with the brand-pri
 Same monthly FV loop as Savings with `C = yours + employer`, return compounding monthly, contributions grow g%/yr. `real = FV/(1+inf)^years`; `annual income = FV × withdrawal%`.
 
 ### Worked example (defaults)
-Age 35→67, $50k saved, $500 + $150 employer, 6%, +2%/yr contributions → **$1,282,842**; ≈ $498,175 in today's $ at 3% inflation; 4% → $4,276/mo (≈ $1,661 today). Live default inflation uses CPI YoY (e.g. 3.71%).
+Age 35→67, $50k saved, $500 + $150 employer, 6%, +2%/yr contributions → **$1,282,842**; ≈ $498,175 in today's $ at 3% inflation; 4% → $4,276/mo (≈ $1,661 today). Live default inflation uses CPI YoY (e.g. 3.72%).
 
 ## Data sources / APIs
 | Rate key | Meaning | FRED series | Source page |
 |---|---|---|---|
-| `inflationYoY` | BLS CPI-U, computed YoY % (monthly) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |
+| `inflationYoY` | BLS CPI-U YoY % (latest vs observation dated exactly 12 months earlier) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |
 
 - Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.
 - Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.

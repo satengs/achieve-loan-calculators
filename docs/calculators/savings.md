@@ -36,7 +36,7 @@ $5,000 initial, $200/mo, 0.40% (fallback; live default = FDIC SNDR national savi
 | Rate key | Meaning | FRED series | Source page |
 |---|---|---|---|
 | `savings` | FDIC national deposit rate, savings (monthly) | `SNDR` | https://fred.stlouisfed.org/series/SNDR |
-| `inflationYoY` | BLS CPI-U, computed YoY % (monthly) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |
+| `inflationYoY` | BLS CPI-U YoY % (latest vs observation dated exactly 12 months earlier) | `CPIAUCSL` | https://fred.stlouisfed.org/series/CPIAUCSL |
 
 - Fetched server-side in `apps/demo/src/lib/rates.ts` (`getMarketRates`) — FRED JSON API when `FRED_API_KEY` is set, else keyless CSV `https://fred.stlouisfed.org/graph/fredgraph.csv?id=<SERIES>`.
 - Cached with `fetch(..., { next: { revalidate: 86400 } })`; page uses `export const revalidate = 86400` (daily ISR). Also exposed at `GET /api/rates`.
