@@ -15,7 +15,7 @@ import { BalanceCompareChart } from "../components/BalanceCompareChart";
 import { CalculatorShell } from "../components/CalculatorShell";
 import { Field, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
-import { CalculatorCta, copyLabel, interpolate, months, resultsVariant, useCalculatorSetup } from "./common";
+import { CalculatorCta, interpolate, months, resultsVariant, useCalculatorSetup } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -156,9 +156,10 @@ export function DebtSnowballAvalancheCalculator({
   const title = titleOverride || alias?.title || content.header.title;
   const intro = introOverride || alias?.intro || content.header.intro;
 
+  /** Short one-line labels on debt rows (never the long Achieve questions). */
   const fieldLabel = (key: string, fallback: string) => {
-    const f = (fields[key] || {}) as { label?: string; question?: string };
-    return preferQuestion && f.question ? f.question : copyLabel(f, fallback, brand);
+    const f = (fields[key] || {}) as { label?: string };
+    return (f.label && String(f.label)) || fallback;
   };
 
   const setRow = (key: string, patch: Partial<DebtRow>) => {
@@ -380,7 +381,7 @@ export function DebtSnowballAvalancheCalculator({
                     <div className="lc-debt-row-grid">
                       <Field
                         id={`dsa-${row.key}-name`}
-                        label={fieldLabel("name", "Name")}
+                        label={fieldLabel("name", "Debt name")}
                         value={row.name}
                         onChange={(v) => setRow(row.key, { name: v })}
                         inputMode="text"

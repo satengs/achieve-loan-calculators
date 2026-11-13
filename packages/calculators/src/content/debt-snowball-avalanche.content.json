@@ -17,7 +17,7 @@
     "heading": "Your debts",
     "fields": {
       "name": {
-        "label": "Name",
+        "label": "Debt name",
         "question": "What should we call this debt?"
       },
       "balance": {
