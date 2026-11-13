@@ -18,39 +18,48 @@
     "fields": {
       "msrp": {
         "label": "Vehicle MSRP",
+        "question": "What's the vehicle MSRP?",
         "prefix": "$"
       },
       "price": {
         "label": "Negotiated price (cap cost)",
+        "question": "What's the negotiated price (cap cost)?",
         "prefix": "$"
       },
       "down": {
         "label": "Down payment (cap reduction)",
+        "question": "What's the down payment (cap reduction)?",
         "prefix": "$"
       },
       "tradeIn": {
         "label": "Trade-in credit",
+        "question": "What's the trade-in credit?",
         "prefix": "$"
       },
       "fees": {
         "label": "Fees rolled in (acquisition, doc)",
+        "question": "What fees are rolled in?",
         "prefix": "$"
       },
       "residualPct": {
         "label": "Residual value (% of MSRP)",
+        "question": "What's the residual value (% of MSRP)?",
         "suffix": "%"
       },
       "apr": {
         "label": "Equivalent APR",
+        "question": "What's the equivalent APR?",
         "suffix": "%",
         "hint": "Converted to a money factor: APR ÷ 2,400."
       },
       "termMonths": {
         "label": "Lease term",
+        "question": "What's the lease term?",
         "suffix": "mo"
       },
       "salesTax": {
         "label": "Sales tax on payment",
+        "question": "What's the sales tax on the payment?",
         "suffix": "%"
       }
     }

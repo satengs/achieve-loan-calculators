@@ -1049,3 +1049,202 @@
     top: calc(var(--lc-brand-bar-offset, 0px) + 0.5rem);
   }
 }
+
+
+/* ── Achieve (achieve.com tool alignment) ──
+ * Values sourced Nov 2026 from live tool pages; see docs/ACHIEVE-DESIGN-ALIGNMENT.md.
+ * Selectors are [data-project="achieve"] only — FDR and bills are untouched. */
+[data-project="achieve"] .lc-header {
+  text-align: center;
+  margin-bottom: 1.15rem;
+}
+
+[data-project="achieve"] .lc-eyebrow {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--lc-text-muted);
+  padding-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+[data-project="achieve"] .lc-header h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--lc-heading, var(--lc-text));
+  text-wrap: balance;
+  margin: 0 0 0.4rem;
+}
+
+@media (min-width: 860px) {
+  [data-project="achieve"] .lc-header h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+}
+
+[data-project="achieve"] .lc-header p {
+  margin-inline: auto;
+  max-width: 38rem;
+  text-align: center;
+}
+
+[data-project="achieve"] .lc-form.lc-card {
+  background: var(--lc-bg-tint);
+  border: 2px solid var(--lc-border-accent, #d2e2fe);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+[data-project="achieve"] .lc-results.lc-card,
+[data-project="achieve"] .lc-results--presentation {
+  background: var(--lc-surface);
+  border: 2px solid var(--lc-border-accent, #d2e2fe);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+[data-project="achieve"] .lc-amort-card,
+[data-project="achieve"] .lc-landing-card {
+  border: 2px solid var(--lc-border-accent, #d2e2fe);
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+[data-project="achieve"] .lc-demo-banner {
+  background: var(--lc-bg-tint);
+  border-color: var(--lc-border-accent, #d2e2fe);
+}
+
+[data-project="achieve"] .lc-input,
+[data-project="achieve"] .lc-select {
+  background: #fff;
+  border-radius: 8px;
+}
+
+[data-project="achieve"] .lc-field label,
+[data-project="achieve"] .lc-fieldset-legend {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+[data-project="achieve"] .lc-btn {
+  font-size: 1.125rem;
+  font-weight: 700;
+  min-height: 48px;
+  border-radius: 8px;
+}
+
+[data-project="achieve"] .lc-result-value,
+[data-project="achieve"] .lc-micro-stat-value,
+[data-project="achieve"] .lc-presentation-headline .lc-headline-em {
+  color: var(--lc-primary-dark);
+}
+
+[data-project="achieve"] .lc-tip-callout {
+  background: #f5f9ff;
+  border: 1px solid var(--lc-border-accent, #d2e2fe);
+  color: var(--lc-text);
+}
+
+[data-project="achieve"] .lc-micro-stat-label {
+  border-left-color: var(--lc-primary);
+}
+
+/* Semicircle DTI gauge (our own SVG; reserved height avoids CLS). */
+.lc-dti-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 15.5rem;
+  margin: 0 0 0.85rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.lc-dti-gauge-eyebrow {
+  display: inline-block;
+  margin: 0 0 0.85rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--lc-radius);
+  background: #f5f9ff;
+  color: var(--lc-primary-dark);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.lc-dti-gauge-graphic {
+  position: relative;
+  width: 220px;
+  height: 128px;
+}
+
+.lc-dti-gauge-graphic svg {
+  display: block;
+  width: 220px;
+  height: 128px;
+}
+
+.lc-dti-gauge-labels {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.35rem 0.6rem;
+  width: 100%;
+  max-width: 22rem;
+  margin-top: 0.35rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.lc-dti-gauge-band {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lc-dti-gauge-band--left {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.lc-dti-gauge-band--mid {
+  text-align: center;
+  align-items: center;
+}
+
+.lc-dti-gauge-band--right {
+  text-align: left;
+  align-items: flex-start;
+}
+
+.lc-dti-gauge-band-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--lc-text-muted);
+  line-height: 1.2;
+}
+
+.lc-dti-gauge-band-label {
+  font-size: 0.6875rem;
+  color: var(--lc-text-muted);
+  line-height: 1.25;
+}
+
+.lc-dti-gauge-band.is-active .lc-dti-gauge-band-title,
+.lc-dti-gauge-band.is-active .lc-dti-gauge-band-label {
+  color: var(--lc-text);
+}
+
+.lc-dti-gauge-band.is-active .lc-dti-gauge-band-title {
+  color: var(--lc-primary-dark);
+}
+
+.lc-micro-stat--negative .lc-micro-stat-label {
+  border-left-color: var(--lc-error);
+}
+
+.lc-micro-stat--negative .lc-micro-stat-value {
+  color: var(--lc-error);
+}

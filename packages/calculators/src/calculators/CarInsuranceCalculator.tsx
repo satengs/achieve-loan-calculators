@@ -7,7 +7,7 @@ import { CalculatorShell } from "../components/CalculatorShell";
 import { MoreOptions } from "../components/MoreOptions";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { SelectField } from "../components/SelectField";
-import { CalculatorCta, optionsFrom, useCalculatorSetup } from "./common";
+import { CalculatorCta, optionsFrom, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -56,10 +56,11 @@ export function CarInsuranceCalculator({ projectName = "achieve" }: CarInsurance
           <MoreOptions>
             {FACTOR_KEYS.filter((k) => !PRIMARY.includes(k)).map(select)}
             {ADDON_KEYS.map(select)}
-            <NumberFields idPrefix="ci" keys={["basePremium"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="ci" keys={["basePremium"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? whole(computed.monthly) : PLACEHOLDER}

@@ -18,25 +18,30 @@
     "fields": {
       "balance": {
         "label": "Loan balance",
+        "question": "What's the loan balance?",
         "prefix": "$"
       },
       "apr": {
         "label": "Interest rate",
+        "question": "What's the interest rate?",
         "suffix": "%",
         "hint": "Federal rates are set annually by law; private rates vary by lender."
       },
       "termYears": {
         "label": "Repayment term",
+        "question": "What's the repayment term?",
         "suffix": "yr",
         "hint": "Standard federal plan is 10 years."
       },
       "deferMonths": {
         "label": "Months until repayment starts",
+        "question": "How many months until repayment starts?",
         "suffix": "mo",
         "hint": "In-school / grace months; accrued interest is added to the balance (unsubsidized)."
       },
       "extraMonthly": {
         "label": "Extra monthly payment",
+        "question": "How much extra could you pay each month?",
         "prefix": "$"
       }
     }

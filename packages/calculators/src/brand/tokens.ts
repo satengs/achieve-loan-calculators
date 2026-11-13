@@ -32,6 +32,8 @@ export type BrandTokens = {
   link?: string;
   /** Optional: heading color. Defaults to primaryDark. */
   heading?: string;
+  /** Optional: accent border for tool cards (e.g. Achieve form/results #D2E2FE). Defaults to `border`. */
+  borderAccent?: string;
 };
 
 export const BRAND_TOKENS: Record<ProjectName, BrandTokens> = {
@@ -53,6 +55,12 @@ export const BRAND_TOKENS: Record<ProjectName, BrandTokens> = {
     radiusLg: "12px",
     font: "'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif",
     shadow: "0 4px 24px rgba(29, 37, 47, 0.08)",
+    // Live achieve.com tool pages (Nov 2026); see docs/ACHIEVE-DESIGN-ALIGNMENT.md.
+    heading: "#1D252F", // tool titles are charcoal, not navy
+    cta: "#3300FF",
+    ctaHover: "#154199", // Calculate / Get started hover:bg-[#154199]
+    ctaText: "#FFFFFF",
+    borderAccent: "#D2E2FE", // HELOC form/results border-[#D2E2FE]
   },
   /**
    * Freedom Debt Relief — values extracted from freedomdebtrelief.com (Oct 2026) computed styles
@@ -140,5 +148,6 @@ export function tokensToCssVars(tokens: BrandTokens): Record<string, string> {
     "--lc-cta-text": tokens.ctaText ?? "#FFFFFF",
     "--lc-link": tokens.link ?? tokens.primary,
     "--lc-heading": tokens.heading ?? tokens.primaryDark,
+    "--lc-border-accent": tokens.borderAccent ?? tokens.border,
   };
 }

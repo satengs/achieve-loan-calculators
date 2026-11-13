@@ -11,6 +11,7 @@ import { RateNote } from "../components/RateNote";
 import { resolveRate, type MarketRates } from "../rates/types";
 import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
+import { copyLabel, resultsVariant } from "./common";
 
 export type PersonalLoanCalculatorProps = {
   /** Brand theme key: achieve | fdr | bills */
@@ -130,7 +131,7 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
           <h2 id="pl-inputs">{content.form.heading}</h2>
           <Field
             id="loan-amount"
-            label={fields.loanAmount?.label || "Loan amount"}
+            label={copyLabel(fields.loanAmount, "Loan amount", brand)}
             hint={fields.loanAmount?.hint}
             prefix={fields.loanAmount?.prefix}
             value={loanAmount}
@@ -139,7 +140,7 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
           />
           <Field
             id="apr"
-            label={fields.apr?.label || "APR"}
+            label={copyLabel(fields.apr, "APR", brand)}
             hint={fields.apr?.hint}
             suffix={fields.apr?.suffix}
             value={apr}
@@ -188,7 +189,7 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
           {showFee ? (
             <Field
               id="origination-fee"
-              label={fields.originationFee?.label || "Origination fee"}
+              label={copyLabel(fields.originationFee, "Origination fee", brand)}
               hint={fields.originationFee?.hint}
               suffix={fields.originationFee?.suffix}
               value={fee}
@@ -199,9 +200,25 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
         </section>
 
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading || "Your estimate")}
           primaryLabel={String(results.monthlyLabel || "Estimated monthly payment")}
           primaryValue={out?.monthly || PLACEHOLDER}
+          headline={
+            out ? (
+              <>
+                Your estimated monthly payment is{" "}
+                <span className="lc-headline-em">{out.monthly}</span>
+              </>
+            ) : (
+              "Enter a loan amount and rate to see an estimated monthly payment"
+            )
+          }
+          tip={
+            out
+              ? "This estimate uses the amount, APR, term, and fee you entered. It is illustrative — not a loan offer."
+              : undefined
+          }
           items={[
             { label: labels.totalInterest || "Total interest", value: out?.interest || PLACEHOLDER },
             { label: labels.totalCost || "Total cost", value: out?.total || PLACEHOLDER },

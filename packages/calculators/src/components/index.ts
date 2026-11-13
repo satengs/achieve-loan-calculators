@@ -14,3 +14,5 @@ export type { MicroStat } from "./MicroStats";
 export { TipCallout } from "./TipCallout";
 export { DepletionChart } from "./DepletionChart";
 export type { DepletionBar } from "./DepletionChart";
+export { DtiGauge } from "./DtiGauge";
+export type { DtiGaugeProps, DtiGaugeBandCopy } from "./DtiGauge";

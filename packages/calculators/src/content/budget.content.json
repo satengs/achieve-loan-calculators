@@ -18,58 +18,72 @@
     "fields": {
       "netIncome": {
         "label": "Take-home pay (monthly)",
+        "question": "What's your monthly take-home pay?",
         "prefix": "$"
       },
       "otherIncome": {
         "label": "Other income (monthly)",
+        "question": "What's your other monthly income?",
         "prefix": "$"
       },
       "housing": {
         "label": "Housing (rent / mortgage)",
+        "question": "What do you spend on housing?",
         "prefix": "$"
       },
       "utilities": {
         "label": "Utilities & phone",
+        "question": "What do you spend on utilities and phone?",
         "prefix": "$"
       },
       "groceries": {
         "label": "Groceries",
+        "question": "What do you spend on groceries?",
         "prefix": "$"
       },
       "transportation": {
         "label": "Transportation",
+        "question": "What do you spend on transportation?",
         "prefix": "$"
       },
       "insurance": {
         "label": "Insurance premiums",
+        "question": "What do you pay in insurance premiums?",
         "prefix": "$"
       },
       "debtPayments": {
         "label": "Minimum debt payments",
+        "question": "What are your minimum debt payments?",
         "prefix": "$"
       },
       "dining": {
         "label": "Dining out",
+        "question": "What do you spend dining out?",
         "prefix": "$"
       },
       "entertainment": {
         "label": "Entertainment",
+        "question": "What do you spend on entertainment?",
         "prefix": "$"
       },
       "shopping": {
         "label": "Shopping",
+        "question": "What do you spend on shopping?",
         "prefix": "$"
       },
       "subscriptions": {
         "label": "Subscriptions",
+        "question": "What do you spend on subscriptions?",
         "prefix": "$"
       },
       "savings": {
         "label": "Savings / emergency fund",
+        "question": "How much do you put toward savings?",
         "prefix": "$"
       },
       "retirement": {
         "label": "Retirement contributions (from take-home)",
+        "question": "How much do you contribute to retirement from take-home pay?",
         "prefix": "$"
       }
     }

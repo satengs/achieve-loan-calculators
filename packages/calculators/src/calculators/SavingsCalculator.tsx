@@ -10,7 +10,7 @@ import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { SelectField } from "../components/SelectField";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, optionsFrom, pct, useCalculatorSetup } from "./common";
+import { CalculatorCta, optionsFrom, pct, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -51,16 +51,17 @@ export function SavingsCalculator({ projectName = "achieve", rates }: SavingsCal
       <div className="lc-layout">
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="sv" keys={["initial", "monthly", "rate"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="sv" keys={["initial", "monthly", "rate"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="rate (national average savings rate)" />
-          <NumberFields idPrefix="sv" keys={["years"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="sv" keys={["years"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <MoreOptions>
             <SelectField id="sv-compounding" label={fields.compounding?.label} value={compounding} onChange={setCompounding} options={optionsFrom(fields.compounding?.options, ["365", "12", "4", "1"])} />
-            <NumberFields idPrefix="sv" keys={["contributionGrowth", "inflation"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="sv" keys={["contributionGrowth", "inflation"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
             <RateNote rate={infl} subject="inflation (CPI-U, year over year)" />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? whole(computed.balance) : PLACEHOLDER}

@@ -75,8 +75,9 @@ export {
   MicroStats,
   TipCallout,
   DepletionChart,
+  DtiGauge,
 } from "./components";
-export type { MicroStat, DepletionBar } from "./components";
+export type { MicroStat, DepletionBar, DtiGaugeProps, DtiGaugeBandCopy } from "./components";
 
 export { resolveRate, parseFredCsv, yoyFromObservations, sameDayPriorYear } from "./rates";
 export type { RateKey, RateInfo, MarketRates, ResolvedRate, FredObservation } from "./rates";

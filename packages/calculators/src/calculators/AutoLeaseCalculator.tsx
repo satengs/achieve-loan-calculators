@@ -8,7 +8,7 @@ import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, useCalculatorSetup } from "./common";
+import { CalculatorCta, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -48,13 +48,14 @@ export function AutoLeaseCalculator({ projectName = "achieve", rates }: AutoLeas
       <div className="lc-layout">
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="al" keys={["msrp", "price", "down", "termMonths", "residualPct", "apr"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="al" keys={["msrp", "price", "down", "termMonths", "residualPct", "apr"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="APR proxy (48-month new car loan average; lessor money factors differ)" />
           <MoreOptions>
-            <NumberFields idPrefix="al" keys={["tradeIn", "fees", "salesTax"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="al" keys={["tradeIn", "fees", "salesTax"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? money(computed.monthly) : PLACEHOLDER}

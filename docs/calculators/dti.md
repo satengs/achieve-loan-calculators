@@ -21,7 +21,11 @@ Content labels/hints live in `src/content/dti.content.json → form.fields`. Inp
 - Band label + neutral explanation
 - Monthly debts used, payment level at 35% of income, difference vs 35%
 
-All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.
+All values render in the results card with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar.
+
+On the **Achieve** brand only, results use the presentation card (`ResultsPanel` `variant="presentation"`) and a semicircle `DtiGauge` (our own SVG; reserved 15.5rem height) whose bands match the thresholds above. FDR and bills keep the original labelled results panel. See [ACHIEVE-DESIGN-ALIGNMENT.md](../ACHIEVE-DESIGN-ALIGNMENT.md).
+
+Tables scroll horizontally on mobile.
 
 ## Formulas
 `cardMin = cardBalance × cardMin%` (default 3%); `debts = monthlyDebts + cardMin`; `DTI = debts / income × 100`; band: ≤ goodMax → good, ≤ fairMax → fair, else high.

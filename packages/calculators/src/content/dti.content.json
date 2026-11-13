@@ -18,21 +18,25 @@
     "fields": {
       "monthlyIncome": {
         "label": "Monthly gross income",
+        "question": "What is your monthly gross income?",
         "prefix": "$",
         "hint": "Before taxes. Include salary, self-employment taxable income, alimony/support received, etc."
       },
       "monthlyDebts": {
         "label": "Monthly debt payments",
+        "question": "What are your monthly debt payments?",
         "prefix": "$",
         "hint": "Rent or mortgage (incl. taxes/insurance/HOA), car, student, personal loans, card minimums, support payments. Exclude utilities, food, insurance premiums."
       },
       "cardBalance": {
         "label": "Credit card balances not included above (est.)",
+        "question": "What is your credit card balance (est.)?",
         "prefix": "$",
         "hint": "Optional. We add an estimated minimum payment for these balances."
       },
       "cardMinPct": {
         "label": "Estimated card minimum (% of balance)",
+        "question": "What estimated card minimum should we use (% of balance)?",
         "suffix": "%"
       }
     }

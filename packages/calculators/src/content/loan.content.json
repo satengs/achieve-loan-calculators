@@ -22,10 +22,12 @@
       },
       "apr": {
         "label": "Interest rate (APR)",
+        "question": "What's the APR?",
         "suffix": "%"
       },
       "termYears": {
         "label": "Loan period",
+        "question": "What's the term?",
         "suffix": "yr"
       },
       "extraMonthly": {

@@ -8,7 +8,7 @@ import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, months, useCalculatorSetup, YearScheduleCard } from "./common";
+import { CalculatorCta, months, useCalculatorSetup, YearScheduleCard, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -40,14 +40,15 @@ export function StudentLoanCalculator({ projectName = "achieve" }: StudentLoanCa
       <div className="lc-layout">
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="sl" keys={["balance", "apr"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="sl" keys={["balance", "apr"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="interest rate" noLiveSource />
-          <NumberFields idPrefix="sl" keys={["termYears"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="sl" keys={["termYears"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <MoreOptions>
-            <NumberFields idPrefix="sl" keys={["deferMonths", "extraMonthly"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="sl" keys={["deferMonths", "extraMonthly"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? money(computed.base.payment) : PLACEHOLDER}

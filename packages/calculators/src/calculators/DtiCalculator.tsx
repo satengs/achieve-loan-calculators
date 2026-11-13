@@ -5,8 +5,9 @@ import { dtiBand, dtiRatio, estimatedCardMinimum } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
 import { MoreOptions } from "../components/MoreOptions";
+import { DtiGauge } from "../components/DtiGauge";
 import { ResultsPanel } from "../components/ResultsPanel";
-import { CalculatorCta, pct, useCalculatorSetup } from "./common";
+import { CalculatorCta, pct, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -47,15 +48,41 @@ export function DtiCalculator({ projectName = "achieve" }: DtiCalculatorProps) {
       <div className="lc-layout">
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="dti" keys={["monthlyIncome", "monthlyDebts", "cardBalance"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="dti" keys={["monthlyIncome", "monthlyDebts", "cardBalance"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <MoreOptions>
-            <NumberFields idPrefix="dti" keys={["cardMinPct"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="dti" keys={["cardMinPct"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? pct(computed.ratio, 1) : PLACEHOLDER}
+          headline={
+            computed ? (
+              <>
+                Your estimated DTI ratio is{" "}
+                <span className="lc-headline-em">{pct(computed.ratio, 1)}</span>
+              </>
+            ) : (
+              "Enter your income and debts to see your estimated DTI ratio"
+            )
+          }
+          chart={
+            brand === "achieve" ? (
+              <DtiGauge
+                ratio={computed ? computed.ratio : null}
+                band={computed?.band ?? null}
+                goodMax={goodMax}
+                fairMax={fairMax}
+                eyebrow="Your estimated DTI ratio"
+                good={{ title: `≤${goodMax}%`, label: (bands.good?.label.split(" — ")[1] || "generally considered manageable") }}
+                fair={{ title: `${goodMax + 1}% to ${fairMax}%`, label: (bands.fair?.label.split(" — ")[1] || "may need work") }}
+                high={{ title: `${fairMax + 1}%`, label: (bands.high?.label.split(" — ")[1] || "high") }}
+              />
+            ) : undefined
+          }
+          tip={band?.body}
           items={[
             { label: labels.band, value: band?.label || PLACEHOLDER },
             { label: labels.totalDebts, value: computed ? whole(computed.debts) : PLACEHOLDER },
@@ -63,15 +90,17 @@ export function DtiCalculator({ projectName = "achieve" }: DtiCalculatorProps) {
             { label: labels.headroom, value: computed ? whole(computed.headroom) : PLACEHOLDER },
           ]}
           summary={
-            band
-              ? [
-                  { label: `≤${goodMax}%`, value: bands.good?.label.split(" — ")[1] || "" },
-                  { label: `${goodMax + 1}–${fairMax}%`, value: bands.fair?.label.split(" — ")[1] || "" },
-                  { label: `≥${fairMax + 1}%`, value: bands.high?.label.split(" — ")[1] || "" },
-                ]
-              : []
+            brand === "achieve"
+              ? []
+              : band
+                ? [
+                    { label: `≤${goodMax}%`, value: bands.good?.label.split(" — ")[1] || "" },
+                    { label: `${goodMax + 1}–${fairMax}%`, value: bands.fair?.label.split(" — ")[1] || "" },
+                    { label: `≥${fairMax + 1}%`, value: bands.high?.label.split(" — ")[1] || "" },
+                  ]
+                : []
           }
-          message={band ? `${band.body} ${results.summaryMessage}` : String(results.invalidMessage)}
+          message={band ? `${brand === "achieve" ? "" : band.body + " "}${results.summaryMessage}`.trim() : String(results.invalidMessage)}
           cta={<CalculatorCta id="dti" />}
         />
       </div>

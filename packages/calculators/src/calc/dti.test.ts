@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { dtiBand, dtiRatio, estimatedCardMinimum } from "./dti";
+import { dtiBand, dtiNeedleDegrees, dtiRatio, estimatedCardMinimum } from "./dti";
 
 describe("dti", () => {
   it("matches Achieve example ($1,980 / $6,000 = 33%)", () => {
@@ -22,5 +22,14 @@ describe("dti", () => {
   it("card minimum estimate", () => {
     assert.equal(estimatedCardMinimum(5000, 3), 150);
     assert.ok(Number.isNaN(estimatedCardMinimum(-1, 3)));
+  });
+  it("needle angle: 0% left, 50% up, 100% right, 35% on the good/fair boundary", () => {
+    assert.equal(dtiNeedleDegrees(0), -180);
+    assert.equal(dtiNeedleDegrees(50), -90);
+    assert.equal(dtiNeedleDegrees(100), 0);
+    assert.equal(dtiNeedleDegrees(35), -180 + 35 * 1.8);
+    assert.equal(dtiNeedleDegrees(NaN), -180);
+    assert.equal(dtiNeedleDegrees(-10), -180);
+    assert.equal(dtiNeedleDegrees(140), 0);
   });
 });

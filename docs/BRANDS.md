@@ -36,10 +36,14 @@ Brand apps later: each Next app can hardcode its `projectName` while sharing `@l
 
 ## Optional tokens (v2)
 
-`BrandTokens` gained optional `cta`, `ctaHover`, `ctaText`, `link`, `heading`. They become
-`--lc-cta`, `--lc-cta-hover`, `--lc-cta-text`, `--lc-link`, `--lc-heading` and default to
-`primary` / `primaryHover` / `#fff` / `primary` / `primaryDark`, so brands that don't set them
-(Achieve, bills) render exactly as before.
+`BrandTokens` gained optional `cta`, `ctaHover`, `ctaText`, `link`, `heading`, and `borderAccent`. They become
+`--lc-cta`, `--lc-cta-hover`, `--lc-cta-text`, `--lc-link`, `--lc-heading`, `--lc-border-accent` and default to
+`primary` / `primaryHover` / `#fff` / `primary` / `primaryDark` / `border`.
+
+Achieve now sets `heading` (`#1D252F`), `ctaHover` (`#154199`), and `borderAccent` (`#D2E2FE`) from the live
+achieve.com tools. Layout and presentation for the Achieve brand (tinted form card, question labels,
+sentence-headline results, DTI gauge) are documented in [ACHIEVE-DESIGN-ALIGNMENT.md](./ACHIEVE-DESIGN-ALIGNMENT.md).
+FDR and bills are unchanged: those treatments are gated on `[data-project="achieve"]`.
 
 ## FDR token sources (extracted Oct 9, 2026)
 

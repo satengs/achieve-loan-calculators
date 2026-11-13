@@ -7,7 +7,7 @@ import { CalculatorShell } from "../components/CalculatorShell";
 import { MoreOptions } from "../components/MoreOptions";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { SelectField } from "../components/SelectField";
-import { CalculatorCta, optionsFrom, useCalculatorSetup } from "./common";
+import { CalculatorCta, optionsFrom, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -50,14 +50,15 @@ export function HomeInsuranceCalculator({ projectName = "achieve" }: HomeInsuran
       <div className="lc-layout">
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="hi" keys={["dwelling"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="hi" keys={["dwelling"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           {PRIMARY.map(select)}
           <MoreOptions>
             {["construction", "claims", "contents", "liability"].map(select)}
-            <NumberFields idPrefix="hi" keys={["ratePerThousand"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="hi" keys={["ratePerThousand"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? whole(computed.monthly) : PLACEHOLDER}

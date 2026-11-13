@@ -5,6 +5,7 @@ import { formatPercent, interpolate } from "../calc/format";
 import type { YearRow } from "../calc/loans";
 import { CTA } from "../components/CTA";
 import { DataTable } from "../components/DataTable";
+import type { ProjectName } from "../brand/types";
 import { getCalculatorConfig, getCalculatorContent, type CalculatorId } from "../content/load";
 import { moneyFn } from "./utils";
 
@@ -79,6 +80,21 @@ export function YearScheduleCard({
       />
     </div>
   );
+}
+
+/** Field label: Achieve uses the optional CMS `question` sentence; other brands keep the short `label`. */
+export function copyLabel(
+  field: { label?: string; question?: string } | undefined,
+  fallback: string,
+  brand: ProjectName,
+): string {
+  if (brand === "achieve" && field?.question) return field.question;
+  return field?.label || fallback;
+}
+
+/** Achieve results use the presentation card; FDR and bills keep the original panel. */
+export function resultsVariant(brand: ProjectName): "default" | "presentation" {
+  return brand === "achieve" ? "presentation" : "default";
 }
 
 /** Options list for a SelectField from content option labels + config keys. */

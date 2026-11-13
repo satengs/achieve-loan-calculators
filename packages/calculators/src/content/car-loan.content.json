@@ -18,14 +18,17 @@
     "fields": {
       "price": {
         "label": "Vehicle price",
+        "question": "What's the vehicle price?",
         "prefix": "$"
       },
       "down": {
         "label": "Down payment",
+        "question": "What's the down payment?",
         "prefix": "$"
       },
       "apr": {
         "label": "APR",
+        "question": "What's the APR?",
         "suffix": "%"
       },
       "termMonths": {
@@ -37,10 +40,12 @@
           "60": "60 mo",
           "72": "72 mo",
           "84": "84 mo"
-        }
+        },
+        "question": "What's the loan term?"
       },
       "tradeIn": {
         "label": "Trade-in value",
+        "question": "What's the trade-in value?",
         "prefix": "$"
       },
       "tradeOwed": {
@@ -49,11 +54,13 @@
       },
       "salesTax": {
         "label": "Sales tax",
+        "question": "What's the sales tax rate?",
         "suffix": "%",
         "hint": "Applied to price minus trade-in (common, varies by state)."
       },
       "fees": {
         "label": "Title, registration & doc fees",
+        "question": "What fees are rolled in?",
         "prefix": "$"
       }
     }

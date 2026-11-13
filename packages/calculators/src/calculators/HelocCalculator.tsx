@@ -20,6 +20,7 @@ import { SelectField } from "../components/SelectField";
 import { resolveRate, type MarketRates } from "../rates/types";
 import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
+import { copyLabel, resultsVariant } from "./common";
 
 export type HelocCalculatorProps = {
   projectName?: ProjectName | string;
@@ -234,7 +235,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
           <h2>{content.form.heading}</h2>
           <Field
             id="home-value"
-            label={fields.homeValue?.label || "Home value"}
+            label={copyLabel(fields.homeValue, "Home value", brand)}
             prefix="$"
             value={homeValue}
             onChange={(v) => {
@@ -243,16 +244,31 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
             }}
             error={err.home}
           />
-          <Field id="draw" label={fields.drawAmount?.label || "Draw amount"} hint={fields.drawAmount?.hint} prefix="$" value={draw} onChange={setDraw} error={err.draw} />
+
+          {brand === "achieve" ? (
+            <Field
+              id="mortgage"
+              label={copyLabel(fields.mortgageBalance, "Mortgage balance", brand)}
+              hint={fields.mortgageBalance?.hint}
+              prefix="$"
+              value={mortgage}
+              onChange={(v) => {
+                setMortgage(v);
+                if (!limitManual) syncLimit(homeValue, v, maxCltv);
+              }}
+              error={err.mort}
+            />
+          ) : null}
+          <Field id="draw" label={copyLabel(fields.drawAmount, "Draw amount", brand)} hint={fields.drawAmount?.hint} prefix="$" value={draw} onChange={setDraw} error={err.draw} />
           <SelectField
             id="credit-band"
-            label={fields.creditBand?.label || "Credit score range"}
+            label={copyLabel(fields.creditBand, "Credit score range", brand)}
             hint={fields.creditBand?.hint}
             value={creditBand}
             onChange={onBand}
             options={Object.entries((fields.creditBand?.options || {}) as Record<string, string>).map(([value, label]) => ({ value, label }))}
           />
-          <Field id="apr" label={fields.apr?.label || "APR"} hint={fields.apr?.hint} suffix="%" value={apr} onChange={setApr} error={err.apr} />
+          <Field id="apr" label={copyLabel(fields.apr, "APR", brand)} hint={fields.apr?.hint} suffix="%" value={apr} onChange={setApr} error={err.apr} />
           <RateNote rate={rate} subject="HELOC APR" adjustment={`(prime + ${(margins[creditBand] ?? 0).toFixed(2)}% illustrative margin)`} />
           <details
             className="lc-advanced"
@@ -268,9 +284,10 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
           >
             <summary>More options</summary>
             <div className="lc-advanced-body">
+              {brand !== "achieve" ? (
               <Field
                 id="mortgage"
-                label={fields.mortgageBalance?.label || "Mortgage balance"}
+                label={copyLabel(fields.mortgageBalance, "Mortgage balance", brand)}
                 hint={fields.mortgageBalance?.hint}
                 prefix="$"
                 value={mortgage}
@@ -280,9 +297,10 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
                 }}
                 error={err.mort}
               />
+              ) : null}
               <Field
                 id="max-cltv"
-                label={fields.maxCltv?.label || "Max CLTV"}
+                label={copyLabel(fields.maxCltv, "Max CLTV", brand)}
                 hint={fields.maxCltv?.hint}
                 suffix="%"
                 value={maxCltv}
@@ -294,7 +312,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
               />
               <Field
                 id="credit-limit"
-                label={fields.creditLimit?.label || "Credit limit"}
+                label={copyLabel(fields.creditLimit, "Credit limit", brand)}
                 hint={fields.creditLimit?.hint}
                 prefix="$"
                 value={creditLimit}
@@ -320,8 +338,8 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
               </Fieldset>
               {payMode === "draw-repay" ? (
                 <>
-                  <Field id="draw-years" label={fields.drawYears?.label || "Draw period"} hint={fields.drawYears?.hint} suffix="yr" value={drawYears} onChange={setDrawYears} inputMode="numeric" error={err.drawYears} />
-                  <Field id="repay-years" label={fields.repayYears?.label || "Repayment period"} hint={fields.repayYears?.hint} suffix="yr" value={repayYears} onChange={setRepayYears} inputMode="numeric" error={err.repayYears} />
+                  <Field id="draw-years" label={copyLabel(fields.drawYears, "Draw period", brand)} hint={fields.drawYears?.hint} suffix="yr" value={drawYears} onChange={setDrawYears} inputMode="numeric" error={err.drawYears} />
+                  <Field id="repay-years" label={copyLabel(fields.repayYears, "Repayment period", brand)} hint={fields.repayYears?.hint} suffix="yr" value={repayYears} onChange={setRepayYears} inputMode="numeric" error={err.repayYears} />
                 </>
               ) : (
                 <Field
@@ -340,9 +358,25 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
         </section>
 
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading || "Your estimate")}
           primaryLabel={computed.paymentLabel}
           primaryValue={out?.payment || PLACEHOLDER}
+          headline={
+            out ? (
+              <>
+                Your estimated {String(computed.paymentLabel || "monthly payment").toLowerCase()} is{" "}
+                <span className="lc-headline-em">{out.payment}</span>
+              </>
+            ) : (
+              "Enter your home value and a draw amount to see an estimated payment"
+            )
+          }
+          tip={
+            out
+              ? "This is an illustrative payment based on the rate and term you entered — not a quote or an offer."
+              : undefined
+          }
           items={[
             { label: labels.creditLimit || "Credit limit", value: out?.limit || PLACEHOLDER },
             { label: labels.remainingEquity || "Remaining equity", value: out?.equity || PLACEHOLDER },

@@ -9,7 +9,7 @@ import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, useCalculatorSetup, YearScheduleCard } from "./common";
+import { CalculatorCta, useCalculatorSetup, YearScheduleCard, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -45,7 +45,7 @@ export function CarLoanCalculator({ projectName = "achieve", rates }: CarLoanCal
       <div className="lc-layout">
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="cl" keys={["price", "down", "apr"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="cl" keys={["price", "down", "apr"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="APR (48-month new car loan average at commercial banks)" />
           <Fieldset legend={fields.termMonths?.legend || "Loan term"}>
             <Segmented
@@ -57,10 +57,11 @@ export function CarLoanCalculator({ projectName = "achieve", rates }: CarLoanCal
             />
           </Fieldset>
           <MoreOptions>
-            <NumberFields idPrefix="cl" keys={["tradeIn", "tradeOwed", "salesTax", "fees"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="cl" keys={["tradeIn", "tradeOwed", "salesTax", "fees"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? money(computed.a.payment) : PLACEHOLDER}

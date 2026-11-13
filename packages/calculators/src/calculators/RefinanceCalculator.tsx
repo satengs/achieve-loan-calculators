@@ -9,7 +9,7 @@ import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, interpolate, months, useCalculatorSetup } from "./common";
+import { CalculatorCta, interpolate, months, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -48,10 +48,10 @@ export function RefinanceCalculator({ projectName = "achieve", rates }: Refinanc
       <div className="lc-layout">
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
-          <NumberFields idPrefix="rf" keys={["balance", "currentRate", "remainingYears", "newRate"]} fields={fields} inputs={inputs} />
+          <NumberFields idPrefix="rf" keys={["balance", "currentRate", "remainingYears", "newRate"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="new rate (30-year fixed average)" />
           <MoreOptions>
-            <NumberFields idPrefix="rf" keys={["newTermYears", "closingCosts"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="rf" keys={["newTermYears", "closingCosts"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
             <Fieldset legend={fields.rollCosts?.legend || "Closing costs"}>
               <Segmented
                 name="rf-roll"
@@ -67,6 +67,7 @@ export function RefinanceCalculator({ projectName = "achieve", rates }: Refinanc
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={computed && computed.monthlySavings < 0 ? String(labels.monthlyIncrease || results.primaryLabel) : String(results.primaryLabel)}
           primaryValue={computed ? money(Math.abs(computed.monthlySavings)) : PLACEHOLDER}

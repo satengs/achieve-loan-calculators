@@ -131,11 +131,13 @@
           "fields": {
             "loanAmount": {
               "label": "Loan amount",
+              "question": "How much would you like to borrow?",
               "hint": "Amount you want to borrow (before fee).",
               "prefix": "$"
             },
             "apr": {
               "label": "APR",
+              "question": "What's the APR?",
               "hint": "Illustrative sample APR for demo (mid-single to low-teens range).",
               "suffix": "%"
             },
@@ -157,6 +159,7 @@
             },
             "originationFee": {
               "label": "Origination fee (optional)",
+              "question": "What's the origination fee (optional)?",
               "suffix": "%",
               "hint": "Fee is financed into principal by default (you receive the loan amount; payments amortize principal + fee). See results for cash received and financed balance."
             }
@@ -484,6 +487,7 @@
           "fields": {
             "homePrice": {
               "label": "Home price",
+              "question": "What's the home price?",
               "prefix": "$"
             },
             "downPayment": {
@@ -499,12 +503,14 @@
             },
             "loanAmount": {
               "label": "Loan amount",
+              "question": "What's the loan amount?",
               "derivedTag": "Derived from price − down",
               "hint": "Editable — changing this overrides the derived amount until price/down change again.",
               "prefix": "$"
             },
             "apr": {
               "label": "APR",
+              "question": "What's the APR?",
               "hint": "Illustrative mid-single-digit sample APR for demo only.",
               "suffix": "%"
             },
@@ -888,31 +894,37 @@
           "fields": {
             "homeValue": {
               "label": "Home value",
+              "question": "What's your home's current value?",
               "prefix": "$"
             },
             "mortgageBalance": {
               "label": "Mortgage balance (optional)",
+              "question": "What's your mortgage's outstanding balance?",
               "hint": "Current first-lien balance. Leave 0 if none.",
               "prefix": "$"
             },
             "maxCltv": {
               "label": "Max combined LTV for credit limit",
+              "question": "What's the maximum combined loan-to-value (CLTV)?",
               "hint": "Demo default 85% CLTV cap used to derive available equity / credit limit.",
               "suffix": "%"
             },
             "creditLimit": {
               "label": "Available equity / credit limit",
+              "question": "What's the credit limit?",
               "derivedTag": "Derived (editable)",
               "hint": "Derived as max(0, home value × max CLTV − mortgage). Edit to override until home / mortgage / CLTV change.",
               "prefix": "$"
             },
             "drawAmount": {
               "label": "Draw amount",
+              "question": "What's your desired loan amount?",
               "hint": "Amount drawn from the HELOC line for this estimate.",
               "prefix": "$"
             },
             "apr": {
               "label": "APR (variable-rate, illustrative)",
+              "question": "What's the APR?",
               "hint": "Sample / demo only — not an offer. Real HELOC rates are often variable.",
               "suffix": "%"
             },
@@ -935,16 +947,19 @@
             },
             "drawYears": {
               "label": "Draw period",
+              "question": "How long is the draw period?",
               "suffix": "yr",
               "hint": "Interest-only payments during this period."
             },
             "repayYears": {
               "label": "Repayment period",
+              "question": "How long is the repayment period?",
               "suffix": "yr",
               "hint": "Principal & interest after the draw period ends."
             },
             "creditBand": {
               "label": "Credit score range",
+              "question": "What's your credit score?",
               "hint": "Sets the illustrative margin added to the prime rate. Edit APR directly to override.",
               "options": {
                 "excellent": "Excellent (750+)",
@@ -1717,34 +1732,41 @@
           "fields": {
             "debtAmount": {
               "label": "Credit card debt",
+              "question": "How much debt do you have?",
               "prefix": "$",
               "hint": "Total unsecured credit card balance."
             },
             "apr": {
               "label": "Average card APR",
+              "question": "What's the interest rate?",
               "suffix": "%"
             },
             "planPayment": {
               "label": "Your payoff plan — fixed monthly payment",
+              "question": "What monthly payment could you make on a payoff plan?",
               "prefix": "$",
               "hint": "Used for the “Your plan” column. Must exceed monthly interest."
             },
             "minPrincipalPct": {
               "label": "Minimum payment: principal % of balance",
+              "question": "What's the minimum principal payment (% of balance)?",
               "suffix": "%",
               "hint": "Common issuer formula: interest + 1% of balance."
             },
             "minFloor": {
               "label": "Minimum payment floor",
+              "question": "What's the minimum payment floor?",
               "prefix": "$"
             },
             "programCostPct": {
               "label": "Program total cost (% of enrolled debt)",
+              "question": "What's the illustrative program cost (% of debt)?",
               "suffix": "%",
               "hint": "Illustrative assumption covering settlements + fees. Real programs vary widely."
             },
             "programMonths": {
               "label": "Program length",
+              "question": "How many months would a program last?",
               "suffix": "mo"
             }
           }
@@ -2080,6 +2102,7 @@
           "fields": {
             "debtAmount": {
               "label": "Debt amount",
+              "question": "How much debt would you consolidate?",
               "prefix": "$",
               "hint": "Total unsecured debt you’d like to address."
             },
@@ -2308,7 +2331,7 @@
       ],
       "rateKeys": [],
       "docPath": "docs/calculators/dti.md",
-      "docMarkdown": "# Debt-to-income (DTI) calculator\n\n- **Route:** `/dti` · **Component:** `DtiCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://www.achieve.com/tools/debt-income-ratio-calculator\n\n## Purpose\nInputs mirror Achieve: monthly gross income, monthly debt payments, estimated credit card balance. Output DTI % and a neutral band (≤35% good, 36–43% needs work, ≥44% high — the bands displayed on the reference).\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `monthlyIncome` | Monthly gross income | number | 6000 | 1–10000000 | required, >0 |\n| `monthlyDebts` | Monthly debt payments | number | 1980 | 0–10000000 | required |\n| `cardBalance` | Credit card balances not included above (est.) | number | 0 | 0–10000000 | required |\n| `cardMinPct` | Estimated card minimum (% of balance) | number | 3 | 0–100 | required |\n\nContent labels/hints live in `src/content/dti.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- DTI % (primary)\n- Band label + neutral explanation\n- Monthly debts used, payment level at 35% of income, difference vs 35%\n\nAll values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.\n\n## Formulas\n`cardMin = cardBalance × cardMin%` (default 3%); `debts = monthlyDebts + cardMin`; `DTI = debts / income × 100`; band: ≤ goodMax → good, ≤ fairMax → fair, else high.\n\n### Worked example (defaults)\n$6,000 income, $1,980 debts, $0 card balance → 1,980/6,000 = **33.0%** → “35% or less”. 35% of income = $2,100 → $120 headroom.\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/dti.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`bands`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/dti.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Gross income; front-end (housing) ratio not computed.\n- Band wording is neutral and not a lending criterion or guarantee.\n- Card minimum % is an estimate; users who already included card minimums should leave balance at 0.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`dti.test.ts`: Achieve example 33%, band boundaries 35/36/43/44, zero debts, zero/negative income → NaN, card minimum validation.\n",
+      "docMarkdown": "# Debt-to-income (DTI) calculator\n\n- **Route:** `/dti` · **Component:** `DtiCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://www.achieve.com/tools/debt-income-ratio-calculator\n\n## Purpose\nInputs mirror Achieve: monthly gross income, monthly debt payments, estimated credit card balance. Output DTI % and a neutral band (≤35% good, 36–43% needs work, ≥44% high — the bands displayed on the reference).\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `monthlyIncome` | Monthly gross income | number | 6000 | 1–10000000 | required, >0 |\n| `monthlyDebts` | Monthly debt payments | number | 1980 | 0–10000000 | required |\n| `cardBalance` | Credit card balances not included above (est.) | number | 0 | 0–10000000 | required |\n| `cardMinPct` | Estimated card minimum (% of balance) | number | 3 | 0–100 | required |\n\nContent labels/hints live in `src/content/dti.content.json → form.fields`. Inputs with many options are under **More options** (collapsed on mobile, always open on desktop).\n\n## Outputs\n- DTI % (primary)\n- Band label + neutral explanation\n- Monthly debts used, payment level at 35% of income, difference vs 35%\n\nAll values render in the results card with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar.\n\nOn the **Achieve** brand only, results use the presentation card (`ResultsPanel` `variant=\"presentation\"`) and a semicircle `DtiGauge` (our own SVG; reserved 15.5rem height) whose bands match the thresholds above. FDR and bills keep the original labelled results panel. See [ACHIEVE-DESIGN-ALIGNMENT.md](../ACHIEVE-DESIGN-ALIGNMENT.md).\n\nTables scroll horizontally on mobile.\n\n## Formulas\n`cardMin = cardBalance × cardMin%` (default 3%); `debts = monthlyDebts + cardMin`; `DTI = debts / income × 100`; band: ≤ goodMax → good, ≤ fairMax → fair, else high.\n\n### Worked example (defaults)\n$6,000 income, $1,980 debts, $0 card balance → 1,980/6,000 = **33.0%** → “35% or less”. 35% of income = $2,100 → $120 headroom.\n\n## Data sources / APIs\nNone. All defaults are illustrative config values (see assumptions).\n\n## Config vs content\n- `src/config/dti.config.json`: `defaults` (initial values), `validation` (min/max/label/allowZero per input, enforced by `validateRange`), `features` (`bands`), `cta` (enabled / preventDefault). Numbers/assumptions only.\n- `src/content/dti.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner` (disclaimer), `form.fields` (labels, hints, option labels), `results` (headings, labels, messages), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`; footer copy containing “Achieve-styled” is auto-adapted by `adaptBrandChromeNote`. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- Gross income; front-end (housing) ratio not computed.\n- Band wording is neutral and not a lending criterion or guarantee.\n- Card minimum % is an estimate; users who already included card minimums should leave balance at 0.\n- Illustrative estimates only; not an offer, quote, pre-qualification, or advice. Demo disclaimer banner always shown.\n\n## Tests\n`dti.test.ts`: Achieve example 33%, band boundaries 35/36/43/44, zero debts, zero/negative income → NaN, card minimum validation.\n",
       "doc": {
         "intro": "# Debt-to-income (DTI) calculator\n\n- **Route:** `/dti` · **Component:** `DtiCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`)\n- **Reference:** https://www.achieve.com/tools/debt-income-ratio-calculator",
         "lead": "Inputs mirror Achieve: monthly gross income, monthly debt payments, estimated credit card balance. Output DTI % and a neutral band (≤35% good, 36–43% needs work, ≥44% high — the bands displayed on the reference).",
@@ -2337,7 +2360,7 @@
           "Band label + neutral explanation",
           "Monthly debts used, payment level at 35% of income, difference vs 35%"
         ],
-        "outputsNote": "All values render in the light estimate card (`ResultsPanel`) with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar. Tables scroll horizontally on mobile.",
+        "outputsNote": "All values render in the results card with the brand-primary CTA (placeholder, no live link) and the mobile estimate-first sticky bar.\nOn the **Achieve** brand only, results use the presentation card (`ResultsPanel` `variant=\"presentation\"`) and a semicircle `DtiGauge` (our own SVG; reserved 15.5rem height) whose bands match the thresholds above. FDR and bills keep the original labelled results panel. See [ACHIEVE-DESIGN-ALIGNMENT.md](../ACHIEVE-DESIGN-ALIGNMENT.md).\nTables scroll horizontally on mobile.",
         "assumptions": [
           "Gross income; front-end (housing) ratio not computed.",
           "Band wording is neutral and not a lending criterion or guarantee.",
@@ -2419,21 +2442,25 @@
           "fields": {
             "monthlyIncome": {
               "label": "Monthly gross income",
+              "question": "What is your monthly gross income?",
               "prefix": "$",
               "hint": "Before taxes. Include salary, self-employment taxable income, alimony/support received, etc."
             },
             "monthlyDebts": {
               "label": "Monthly debt payments",
+              "question": "What are your monthly debt payments?",
               "prefix": "$",
               "hint": "Rent or mortgage (incl. taxes/insurance/HOA), car, student, personal loans, card minimums, support payments. Exclude utilities, food, insurance premiums."
             },
             "cardBalance": {
               "label": "Credit card balances not included above (est.)",
+              "question": "What is your credit card balance (est.)?",
               "prefix": "$",
               "hint": "Optional. We add an estimated minimum payment for these balances."
             },
             "cardMinPct": {
               "label": "Estimated card minimum (% of balance)",
+              "question": "What estimated card minimum should we use (% of balance)?",
               "suffix": "%"
             }
           }
@@ -2525,16 +2552,17 @@
         {
           "file": "packages/calculators/src/calc/dti.test.ts",
           "describe": "dti",
-          "count": 4,
+          "count": 5,
           "titles": [
             "matches Achieve example ($1,980 / $6,000 = 33%)",
             "bands at boundaries",
             "zero debts → 0%; zero/invalid income → NaN",
-            "card minimum estimate"
+            "card minimum estimate",
+            "needle angle: 0% left, 50% up, 100% right, 35% on the good/fair boundary"
           ]
         }
       ],
-      "testCount": 4
+      "testCount": 5
     },
     "car-insurance": {
       "slug": "car-insurance",
@@ -3285,58 +3313,72 @@
           "fields": {
             "netIncome": {
               "label": "Take-home pay (monthly)",
+              "question": "What's your monthly take-home pay?",
               "prefix": "$"
             },
             "otherIncome": {
               "label": "Other income (monthly)",
+              "question": "What's your other monthly income?",
               "prefix": "$"
             },
             "housing": {
               "label": "Housing (rent / mortgage)",
+              "question": "What do you spend on housing?",
               "prefix": "$"
             },
             "utilities": {
               "label": "Utilities & phone",
+              "question": "What do you spend on utilities and phone?",
               "prefix": "$"
             },
             "groceries": {
               "label": "Groceries",
+              "question": "What do you spend on groceries?",
               "prefix": "$"
             },
             "transportation": {
               "label": "Transportation",
+              "question": "What do you spend on transportation?",
               "prefix": "$"
             },
             "insurance": {
               "label": "Insurance premiums",
+              "question": "What do you pay in insurance premiums?",
               "prefix": "$"
             },
             "debtPayments": {
               "label": "Minimum debt payments",
+              "question": "What are your minimum debt payments?",
               "prefix": "$"
             },
             "dining": {
               "label": "Dining out",
+              "question": "What do you spend dining out?",
               "prefix": "$"
             },
             "entertainment": {
               "label": "Entertainment",
+              "question": "What do you spend on entertainment?",
               "prefix": "$"
             },
             "shopping": {
               "label": "Shopping",
+              "question": "What do you spend on shopping?",
               "prefix": "$"
             },
             "subscriptions": {
               "label": "Subscriptions",
+              "question": "What do you spend on subscriptions?",
               "prefix": "$"
             },
             "savings": {
               "label": "Savings / emergency fund",
+              "question": "How much do you put toward savings?",
               "prefix": "$"
             },
             "retirement": {
               "label": "Retirement contributions (from take-home)",
+              "question": "How much do you contribute to retirement from take-home pay?",
               "prefix": "$"
             }
           }
@@ -3697,6 +3739,7 @@
             },
             "monthly": {
               "label": "Monthly contribution",
+              "question": "How much will you add each month?",
               "prefix": "$"
             },
             "rate": {
@@ -3705,6 +3748,7 @@
             },
             "years": {
               "label": "Years to save",
+              "question": "How many years will you save?",
               "suffix": "yr"
             },
             "compounding": {
@@ -3723,6 +3767,7 @@
             },
             "inflation": {
               "label": "Inflation assumption",
+              "question": "What's the inflation rate?",
               "suffix": "%",
               "hint": "Used only for the today’s-dollars figure."
             }
@@ -4748,10 +4793,12 @@
             },
             "apr": {
               "label": "Interest rate (APR)",
+              "question": "What's the APR?",
               "suffix": "%"
             },
             "termYears": {
               "label": "Loan period",
+              "question": "What's the term?",
               "suffix": "yr"
             },
             "extraMonthly": {
@@ -5062,39 +5109,48 @@
           "fields": {
             "msrp": {
               "label": "Vehicle MSRP",
+              "question": "What's the vehicle MSRP?",
               "prefix": "$"
             },
             "price": {
               "label": "Negotiated price (cap cost)",
+              "question": "What's the negotiated price (cap cost)?",
               "prefix": "$"
             },
             "down": {
               "label": "Down payment (cap reduction)",
+              "question": "What's the down payment (cap reduction)?",
               "prefix": "$"
             },
             "tradeIn": {
               "label": "Trade-in credit",
+              "question": "What's the trade-in credit?",
               "prefix": "$"
             },
             "fees": {
               "label": "Fees rolled in (acquisition, doc)",
+              "question": "What fees are rolled in?",
               "prefix": "$"
             },
             "residualPct": {
               "label": "Residual value (% of MSRP)",
+              "question": "What's the residual value (% of MSRP)?",
               "suffix": "%"
             },
             "apr": {
               "label": "Equivalent APR",
+              "question": "What's the equivalent APR?",
               "suffix": "%",
               "hint": "Converted to a money factor: APR ÷ 2,400."
             },
             "termMonths": {
               "label": "Lease term",
+              "question": "What's the lease term?",
               "suffix": "mo"
             },
             "salesTax": {
               "label": "Sales tax on payment",
+              "question": "What's the sales tax on the payment?",
               "suffix": "%"
             }
           }
@@ -5356,25 +5412,30 @@
           "fields": {
             "balance": {
               "label": "Loan balance",
+              "question": "What's the loan balance?",
               "prefix": "$"
             },
             "apr": {
               "label": "Interest rate",
+              "question": "What's the interest rate?",
               "suffix": "%",
               "hint": "Federal rates are set annually by law; private rates vary by lender."
             },
             "termYears": {
               "label": "Repayment term",
+              "question": "What's the repayment term?",
               "suffix": "yr",
               "hint": "Standard federal plan is 10 years."
             },
             "deferMonths": {
               "label": "Months until repayment starts",
+              "question": "How many months until repayment starts?",
               "suffix": "mo",
               "hint": "In-school / grace months; accrued interest is added to the balance (unsubsidized)."
             },
             "extraMonthly": {
               "label": "Extra monthly payment",
+              "question": "How much extra could you pay each month?",
               "prefix": "$"
             }
           }
@@ -5649,14 +5710,17 @@
           "fields": {
             "price": {
               "label": "Vehicle price",
+              "question": "What's the vehicle price?",
               "prefix": "$"
             },
             "down": {
               "label": "Down payment",
+              "question": "What's the down payment?",
               "prefix": "$"
             },
             "apr": {
               "label": "APR",
+              "question": "What's the APR?",
               "suffix": "%"
             },
             "termMonths": {
@@ -5668,10 +5732,12 @@
                 "60": "60 mo",
                 "72": "72 mo",
                 "84": "84 mo"
-              }
+              },
+              "question": "What's the loan term?"
             },
             "tradeIn": {
               "label": "Trade-in value",
+              "question": "What's the trade-in value?",
               "prefix": "$"
             },
             "tradeOwed": {
@@ -5680,11 +5746,13 @@
             },
             "salesTax": {
               "label": "Sales tax",
+              "question": "What's the sales tax rate?",
               "suffix": "%",
               "hint": "Applied to price minus trade-in (common, varies by state)."
             },
             "fees": {
               "label": "Title, registration & doc fees",
+              "question": "What fees are rolled in?",
               "prefix": "$"
             }
           }
@@ -6001,6 +6069,7 @@
           "fields": {
             "balance": {
               "label": "Current loan balance",
+              "question": "What's your current balance?",
               "prefix": "$"
             },
             "currentRate": {
@@ -6017,10 +6086,12 @@
             },
             "newTermYears": {
               "label": "New loan term",
+              "question": "What's the new term?",
               "suffix": "yr"
             },
             "closingCosts": {
               "label": "Closing costs",
+              "question": "What are the closing costs?",
               "prefix": "$"
             },
             "rollCosts": {

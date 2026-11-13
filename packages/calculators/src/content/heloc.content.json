@@ -18,31 +18,37 @@
     "fields": {
       "homeValue": {
         "label": "Home value",
+        "question": "What's your home's current value?",
         "prefix": "$"
       },
       "mortgageBalance": {
         "label": "Mortgage balance (optional)",
+        "question": "What's your mortgage's outstanding balance?",
         "hint": "Current first-lien balance. Leave 0 if none.",
         "prefix": "$"
       },
       "maxCltv": {
         "label": "Max combined LTV for credit limit",
+        "question": "What's the maximum combined loan-to-value (CLTV)?",
         "hint": "Demo default 85% CLTV cap used to derive available equity / credit limit.",
         "suffix": "%"
       },
       "creditLimit": {
         "label": "Available equity / credit limit",
+        "question": "What's the credit limit?",
         "derivedTag": "Derived (editable)",
         "hint": "Derived as max(0, home value × max CLTV − mortgage). Edit to override until home / mortgage / CLTV change.",
         "prefix": "$"
       },
       "drawAmount": {
         "label": "Draw amount",
+        "question": "What's your desired loan amount?",
         "hint": "Amount drawn from the HELOC line for this estimate.",
         "prefix": "$"
       },
       "apr": {
         "label": "APR (variable-rate, illustrative)",
+        "question": "What's the APR?",
         "hint": "Sample / demo only — not an offer. Real HELOC rates are often variable.",
         "suffix": "%"
       },
@@ -65,16 +71,19 @@
       },
       "drawYears": {
         "label": "Draw period",
+        "question": "How long is the draw period?",
         "suffix": "yr",
         "hint": "Interest-only payments during this period."
       },
       "repayYears": {
         "label": "Repayment period",
+        "question": "How long is the repayment period?",
         "suffix": "yr",
         "hint": "Principal & interest after the draw period ends."
       },
       "creditBand": {
         "label": "Credit score range",
+        "question": "What's your credit score?",
         "hint": "Sets the illustrative margin added to the prime rate. Edit APR directly to override.",
         "options": {
           "excellent": "Excellent (750+)",

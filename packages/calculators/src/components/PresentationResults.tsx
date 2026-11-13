@@ -17,6 +17,8 @@ type PresentationResultsProps = {
   tip?: ReactNode;
   message?: string;
   cta?: ReactNode;
+  /** Optional summary list or other content between the tip and the note. */
+  footer?: ReactNode;
 };
 
 /**
@@ -33,6 +35,7 @@ export function PresentationResults({
   tip,
   message,
   cta,
+  footer,
 }: PresentationResultsProps) {
   return (
     <>
@@ -45,6 +48,7 @@ export function PresentationResults({
         <MicroStats items={stats} />
         {chart}
         <TipCallout>{tip}</TipCallout>
+        {footer}
         {message ? <p className="lc-note">{message}</p> : null}
         {cta}
       </section>

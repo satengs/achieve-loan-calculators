@@ -18,34 +18,41 @@
     "fields": {
       "debtAmount": {
         "label": "Credit card debt",
+        "question": "How much debt do you have?",
         "prefix": "$",
         "hint": "Total unsecured credit card balance."
       },
       "apr": {
         "label": "Average card APR",
+        "question": "What's the interest rate?",
         "suffix": "%"
       },
       "planPayment": {
         "label": "Your payoff plan — fixed monthly payment",
+        "question": "What monthly payment could you make on a payoff plan?",
         "prefix": "$",
         "hint": "Used for the “Your plan” column. Must exceed monthly interest."
       },
       "minPrincipalPct": {
         "label": "Minimum payment: principal % of balance",
+        "question": "What's the minimum principal payment (% of balance)?",
         "suffix": "%",
         "hint": "Common issuer formula: interest + 1% of balance."
       },
       "minFloor": {
         "label": "Minimum payment floor",
+        "question": "What's the minimum payment floor?",
         "prefix": "$"
       },
       "programCostPct": {
         "label": "Program total cost (% of enrolled debt)",
+        "question": "What's the illustrative program cost (% of debt)?",
         "suffix": "%",
         "hint": "Illustrative assumption covering settlements + fees. Real programs vary widely."
       },
       "programMonths": {
         "label": "Program length",
+        "question": "How many months would a program last?",
         "suffix": "mo"
       }
     }

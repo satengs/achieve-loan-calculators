@@ -5,7 +5,7 @@ import { validateRange } from "../calc";
 import type { CalculatorConfig } from "../content/load";
 import { Field } from "../components/Field";
 
-export type FieldCopy = { label?: string; hint?: string; prefix?: string; suffix?: string };
+export type FieldCopy = { label?: string; question?: string; hint?: string; prefix?: string; suffix?: string };
 
 /**
  * Shared numeric-input state: string state per key, validated against
@@ -47,10 +47,12 @@ type NumberFieldsProps = {
   fields: Record<string, FieldCopy | undefined>;
   inputs: ReturnType<typeof useNumberInputs>;
   errors?: Record<string, string>;
+  /** When true (Achieve), prefer the CMS `question` sentence over the short label. */
+  preferQuestion?: boolean;
 };
 
 /** Render a list of numeric Fields from content copy + shared state. */
-export function NumberFields({ idPrefix, keys, fields, inputs, errors }: NumberFieldsProps) {
+export function NumberFields({ idPrefix, keys, fields, inputs, errors, preferQuestion = false }: NumberFieldsProps) {
   return (
     <>
       {keys.map((k) => {
@@ -59,7 +61,7 @@ export function NumberFields({ idPrefix, keys, fields, inputs, errors }: NumberF
           <Field
             key={k}
             id={`${idPrefix}-${k}`}
-            label={f.label || k}
+            label={(preferQuestion && f.question) || f.label || k}
             hint={f.hint}
             prefix={f.prefix}
             suffix={f.suffix}

@@ -9,8 +9,8 @@
     "intro": "Estimate principal & interest, optional PITI, total interest, and loan amount. Layout inspired by common calculator-widget patterns (inputs + sticky results)."
   },
   "demoBanner": {
-    "icon": "\u2139\ufe0f",
-    "strong": "Sample rate for demo only \u2014 not an offer.",
+    "icon": "ℹ️",
+    "strong": "Sample rate for demo only — not an offer.",
     "body": "Property tax, insurance, and HOA fields produce an estimated PITI only. This is not a commitment to lend or a rate lock."
   },
   "form": {
@@ -18,6 +18,7 @@
     "fields": {
       "homePrice": {
         "label": "Home price",
+        "question": "What's the home price?",
         "prefix": "$"
       },
       "downPayment": {
@@ -33,12 +34,14 @@
       },
       "loanAmount": {
         "label": "Loan amount",
-        "derivedTag": "Derived from price \u2212 down",
-        "hint": "Editable \u2014 changing this overrides the derived amount until price/down change again.",
+        "question": "What's the loan amount?",
+        "derivedTag": "Derived from price − down",
+        "hint": "Editable — changing this overrides the derived amount until price/down change again.",
         "prefix": "$"
       },
       "apr": {
         "label": "APR",
+        "question": "What's the APR?",
         "hint": "Illustrative mid-single-digit sample APR for demo only.",
         "suffix": "%"
       },
@@ -55,7 +58,7 @@
       },
       "piti": {
         "legend": "Optional monthly costs (for PITI estimate)",
-        "intro": "These are estimates you enter \u2014 not pulled from tax records.",
+        "intro": "These are estimates you enter — not pulled from tax records.",
         "taxMonthly": {
           "label": "Property tax / mo",
           "prefix": "$"
@@ -84,16 +87,16 @@
       "breakdownIns": "Insurance",
       "breakdownHoa": "HOA"
     },
-    "emptyPlaceholder": "\u2014",
+    "emptyPlaceholder": "—",
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
     "unableMessage": "Unable to calculate with these inputs.",
-    "zeroLoanMessage": "Down payment covers the full price \u2014 no loan to amortize.",
-    "summaryTemplate": "{{years}}-year term \u00b7 {{months}} payments \u00b7 estimated PITI includes your tax/insurance/HOA entries"
+    "zeroLoanMessage": "Down payment covers the full price — no loan to amortize.",
+    "summaryTemplate": "{{years}}-year term · {{months}} payments · estimated PITI includes your tax/insurance/HOA entries"
   },
   "cta": {
     "label": "Explore home loan options",
     "href": "#",
-    "note": "Placeholder CTA \u2014 not a live application or rate lock."
+    "note": "Placeholder CTA — not a live application or rate lock."
   },
   "footer": {
     "note": "PITI = Principal, Interest, Taxes, and Insurance (plus HOA if entered). Tax/insurance/HOA are user-entered estimates. This demo does not include PMI, closing costs, or escrow nuances. Not a loan offer."

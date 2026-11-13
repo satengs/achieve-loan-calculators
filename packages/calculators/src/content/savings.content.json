@@ -22,6 +22,7 @@
       },
       "monthly": {
         "label": "Monthly contribution",
+        "question": "How much will you add each month?",
         "prefix": "$"
       },
       "rate": {
@@ -30,6 +31,7 @@
       },
       "years": {
         "label": "Years to save",
+        "question": "How many years will you save?",
         "suffix": "yr"
       },
       "compounding": {
@@ -48,6 +50,7 @@
       },
       "inflation": {
         "label": "Inflation assumption",
+        "question": "What's the inflation rate?",
         "suffix": "%",
         "hint": "Used only for the today’s-dollars figure."
       }

@@ -11,7 +11,7 @@ import { ResultsPanel } from "../components/ResultsPanel";
 import { SelectField } from "../components/SelectField";
 import { SliderField } from "../components/SliderField";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, interpolate, months, optionsFrom, payoffTime, pct, useCalculatorSetup } from "./common";
+import { CalculatorCta, interpolate, months, optionsFrom, payoffTime, pct, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -98,6 +98,7 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
           <SliderField
+            layout={brand === "achieve" ? "row" : "stack"}
             id="co-debtAmount"
             label={fields.debtAmount?.label}
             hint={fields.debtAmount?.hint}
@@ -122,10 +123,11 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
           <RateNote rate={primeRate} subject="home equity base (prime rate)" adjustment="+ illustrative margin" />
           <RateNote rate={cardRate} subject="card APR for minimums" />
           <MoreOptions>
-            <NumberFields idPrefix="co" keys={["plTermMonths", "heTermMonths", "programCostPct", "programMonths"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="co" keys={["plTermMonths", "heTermMonths", "programCostPct", "programMonths"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? whole(computed.minimum.firstPayment) : PLACEHOLDER}

@@ -18,6 +18,7 @@
     "fields": {
       "balance": {
         "label": "Current loan balance",
+        "question": "What's your current balance?",
         "prefix": "$"
       },
       "currentRate": {
@@ -34,10 +35,12 @@
       },
       "newTermYears": {
         "label": "New loan term",
+        "question": "What's the new term?",
         "suffix": "yr"
       },
       "closingCosts": {
         "label": "Closing costs",
+        "question": "What are the closing costs?",
         "prefix": "$"
       },
       "rollCosts": {

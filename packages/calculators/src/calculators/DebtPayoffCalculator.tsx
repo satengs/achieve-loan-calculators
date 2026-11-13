@@ -10,7 +10,7 @@ import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { SliderField } from "../components/SliderField";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { CalculatorCta, interpolate, months, payoffTime, useCalculatorSetup } from "./common";
+import { CalculatorCta, copyLabel, interpolate, months, payoffTime, resultsVariant, useCalculatorSetup } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -78,8 +78,9 @@ export function DebtPayoffCalculator({ projectName = "achieve", rates }: DebtPay
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
           <SliderField
+            layout={brand === "achieve" ? "row" : "stack"}
             id="dp-debtAmount"
-            label={fields.debtAmount?.label}
+            label={copyLabel(fields.debtAmount, "Debt amount", brand)}
             hint={fields.debtAmount?.hint}
             prefix="$"
             min={slider.min}
@@ -90,9 +91,9 @@ export function DebtPayoffCalculator({ projectName = "achieve", rates }: DebtPay
             display={Number.isFinite(inputs.values.debtAmount) ? whole(inputs.values.debtAmount) : PLACEHOLDER}
             error={errors.debtAmount}
           />
-          <NumberFields idPrefix="dp" keys={["apr"]} fields={fields} inputs={inputs} errors={errors} />
+          <NumberFields idPrefix="dp" keys={["apr"]} fields={fields} inputs={inputs} errors={errors}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="card APR" />
-          <NumberFields idPrefix="dp" keys={["planPayment"]} fields={fields} inputs={inputs} errors={errors} />
+          <NumberFields idPrefix="dp" keys={["planPayment"]} fields={fields} inputs={inputs} errors={errors}  preferQuestion={brand === "achieve"} />
           <MoreOptions>
             <NumberFields
               idPrefix="dp"
@@ -100,13 +101,38 @@ export function DebtPayoffCalculator({ projectName = "achieve", rates }: DebtPay
               fields={fields}
               inputs={inputs}
               errors={errors}
-            />
+             preferQuestion={brand === "achieve"} />
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? whole(computed.min.totalPaid) : PLACEHOLDER}
+          headline={
+            computed?.plan ? (
+              <>
+                A payoff plan could finish in{" "}
+                <span className="lc-headline-em">{time(computed.plan)}</span>
+                {computed.min.totalInterest - computed.plan.totalInterest > 0 ? (
+                  <>
+                    {" "}and save{" "}
+                    <span className="lc-headline-em">{whole(computed.min.totalInterest - computed.plan.totalInterest)}</span>
+                    {" "}in interest
+                  </>
+                ) : null}
+              </>
+            ) : computed ? (
+              <>
+                Paying minimums, this debt would cost{" "}
+                <span className="lc-headline-em">{whole(computed.min.totalPaid)}</span>
+                {" "}over {time(computed.min)}
+              </>
+            ) : (
+              "Enter your debt and a plan payment to see a payoff estimate"
+            )
+          }
+          tip={computed?.plan ? "Compare the plan against paying only the minimum. Figures are illustrative, not a savings guarantee." : undefined}
           items={[
             { label: labels.minMonths, value: computed ? time(computed.min) : PLACEHOLDER },
             { label: labels.planMonths, value: computed?.plan ? time(computed.plan) : PLACEHOLDER },

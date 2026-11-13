@@ -10,6 +10,7 @@ import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
+import { resultsVariant } from "./common";
 
 export type LifeInsuranceCalculatorProps = {
   projectName?: ProjectName | string;
@@ -160,6 +161,7 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
         </section>
 
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading || "Estimated coverage need")}
           primaryLabel={String(results.primaryLabel || "Additional coverage to consider")}
           primaryValue={out?.net || PLACEHOLDER}

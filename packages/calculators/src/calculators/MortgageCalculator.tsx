@@ -11,6 +11,7 @@ import { RateNote } from "../components/RateNote";
 import { resolveRate, type MarketRates } from "../rates/types";
 import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
+import { copyLabel, resultsVariant } from "./common";
 
 export type MortgageCalculatorProps = {
   projectName?: ProjectName | string;
@@ -135,7 +136,7 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
           <h2>{content.form.heading}</h2>
           <Field
             id="home-price"
-            label={fields.homePrice?.label || "Home price"}
+            label={copyLabel(fields.homePrice, "Home price", brand)}
             prefix={fields.homePrice?.prefix}
             value={homePrice}
             onChange={(v) => {
@@ -184,7 +185,7 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
           </Fieldset>
           <Field
             id="loan-amount"
-            label={fields.loanAmount?.label || "Loan amount"}
+            label={copyLabel(fields.loanAmount, "Loan amount", brand)}
             hint={fields.loanAmount?.hint}
             prefix={fields.loanAmount?.prefix}
             value={loanAmount}
@@ -194,7 +195,7 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
             }}
             error={err.loan}
           />
-          <Field id="apr" label={fields.apr?.label || "APR"} hint={fields.apr?.hint} suffix="%" value={apr} onChange={setApr} error={err.apr} />
+          <Field id="apr" label={copyLabel(fields.apr, "APR", brand)} hint={fields.apr?.hint} suffix="%" value={apr} onChange={setApr} error={err.apr} />
           <RateNote rate={rate} subject={rateKey === "mortgage15" ? "rate (15-year fixed average)" : "rate (30-year fixed average)"} />
           <Fieldset legend={fields.term?.legend || "Loan term"}>
             <Segmented
@@ -224,9 +225,25 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
         </section>
 
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading || "Your estimate")}
           primaryLabel={String(results.primaryLabel || "Monthly P&I")}
           primaryValue={out?.pi || PLACEHOLDER}
+          headline={
+            out ? (
+              <>
+                Your estimated monthly principal and interest is{" "}
+                <span className="lc-headline-em">{out.pi}</span>
+              </>
+            ) : (
+              "Enter a home price and rate to see an estimated monthly payment"
+            )
+          }
+          tip={
+            out
+              ? "Estimated PITI below includes the taxes, insurance, and HOA you entered. This is not a quote or a pre-approval."
+              : undefined
+          }
           items={[
             { label: labels.piti || "Est. PITI / mo", value: out?.piti || PLACEHOLDER },
             { label: labels.loanAmount || "Loan amount", value: out?.loan || PLACEHOLDER },

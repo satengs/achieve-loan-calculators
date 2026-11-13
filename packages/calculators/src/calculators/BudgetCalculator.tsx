@@ -8,7 +8,7 @@ import { DataTable } from "../components/DataTable";
 import { Fieldset } from "../components/Field";
 import { MoreOptions } from "../components/MoreOptions";
 import { ResultsPanel } from "../components/ResultsPanel";
-import { CalculatorCta, pct, useCalculatorSetup } from "./common";
+import { CalculatorCta, pct, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
@@ -42,21 +42,22 @@ export function BudgetCalculator({ projectName = "achieve" }: BudgetCalculatorPr
         <section className="lc-card lc-form">
           <h2>{content.form.heading}</h2>
           <Fieldset legend={sections.income}>
-            <NumberFields idPrefix="bd" keys={["netIncome", "otherIncome"]} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="bd" keys={["netIncome", "otherIncome"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </Fieldset>
           <Fieldset legend={sections.needs}>
-            <NumberFields idPrefix="bd" keys={categories.needs} fields={fields} inputs={inputs} />
+            <NumberFields idPrefix="bd" keys={categories.needs} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </Fieldset>
           <MoreOptions>
             <Fieldset legend={sections.wants}>
-              <NumberFields idPrefix="bd" keys={categories.wants} fields={fields} inputs={inputs} />
+              <NumberFields idPrefix="bd" keys={categories.wants} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
             </Fieldset>
             <Fieldset legend={sections.savings}>
-              <NumberFields idPrefix="bd" keys={categories.savings} fields={fields} inputs={inputs} />
+              <NumberFields idPrefix="bd" keys={categories.savings} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
             </Fieldset>
           </MoreOptions>
         </section>
         <ResultsPanel
+          variant={resultsVariant(brand)}
           heading={String(results.heading)}
           primaryLabel={String(results.primaryLabel)}
           primaryValue={computed ? whole(computed.leftover) : PLACEHOLDER}

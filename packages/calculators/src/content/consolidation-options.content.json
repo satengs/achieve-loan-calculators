@@ -18,6 +18,7 @@
     "fields": {
       "debtAmount": {
         "label": "Debt amount",
+        "question": "How much debt would you consolidate?",
         "prefix": "$",
         "hint": "Total unsecured debt you’d like to address."
       },

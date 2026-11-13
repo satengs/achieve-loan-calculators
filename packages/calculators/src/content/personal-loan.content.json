@@ -9,8 +9,8 @@
     "intro": "Estimate monthly payments, total interest, and total cost for an amortizing personal loan. Adjust amount, APR, term, and optional origination fee."
   },
   "demoBanner": {
-    "icon": "\u2139\ufe0f",
-    "strong": "Sample rates for demo only \u2014 not an offer.",
+    "icon": "ℹ️",
+    "strong": "Sample rates for demo only — not an offer.",
     "body": "Figures are illustrative estimates for education and UX prototyping. Actual rates, fees, and eligibility depend on credit review and lender terms."
   },
   "form": {
@@ -18,11 +18,13 @@
     "fields": {
       "loanAmount": {
         "label": "Loan amount",
+        "question": "How much would you like to borrow?",
         "hint": "Amount you want to borrow (before fee).",
         "prefix": "$"
       },
       "apr": {
         "label": "APR",
+        "question": "What's the APR?",
         "hint": "Illustrative sample APR for demo (mid-single to low-teens range).",
         "suffix": "%"
       },
@@ -40,10 +42,11 @@
           "48": "48 mo",
           "60": "60 mo"
         },
-        "hint": "Typical personal loan terms: 24\u201360 months."
+        "hint": "Typical personal loan terms: 24–60 months."
       },
       "originationFee": {
         "label": "Origination fee (optional)",
+        "question": "What's the origination fee (optional)?",
         "suffix": "%",
         "hint": "Fee is financed into principal by default (you receive the loan amount; payments amortize principal + fee). See results for cash received and financed balance."
       }
@@ -61,17 +64,17 @@
       "lastPayment": "Last payment (P / I)",
       "originationFeeAmount": "Origination fee amount"
     },
-    "emptyPlaceholder": "\u2014",
+    "emptyPlaceholder": "—",
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
     "unableMessage": "Unable to calculate with these inputs.",
-    "summaryTemplate": "{{months}} payments \u00b7 fee mode: financed into principal{{feeNote}}",
+    "summaryTemplate": "{{months}} payments · fee mode: financed into principal{{feeNote}}",
     "feeNoteWithFee": " (fee {{feeAmount}} added to balance)",
     "feeNoteNoFee": " (no fee)"
   },
   "cta": {
     "label": "Check your rate",
     "href": "#",
-    "note": "Placeholder CTA \u2014 not a live application. Checking a rate may use a soft inquiry depending on the lender."
+    "note": "Placeholder CTA — not a live application. Checking a rate may use a soft inquiry depending on the lender."
   },
   "amortization": {
     "heading": "Amortization snapshot",
