@@ -17,6 +17,7 @@ import autoLeaseContent from "./auto-lease.content.json";
 import studentLoanContent from "./student-loan.content.json";
 import carLoanContent from "./car-loan.content.json";
 import refinanceContent from "./refinance.content.json";
+import debtSnowballAvalancheContent from "./debt-snowball-avalanche.content.json";
 import personalLoanConfig from "../config/personal-loan.config.json";
 import mortgageConfig from "../config/mortgage.config.json";
 import helocConfig from "../config/heloc.config.json";
@@ -34,6 +35,7 @@ import autoLeaseConfig from "../config/auto-lease.config.json";
 import studentLoanConfig from "../config/student-loan.config.json";
 import carLoanConfig from "../config/car-loan.config.json";
 import refinanceConfig from "../config/refinance.config.json";
+import debtSnowballAvalancheConfig from "../config/debt-snowball-avalanche.config.json";
 
 export type CalculatorId =
   | "personal-loan"
@@ -52,7 +54,8 @@ export type CalculatorId =
   | "auto-lease"
   | "student-loan"
   | "car-loan"
-  | "refinance";
+  | "refinance"
+  | "debt-snowball-avalanche";
 
 const rangeSchema = z.object({
   min: z.number().optional(),
@@ -129,6 +132,7 @@ const CONTENT_MAP: Record<CalculatorId, CalculatorContent> = {
   "student-loan": studentLoanContent as CalculatorContent,
   "car-loan": carLoanContent as CalculatorContent,
   "refinance": refinanceContent as CalculatorContent,
+  "debt-snowball-avalanche": debtSnowballAvalancheContent as CalculatorContent,
 };
 
 const CONFIG_MAP: Record<CalculatorId, unknown> = {
@@ -149,6 +153,7 @@ const CONFIG_MAP: Record<CalculatorId, unknown> = {
   "student-loan": studentLoanConfig,
   "car-loan": carLoanConfig,
   "refinance": refinanceConfig,
+  "debt-snowball-avalanche": debtSnowballAvalancheConfig,
 };
 
 export function getCalculatorContent(id: CalculatorId): CalculatorContent {

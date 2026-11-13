@@ -37,6 +37,7 @@ export {
   StudentLoanCalculator,
   CarLoanCalculator,
   RefinanceCalculator,
+  DebtSnowballAvalancheCalculator,
 } from "./calculators";
 export type {
   PersonalLoanCalculatorProps,
@@ -56,6 +57,7 @@ export type {
   StudentLoanCalculatorProps,
   CarLoanCalculatorProps,
   RefinanceCalculatorProps,
+  DebtSnowballAvalancheCalculatorProps,
 } from "./calculators";
 
 export {
@@ -76,6 +78,7 @@ export {
   TipCallout,
   DepletionChart,
   DtiGauge,
+  BalanceCompareChart,
 } from "./components";
 export type { MicroStat, DepletionBar, DtiGaugeProps, DtiGaugeBandCopy } from "./components";
 

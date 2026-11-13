@@ -83,6 +83,15 @@ export function DtiCalculator({ projectName = "achieve" }: DtiCalculatorProps) {
             ) : undefined
           }
           tip={band?.body}
+          stats={
+            computed
+              ? [
+                  { label: labels.totalDebts, value: whole(computed.debts) },
+                  { label: labels.to35, value: whole(computed.at35) },
+                  { label: labels.headroom, value: whole(computed.headroom) },
+                ]
+              : []
+          }
           items={[
             { label: labels.band, value: band?.label || PLACEHOLDER },
             { label: labels.totalDebts, value: computed ? whole(computed.debts) : PLACEHOLDER },

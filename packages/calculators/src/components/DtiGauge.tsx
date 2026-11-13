@@ -32,9 +32,9 @@ function arc(startDeg: number, endDeg: number, r = R): string {
   const [x1, y1] = to(startDeg);
   const [x2, y2] = to(endDeg);
   // Travel the TOP semicircle (180° left → 0° right through 90° up).
-  // In SVG (y down) that is sweep-flag 0 (counterclockwise).
+  // SVG y increases downward, so that visually-counterclockwise path is sweep-flag 1 (clockwise in SVG space).
   const large = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
-  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${large} 0 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
 }
 
 /**

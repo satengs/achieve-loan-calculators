@@ -1,0 +1,47 @@
+{
+  "id": "debt-snowball-avalanche",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "extraMonthly": 200
+  },
+  "validation": {
+    "extraMonthly": {
+      "min": 0,
+      "max": 1000000,
+      "label": "Extra monthly payment",
+      "allowZero": true
+    },
+    "balance": {
+      "min": 0,
+      "max": 10000000,
+      "label": "Balance",
+      "allowZero": true
+    },
+    "apr": {
+      "min": 0,
+      "max": 99,
+      "label": "APR",
+      "allowZero": true
+    },
+    "minPayment": {
+      "min": 0,
+      "max": 1000000,
+      "label": "Minimum payment",
+      "allowZero": true
+    }
+  },
+  "features": {
+    "maxMonths": 1200,
+    "maxDebts": 8,
+    "defaultDebts": [
+      { "name": "Car loan leftover", "balance": 1500, "apr": 6.99, "minPayment": 80 },
+      { "name": "Store card", "balance": 4500, "apr": 24.99, "minPayment": 120 },
+      { "name": "Card A", "balance": 6000, "apr": 18.99, "minPayment": 150 }
+    ]
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": false
+  }
+}

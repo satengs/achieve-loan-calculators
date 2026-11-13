@@ -32,3 +32,5 @@ export { CarLoanCalculator } from "./CarLoanCalculator";
 export type { CarLoanCalculatorProps } from "./CarLoanCalculator";
 export { RefinanceCalculator } from "./RefinanceCalculator";
 export type { RefinanceCalculatorProps } from "./RefinanceCalculator";
+export { DebtSnowballAvalancheCalculator } from "./DebtSnowballAvalancheCalculator";
+export type { DebtSnowballAvalancheCalculatorProps, FocusMode } from "./DebtSnowballAvalancheCalculator";

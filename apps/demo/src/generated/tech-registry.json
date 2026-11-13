@@ -1935,6 +1935,307 @@
       ],
       "testCount": 13
     },
+    "debt-snowball-avalanche": {
+      "slug": "debt-snowball-avalanche",
+      "title": "Debt snowball vs avalanche",
+      "component": "DebtSnowballAvalancheCalculator",
+      "componentPath": "packages/calculators/src/calculators/DebtSnowballAvalancheCalculator.tsx",
+      "calcModules": [
+        "packages/calculators/src/calc/snowball.ts"
+      ],
+      "rateKeys": [],
+      "docPath": "docs/calculators/debt-snowball-avalanche.md",
+      "docMarkdown": "# Debt snowball vs avalanche calculator\n\n- **Route:** `/debt-snowball-avalanche` · **Component:** `DebtSnowballAvalancheCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `initialFocus?: \"compare\" | \"snowball\" | \"avalanche\"`)\n- **SEO aliases:** `/debt-snowball` and `/debt-avalanche` are real pages (not redirects) that render the same calculator with that method preselected, and with distinct document titles (“Debt snowball calculator”, “Debt avalanche calculator”) and breadcrumb labels.\n\n## Purpose\nCompare two popular extra-payment strategies on the same set of debts: **snowball** (smallest starting balance first) and **avalanche** (highest APR first). Show time to debt-free, total interest, payoff order, and the difference between the methods. This is a lightweight, multi-debt companion to the single-balance debt-payoff calculator — not a full debt-resolution product. A CMS-configurable CTA may link to Achieve’s Debt Optimizer (`https://www.achieve.com/achieve-debt-optimizer`) as a separate tool; the copy must not promise savings or results from that product.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `debts[]` (name) | Name | text | “Car loan leftover”, “Store card”, “Card A” | — | optional (falls back to “Debt N”) |\n| `debts[]` (balance) | Balance | number | 1500, 4500, 6000 | 0–10,000,000 | required, ≥0 |\n| `debts[]` (apr) | APR | number | 6.99, 24.99, 18.99 | 0–99 | required, ≥0 |\n| `debts[]` (minPayment) | Minimum payment | number | 80, 120, 150 | 0–1,000,000 | required, ≥0 |\n| `extraMonthly` | Extra monthly payment | number | 200 | 0–1,000,000 | required, ≥0 |\n\nDefault debts live in `features.defaultDebts` (not `defaults`, which only accepts scalars). The form starts with three rows; users can add up to `features.maxDebts` (8) or remove down to one. Content labels/hints live in `src/content/debt-snowball-avalanche.content.json → form.fields`.\n\nThe results panel has a Compare / Snowball / Avalanche toggle. Alias routes set `initialFocus` so the matching method is selected on load.\n\n## Outputs\n- Sentence headline: which method could cost less or finish sooner (or that they match, or that the debts would not pay off). Language uses “could”, never a guarantee.\n- Payoff time and total interest for each method; interest and time difference (snowball minus avalanche; a positive interest difference means avalanche costs less).\n- Approximate debt-free calendar month (N months from the current month, computed on the client).\n- Payoff order with the month each debt is paid off.\n- Balance-over-time chart (both series), with the unfocused series dimmed when a single method is selected.\n- Warnings when a starting minimum is below that debt’s first-month interest, and when the simulation hits the month cap (`neverPaysOff`).\n\nAchieve uses the presentation results card (headline, micro-stats, chart, tip). FDR and bills use the default labelled results layout, with the same chart and figures. A tip callout explains the trade-off without recommending a method. Figures are illustrative estimates only.\n\n## Formulas\nMonthly rate for a debt is `r = APR/100/12`. Amounts are rounded to cents (`Math.round(n × 100) / 100`) after interest and after each payment.\n\n**Payoff order (fixed at the start, not re-sorted):** snowball sorts by starting balance ascending (then APR, then name); avalanche sorts by APR descending (then starting balance ascending, then name). Zero-balance debts are dropped.\n\n**Each month, for every still-open debt:** accrue `interest = cents(balance × r)` and add it to the balance. The month’s cash budget is `extraMonthly + sum of remaining minimums`. First, each open debt is paid `min(minimum, balance)`. Leftover budget (the extra payment plus any unused portion of a minimum, including a minimum freed because a debt was paid off this month) is then applied along the fixed order, rolling to the next debt in the same month if the focus debt reaches zero.\n\n**Cap:** if any balance remains after `maxMonths` (default 1,200), the result is `capped` / `neverPaysOff`. The simulation does **not** stop early just because a total balance grew — a debt whose minimum is below interest can still be paid off later, once it is the focus of the leftover budget. `growingAtStart` lists debts whose starting minimum is below the first month’s interest, as a warning only.\n\n**Comparison:** `interestDelta = snowball.totalInterest − avalanche.totalInterest` (positive means avalanche costs less interest). `monthsDelta = snowball.months − avalanche.months` (positive means avalanche is faster).\n\n```\ninterest = cents(balance × APR/100/12)\nbudget = extraMonthly + Σ remaining minimums\n```\n\n### Worked example (defaults)\nThree debts and a $200 extra payment. Car loan leftover $1,500 at 6.99% (min $80). Store card $4,500 at 24.99% (min $120). Card A $6,000 at 18.99% (min $150). Snowball (smallest balance first) pays the car leftover in month 6, the store card in month 22, and Card A in month 37, with $3,737.28 total interest. Avalanche (highest APR first) pays the store card in month 17, the car leftover in month 20 (its own minimum finishes it), and Card A in month 33, with $3,133.75 total interest. Avalanche could save $603.53 in interest and finish 4 months sooner. These figures are illustrative, not a promise.\n\n## Data sources / APIs\nNone. All balances, APRs, and payments are entered by the user. There is no live rate key.\n\n## Config vs content\n- `src/config/debt-snowball-avalanche.config.json`: `defaults.extraMonthly`, `validation` (min/max/label/allowZero per numeric field, enforced by `validateRange`), `features` (`defaultDebts`, `maxMonths` 1200, `maxDebts` 8), `cta` (`enabled`, `preventDefault: false` so the Optimizer link navigates). Numbers and limits only. Default debts cannot live in `defaults` because that map is scalar-only.\n- `src/content/debt-snowball-avalanche.content.json`: text only (CMS-ready): `meta`, `header`, `aliases` (SEO titles/intros for `/debt-snowball` and `/debt-avalanche`), `demoBanner` (disclaimer), `form` (labels, questions, hints, add/remove copy), `results` (headlines, labels, tips, warnings), `cta` (label, `https://www.achieve.com/achieve-debt-optimizer`, a note that it is a separate tool and that figures are not a guarantee), `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`. Achieve uses the presentation results layout; FDR and bills keep the default labelled layout. To vary copy per brand, swap the content JSON from a CMS entry per brand.\n\n## Assumptions & limitations\n- APR is constant; fees, missed payments, penalty rates, due-date differences, and tax effects are not modeled.\n- Interest is applied at the start of each month, then payments; rounding is to the nearest cent.\n- Snowball uses each debt’s **original** balance for priority (standard snowball; the list is not re-sorted as balances change).\n- Freed minimums roll onto the next debt in the same month, along with the extra payment.\n- A minimum below interest does not by itself mean the debt never pays off — extra payment can close the gap once that debt is the focus.\n- The 1,200-month cap (100 years) is a safety bound; a capped run is reported as “would not pay off”, not as a 100-year payoff.\n- Payoff dates are calendar months from “now” in the visitor’s timezone (set after mount to avoid hydration mismatch) and are approximate.\n- Illustrative estimates only; not a payoff plan, loan offer, advice, or a guarantee of savings or timing. The Debt Optimizer CTA is a link to a separate Achieve product and does not claim results from it. The demo disclaimer banner is always shown.\n\n## Tests\n`snowball.test.ts`: `sortDebts` (snowball = smallest starting balance, avalanche = highest APR, zero-balance dropped, name as a tie-break); `simulateStrategy` (hand-computed 3-month single-debt case at 12%, agreement with `simulateFixedPayment` on one debt, divergent payoff order and lower avalanche interest on a two-debt case, never-pays-off when min + extra cannot cover interest, still pays off when extra covers a min-below-interest gap, freed minimum rolls to the next debt, null on invalid input, zero balances finish immediately, month cap honored); `compareStrategies` deltas; `downsampleSeries` keeps first and last; `payoffCalendarMonth` crosses a year boundary (Nov 2026 + 3 months = Feb 2027).\n",
+      "doc": {
+        "intro": "# Debt snowball vs avalanche calculator\n\n- **Route:** `/debt-snowball-avalanche` · **Component:** `DebtSnowballAvalancheCalculator` (export from `@loan-calculators/core`, prop `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `initialFocus?: \"compare\" | \"snowball\" | \"avalanche\"`)\n- **SEO aliases:** `/debt-snowball` and `/debt-avalanche` are real pages (not redirects) that render the same calculator with that method preselected, and with distinct document titles (“Debt snowball calculator”, “Debt avalanche calculator”) and breadcrumb labels.",
+        "lead": "Compare two popular extra-payment strategies on the same set of debts: **snowball** (smallest starting balance first) and **avalanche** (highest APR first). Show time to debt-free, total interest, payoff order, and the difference between the methods. This is a lightweight, multi-debt companion to the single-balance debt-payoff calculator — not a full debt-resolution product. A CMS-configurable CTA may link to Achieve’s Debt Optimizer (`https://www.achieve.com/achieve-debt-optimizer`) as a separate tool; the copy must not promise savings or results from that product.",
+        "purpose": "Compare two popular extra-payment strategies on the same set of debts: **snowball** (smallest starting balance first) and **avalanche** (highest APR first). Show time to debt-free, total interest, payoff order, and the difference between the methods. This is a lightweight, multi-debt companion to the single-balance debt-payoff calculator — not a full debt-resolution product. A CMS-configurable CTA may link to Achieve’s Debt Optimizer (`https://www.achieve.com/achieve-debt-optimizer`) as a separate tool; the copy must not promise savings or results from that product.",
+        "formulas": [
+          {
+            "label": "Formula",
+            "expr": "r = APR/100/12"
+          },
+          {
+            "label": "Each month, for every still-open debt",
+            "expr": "interest = cents(balance × r)"
+          },
+          {
+            "label": "Comparison",
+            "expr": "interestDelta = snowball.totalInterest − avalanche.totalInterest"
+          },
+          {
+            "label": "Comparison",
+            "expr": "monthsDelta = snowball.months − avalanche.months"
+          },
+          {
+            "label": "Formula",
+            "expr": "interest = cents(balance × APR/100/12)\nbudget = extraMonthly + Σ remaining minimums"
+          }
+        ],
+        "formulaNotes": "Monthly rate for a debt is `r = APR/100/12`. Amounts are rounded to cents (`Math.round(n × 100) / 100`) after interest and after each payment.\n\n**Payoff order (fixed at the start, not re-sorted):** snowball sorts by starting balance ascending (then APR, then name); avalanche sorts by APR descending (then starting balance ascending, then name). Zero-balance debts are dropped.\n\n**Each month, for every still-open debt:** accrue `interest = cents(balance × r)` and add it to the balance. The month’s cash budget is `extraMonthly + sum of remaining minimums`. First, each open debt is paid `min(minimum, balance)`. Leftover budget (the extra payment plus any unused portion of a minimum, including a minimum freed because a debt was paid off this month) is then applied along the fixed order, rolling to the next debt in the same month if the focus debt reaches zero.\n\n**Cap:** if any balance remains after `maxMonths` (default 1,200), the result is `capped` / `neverPaysOff`. The simulation does **not** stop early just because a total balance grew — a debt whose minimum is below interest can still be paid off later, once it is the focus of the leftover budget. `growingAtStart` lists debts whose starting minimum is below the first month’s interest, as a warning only.\n\n**Comparison:** `interestDelta = snowball.totalInterest − avalanche.totalInterest` (positive means avalanche costs less interest). `monthsDelta = snowball.months − avalanche.months` (positive means avalanche is faster).\n\n```\ninterest = cents(balance × APR/100/12)\nbudget = extraMonthly + Σ remaining minimums\n```",
+        "workedExample": [
+          "Three debts and a $200 extra payment.",
+          "Car loan leftover $1,500 at 6.99% (min $80).",
+          "Store card $4,500 at 24.99% (min $120).",
+          "Card A $6,000 at 18.99% (min $150).",
+          "Snowball (smallest balance first) pays the car leftover in month 6, the store card in month 22, and Card A in month 37, with $3,737.28 total interest.",
+          "Avalanche (highest APR first) pays the store card in month 17, the car leftover in month 20 (its own minimum finishes it), and Card A in month 33, with $3,133.75 total interest.",
+          "Avalanche could save $603.53 in interest and finish 4 months sooner.",
+          "These figures are illustrative, not a promise."
+        ],
+        "outputs": [
+          "Sentence headline: which method could cost less or finish sooner (or that they match, or that the debts would not pay off). Language uses “could”, never a guarantee.",
+          "Payoff time and total interest for each method; interest and time difference (snowball minus avalanche; a positive interest difference means avalanche costs less).",
+          "Approximate debt-free calendar month (N months from the current month, computed on the client).",
+          "Payoff order with the month each debt is paid off.",
+          "Balance-over-time chart (both series), with the unfocused series dimmed when a single method is selected.",
+          "Warnings when a starting minimum is below that debt’s first-month interest, and when the simulation hits the month cap (`neverPaysOff`)."
+        ],
+        "outputsNote": "Achieve uses the presentation results card (headline, micro-stats, chart, tip). FDR and bills use the default labelled results layout, with the same chart and figures. A tip callout explains the trade-off without recommending a method. Figures are illustrative estimates only.",
+        "assumptions": [
+          "APR is constant; fees, missed payments, penalty rates, due-date differences, and tax effects are not modeled.",
+          "Interest is applied at the start of each month, then payments; rounding is to the nearest cent.",
+          "Snowball uses each debt’s **original** balance for priority (standard snowball; the list is not re-sorted as balances change).",
+          "Freed minimums roll onto the next debt in the same month, along with the extra payment.",
+          "A minimum below interest does not by itself mean the debt never pays off — extra payment can close the gap once that debt is the focus.",
+          "The 1,200-month cap (100 years) is a safety bound; a capped run is reported as “would not pay off”, not as a 100-year payoff.",
+          "Payoff dates are calendar months from “now” in the visitor’s timezone (set after mount to avoid hydration mismatch) and are approximate.",
+          "Illustrative estimates only; not a payoff plan, loan offer, advice, or a guarantee of savings or timing. The Debt Optimizer CTA is a link to a separate Achieve product and does not claim results from it. The demo disclaimer banner is always shown."
+        ],
+        "dataSources": "None. All balances, APRs, and payments are entered by the user. There is no live rate key.",
+        "configVsContent": "- `src/config/debt-snowball-avalanche.config.json`: `defaults.extraMonthly`, `validation` (min/max/label/allowZero per numeric field, enforced by `validateRange`), `features` (`defaultDebts`, `maxMonths` 1200, `maxDebts` 8), `cta` (`enabled`, `preventDefault: false` so the Optimizer link navigates). Numbers and limits only. Default debts cannot live in `defaults` because that map is scalar-only.\n- `src/content/debt-snowball-avalanche.content.json`: text only (CMS-ready): `meta`, `header`, `aliases` (SEO titles/intros for `/debt-snowball` and `/debt-avalanche`), `demoBanner` (disclaimer), `form` (labels, questions, hints, add/remove copy), `results` (headlines, labels, tips, warnings), `cta` (label, `https://www.achieve.com/achieve-debt-optimizer`, a note that it is a separate tool and that figures are not a guarantee), `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens in `src/brand/tokens.ts` via `BrandTheme`. Achieve uses the presentation results layout; FDR and bills keep the default labelled layout. To vary copy per brand, swap the content JSON from a CMS entry per brand.",
+        "tests": "`snowball.test.ts`: `sortDebts` (snowball = smallest starting balance, avalanche = highest APR, zero-balance dropped, name as a tie-break); `simulateStrategy` (hand-computed 3-month single-debt case at 12%, agreement with `simulateFixedPayment` on one debt, divergent payoff order and lower avalanche interest on a two-debt case, never-pays-off when min + extra cannot cover interest, still pays off when extra covers a min-below-interest gap, freed minimum rolls to the next debt, null on invalid input, zero balances finish immediately, month cap honored); `compareStrategies` deltas; `downsampleSeries` keeps first and last; `payoffCalendarMonth` crosses a year boundary (Nov 2026 + 3 months = Feb 2027)."
+      },
+      "inputs": [
+        {
+          "key": "extraMonthly",
+          "label": "Extra monthly payment",
+          "type": "number",
+          "default": 200,
+          "min": 0,
+          "max": 1000000,
+          "allowZero": true,
+          "unit": "$",
+          "options": null,
+          "configKey": "defaults.extraMonthly"
+        }
+      ],
+      "contentPath": "packages/calculators/src/content/debt-snowball-avalanche.content.json",
+      "content": {
+        "meta": {
+          "title": "Debt snowball vs avalanche calculator | Multi-brand demo",
+          "description": "Compare paying smallest balances first (snowball) with paying highest APRs first (avalanche). Illustrative estimates only — not a plan or a guarantee."
+        },
+        "header": {
+          "eyebrow": "Debt payoff",
+          "title": "Debt snowball vs avalanche calculator",
+          "intro": "See how long it could take to become debt-free, and how much interest you could pay, if you put every extra dollar toward your smallest balance (snowball) or your highest APR (avalanche). Figures are illustrative estimates, not a promise of savings."
+        },
+        "demoBanner": {
+          "icon": "ℹ️",
+          "strong": "Illustrative only — not a payoff plan or a guarantee.",
+          "body": "This comparison uses the balances, rates, and payments you enter. Real due dates, fees, and rate changes are not modeled. Nothing here is an offer, advice, or a claim about any program."
+        },
+        "form": {
+          "heading": "Your debts",
+          "fields": {
+            "name": {
+              "label": "Name",
+              "question": "What should we call this debt?"
+            },
+            "balance": {
+              "label": "Balance",
+              "question": "What's the balance?",
+              "prefix": "$"
+            },
+            "apr": {
+              "label": "APR",
+              "question": "What's the APR?",
+              "suffix": "%"
+            },
+            "minPayment": {
+              "label": "Min. payment",
+              "question": "What's the minimum payment?",
+              "prefix": "$"
+            },
+            "extraMonthly": {
+              "label": "Extra monthly payment",
+              "question": "How much extra can you pay each month?",
+              "prefix": "$",
+              "hint": "Applied after every minimum, to one debt at a time. When a debt is paid off, its minimum is added to the extra."
+            }
+          },
+          "addDebt": "Add a debt",
+          "removeDebt": "Remove",
+          "removeDebtAria": "Remove {{name}}",
+          "debtHeading": "Debt {{n}}",
+          "maxDebtsNote": "This demo compares up to {{max}} debts."
+        },
+        "results": {
+          "heading": "Snowball vs avalanche",
+          "primaryLabel": "Faster method",
+          "invalidMessage": "Fix the highlighted fields to see a comparison.",
+          "unableMessage": "Unable to compare these inputs.",
+          "labels": {
+            "snowballMonths": "Snowball payoff time",
+            "avalancheMonths": "Avalanche payoff time",
+            "snowballInterest": "Snowball interest",
+            "avalancheInterest": "Avalanche interest",
+            "interestSaved": "Interest difference",
+            "monthsSaved": "Time difference",
+            "snowballDate": "Snowball debt-free",
+            "avalancheDate": "Avalanche debt-free",
+            "snowballOrder": "Snowball payoff order",
+            "avalancheOrder": "Avalanche payoff order"
+          },
+          "focus": {
+            "compare": "Compare both",
+            "snowball": "Snowball",
+            "avalanche": "Avalanche",
+            "aria": "Which method to highlight"
+          },
+          "headlineAvalancheSaves": "Paying the highest APR first (avalanche) could save {{interest}} in interest and get you debt-free {{months}} sooner than snowball.",
+          "headlineAvalancheInterestOnly": "Both methods take {{duration}}. Avalanche could save {{interest}} in interest.",
+          "headlineSnowballFaster": "Paying the smallest balance first (snowball) could get you debt-free {{months}} sooner. Compare interest below — avalanche often costs less.",
+          "headlineSame": "Snowball and avalanche finish in the same time ({{duration}}) at the same estimated interest ({{interest}}).",
+          "headlineNever": "With these payments, the debts would not be paid off. The minimums plus extra never cover the interest.",
+          "headlineOneSided": "{{method}} could finish in {{duration}}; the other method would not pay the debts off with these payments.",
+          "headlineFocusSnowball": "Paying the smallest balance first, you could be debt-free in {{duration}}.",
+          "headlineFocusAvalanche": "Paying the highest APR first, you could be debt-free in {{duration}}.",
+          "payoffAround": "around {{date}}",
+          "orderItem": "{{name}} — {{when}}",
+          "chartAria": "Remaining total balance over time for snowball and avalanche",
+          "chartSnowball": "Snowball",
+          "chartAvalanche": "Avalanche",
+          "growingWarning": "At least one minimum is below that debt’s monthly interest, so that balance will grow until it is the focus of the extra payment.",
+          "cappedWarning": "The estimate reached the {{years}}-year cap without paying the debts off.",
+          "summaryMessage": "Snowball pays the smallest starting balance first; avalanche pays the highest APR first. Freed minimums roll to the next debt. Estimates assume a constant APR and that you pay on time every month. They are not a payoff plan, a loan offer, or a guarantee of savings or timing.",
+          "tipAvalanche": "Avalanche usually costs less interest because more of each extra dollar goes to the most expensive debt first. Snowball pays off a smaller account sooner, which some people find easier to stick with. The better fit depends on what you can sustain — this is not a recommendation.",
+          "tipSame": "With these numbers, both methods produce the same payoff time and interest. Try changing a balance, APR, or the extra payment to see them diverge.",
+          "tipNever": "If a minimum does not cover interest, that balance grows until extra payments are applied to it. Raising the extra payment or the minimum can change the picture. This is an estimate, not advice.",
+          "cappedTime": "Would not pay off in {{years}} yrs"
+        },
+        "cta": {
+          "label": "Open the Achieve Debt Optimizer",
+          "href": "https://www.achieve.com/achieve-debt-optimizer",
+          "note": "Opens Achieve’s Debt Optimizer, a separate tool on achieve.com. This calculator’s figures are illustrative estimates only — not a plan, offer, or guarantee of savings."
+        },
+        "footer": {
+          "note": "Illustrative comparison only. It does not include fees, missed payments, rate changes, or tax effects, and it is not a payoff plan, offer, or guarantee. The Debt Optimizer is a separate Achieve product; this page does not claim results from it."
+        },
+        "aliases": {
+          "snowball": {
+            "title": "Debt snowball calculator",
+            "intro": "The snowball method puts every extra dollar toward your smallest balance first, then rolls that payment onto the next-smallest. This page starts there — switch to Compare or Avalanche anytime. Figures are illustrative estimates, not a promise of savings."
+          },
+          "avalanche": {
+            "title": "Debt avalanche calculator",
+            "intro": "The avalanche method puts every extra dollar toward your highest APR first, then rolls that payment onto the next-highest. This page starts there — switch to Compare or Snowball anytime. Figures are illustrative estimates, not a promise of savings."
+          }
+        }
+      },
+      "configPath": "packages/calculators/src/config/debt-snowball-avalanche.config.json",
+      "config": {
+        "id": "debt-snowball-avalanche",
+        "locale": "en-US",
+        "currency": "USD",
+        "defaults": {
+          "extraMonthly": 200
+        },
+        "validation": {
+          "extraMonthly": {
+            "min": 0,
+            "max": 1000000,
+            "label": "Extra monthly payment",
+            "allowZero": true
+          },
+          "balance": {
+            "min": 0,
+            "max": 10000000,
+            "label": "Balance",
+            "allowZero": true
+          },
+          "apr": {
+            "min": 0,
+            "max": 99,
+            "label": "APR",
+            "allowZero": true
+          },
+          "minPayment": {
+            "min": 0,
+            "max": 1000000,
+            "label": "Minimum payment",
+            "allowZero": true
+          }
+        },
+        "features": {
+          "maxMonths": 1200,
+          "maxDebts": 8,
+          "defaultDebts": [
+            {
+              "name": "Car loan leftover",
+              "balance": 1500,
+              "apr": 6.99,
+              "minPayment": 80
+            },
+            {
+              "name": "Store card",
+              "balance": 4500,
+              "apr": 24.99,
+              "minPayment": 120
+            },
+            {
+              "name": "Card A",
+              "balance": 6000,
+              "apr": 18.99,
+              "minPayment": 150
+            }
+          ]
+        },
+        "cta": {
+          "enabled": true,
+          "preventDefault": false
+        }
+      },
+      "tests": [
+        {
+          "file": "packages/calculators/src/calc/snowball.test.ts",
+          "describe": "sortDebts",
+          "count": 2,
+          "titles": [
+            "snowball is smallest starting balance first; avalanche is highest APR first",
+            "drops zero-balance debts and uses name as a stable tie-break"
+          ]
+        },
+        {
+          "file": "packages/calculators/src/calc/snowball.test.ts",
+          "describe": "simulateStrategy",
+          "count": 9,
+          "titles": [
+            "pays a single $100 balance at 12% with $10 min + $40 extra in 3 months",
+            "matches the existing fixed-payment simulator on a single amortizing debt (within a dollar)",
+            "snowball pays the smallest balance first; avalanche pays the highest APR first",
+            "avalanche saves interest vs snowball on a high-APR large balance vs a small low-APR card",
+            "flags never-pays-off when min + extra never cover interest (capped)",
+            "still pays off a debt whose minimum is below interest if extra covers the gap",
+            "rolls a freed minimum onto the next debt in the same month",
+            "returns null for invalid inputs; zero balances finish immediately",
+            "honors the month cap"
+          ]
+        },
+        {
+          "file": "packages/calculators/src/calc/snowball.test.ts",
+          "describe": "compareStrategies / downsample / payoff date",
+          "count": 3,
+          "titles": [
+            "interestDelta and monthsDelta are snowball minus avalanche",
+            "downsample keeps first, last, and at most the cap",
+            "payoffCalendarMonth adds months across a year boundary"
+          ]
+        }
+      ],
+      "testCount": 14
+    },
     "consolidation-options": {
       "slug": "consolidation-options",
       "title": "Consolidation options",

@@ -24,6 +24,15 @@
       "linkLabel": "Open calculator \u2192"
     },
     {
+      "id": "debt-snowball-avalanche",
+      "href": "/debt-snowball-avalanche",
+      "section": "debt",
+      "eyebrow": "Debt payoff",
+      "title": "Debt snowball vs avalanche calculator",
+      "description": "Compare paying smallest balances first (snowball) with paying highest APRs first (avalanche). Illustrative estimates \u2014 not a plan or a guarantee.",
+      "linkLabel": "Open calculator \u2192"
+    },
+    {
       "id": "consolidation-options",
       "href": "/consolidation-options",
       "section": "debt",

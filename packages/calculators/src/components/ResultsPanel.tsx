@@ -31,12 +31,20 @@ type ResultsPanelProps = {
   stats?: MicroStat[];
 };
 
+/** Strip "estimated" / "est." / "your estimated" so we don't write "Your estimated estimated …". */
+export function resultNoun(label: string): string {
+  const cleaned = label
+    .replace(/^(your\s+)?(estimated|est\.?)\s+/i, "")
+    .replace(/:$/, "")
+    .trim();
+  if (!cleaned) return "result";
+  return cleaned[0].toLowerCase() + cleaned.slice(1);
+}
+
 function defaultHeadline(primaryLabel: string, primaryValue: string): ReactNode {
-  const label = primaryLabel.replace(/^Est\.?\s+/i, "").replace(/:$/, "").trim();
-  const lower = label.length ? label[0].toLowerCase() + label.slice(1) : "result";
   return (
     <>
-      Your estimated {lower} is <span className="lc-headline-em">{primaryValue}</span>
+      Your estimated {resultNoun(primaryLabel)} is <span className="lc-headline-em">{primaryValue}</span>
     </>
   );
 }
@@ -115,6 +123,7 @@ export function ResultsPanel({
             ))}
           </div>
         ) : null}
+        {chart}
         <SummaryList items={summary} />
         {message ? <p className="lc-note">{message}</p> : null}
         {cta}

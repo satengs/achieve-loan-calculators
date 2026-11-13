@@ -1,6 +1,6 @@
 export { DemoBanner } from "./DemoBanner";
 export { Field, Segmented, Fieldset } from "./Field";
-export { ResultsPanel } from "./ResultsPanel";
+export { ResultsPanel, resultNoun } from "./ResultsPanel";
 export { CTA } from "./CTA";
 export { CalculatorShell } from "./CalculatorShell";
 export { SelectField } from "./SelectField";
@@ -16,3 +16,5 @@ export { DepletionChart } from "./DepletionChart";
 export type { DepletionBar } from "./DepletionChart";
 export { DtiGauge } from "./DtiGauge";
 export type { DtiGaugeProps, DtiGaugeBandCopy } from "./DtiGauge";
+export { BalanceCompareChart } from "./BalanceCompareChart";
+export type { BalanceCompareChartProps } from "./BalanceCompareChart";

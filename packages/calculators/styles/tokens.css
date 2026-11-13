@@ -1248,3 +1248,207 @@
 .lc-micro-stat--negative .lc-micro-stat-value {
   color: var(--lc-error);
 }
+
+
+/* ---------- Debt snowball vs avalanche ---------- */
+.lc-debt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin: 0 0 1.1rem;
+}
+.lc-debt-row {
+  margin: 0;
+  padding: 0.85rem 0.9rem 0.95rem;
+  border: 1px solid var(--lc-border, #e6e6e6);
+  border-radius: 10px;
+  background: var(--lc-surface, #fff);
+  min-width: 0;
+}
+.lc-debt-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0 0 0.65rem;
+}
+.lc-debt-row-legend {
+  font-weight: 650;
+  font-size: 0.92rem;
+  color: var(--lc-heading, inherit);
+  padding: 0;
+}
+.lc-debt-remove {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0.2rem 0.15rem;
+  margin: 0;
+  color: var(--lc-text-muted, #5c6b7a);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.lc-debt-remove:hover,
+.lc-debt-remove:focus-visible {
+  color: var(--lc-error, #cf264e);
+}
+.lc-debt-remove:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+.lc-debt-row-grid {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1.4fr) repeat(3, minmax(5.5rem, 1fr));
+  gap: 0.65rem 0.75rem;
+  min-width: 0;
+}
+.lc-debt-row-grid .lc-field {
+  margin: 0;
+  min-width: 0;
+}
+.lc-debt-add {
+  appearance: none;
+  background: var(--lc-surface, #fff);
+  border: 1px dashed var(--lc-border-accent, var(--lc-border, #cfd8e3));
+  border-radius: 10px;
+  color: var(--lc-cta, #154199);
+  font: inherit;
+  font-weight: 650;
+  font-size: 0.95rem;
+  padding: 0.7rem 0.9rem;
+  width: 100%;
+  cursor: pointer;
+  margin: 0 0 1.15rem;
+}
+.lc-debt-add:hover,
+.lc-debt-add:focus-visible {
+  border-style: solid;
+  border-color: var(--lc-cta, #154199);
+}
+.lc-debt-add:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.lc-debt-max-note {
+  margin: -0.6rem 0 1rem;
+  font-size: 0.85rem;
+  color: var(--lc-text-muted, #5c6b7a);
+}
+
+.lc-balance-chart {
+  min-height: 11.5rem;
+  margin: 0.25rem 0 0.5rem;
+}
+.lc-balance-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 9.5rem;
+  overflow: visible;
+}
+.lc-balance-chart-axis {
+  stroke: var(--lc-border, #d5dce6);
+  stroke-width: 1;
+}
+.lc-balance-chart-line {
+  fill: none;
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.lc-balance-chart-line--snowball {
+  stroke: var(--lc-text-muted, #5c708a);
+}
+.lc-balance-chart-line--avalanche {
+  stroke: var(--lc-cta, #154199);
+}
+.lc-balance-chart-label {
+  fill: var(--lc-text-muted, #5c708a);
+  font-size: 10px;
+  font-family: inherit;
+}
+.lc-balance-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.25rem;
+  list-style: none;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  font-size: 0.82rem;
+  color: var(--lc-text-muted, #5c708a);
+}
+.lc-balance-chart-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.lc-balance-chart-legend li::before {
+  content: "";
+  width: 0.85rem;
+  height: 0.2rem;
+  border-radius: 2px;
+  background: currentColor;
+}
+.lc-balance-chart-legend--snowball::before {
+  background: var(--lc-text-muted, #5c708a);
+}
+.lc-balance-chart-legend--avalanche::before {
+  background: var(--lc-cta, #154199);
+}
+
+.lc-payoff-orders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem 1.1rem;
+  margin: 0.65rem 0 0.25rem;
+}
+.lc-payoff-orders h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--lc-text-muted, #5c708a);
+}
+.lc-payoff-orders ol {
+  margin: 0;
+  padding: 0 0 0 1.15rem;
+  font-size: 0.9rem;
+}
+.lc-payoff-orders li {
+  margin: 0 0 0.2rem;
+}
+.lc-payoff-orders--single {
+  grid-template-columns: 1fr;
+}
+.lc-warning {
+  margin: 0.5rem 0 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--lc-error, #cf264e) 8%, var(--lc-surface, #fff));
+  color: var(--lc-heading, inherit);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 640px) {
+  .lc-debt-row-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lc-payoff-orders {
+    grid-template-columns: 1fr;
+  }
+}
+
+[data-project="achieve"] .lc-debt-row {
+  border: 2px solid var(--lc-border-accent, #d2e2fe);
+  border-radius: 10px;
+}
+[data-project="achieve"] .lc-debt-add {
+  border-color: var(--lc-border-accent, #d2e2fe);
+  color: var(--lc-cta, #3300ff);
+}

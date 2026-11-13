@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "title": "Debt snowball vs avalanche calculator | Multi-brand demo",
+    "description": "Compare paying smallest balances first (snowball) with paying highest APRs first (avalanche). Illustrative estimates only — not a plan or a guarantee."
+  },
+  "header": {
+    "eyebrow": "Debt payoff",
+    "title": "Debt snowball vs avalanche calculator",
+    "intro": "See how long it could take to become debt-free, and how much interest you could pay, if you put every extra dollar toward your smallest balance (snowball) or your highest APR (avalanche). Figures are illustrative estimates, not a promise of savings."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Illustrative only — not a payoff plan or a guarantee.",
+    "body": "This comparison uses the balances, rates, and payments you enter. Real due dates, fees, and rate changes are not modeled. Nothing here is an offer, advice, or a claim about any program."
+  },
+  "form": {
+    "heading": "Your debts",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "question": "What should we call this debt?"
+      },
+      "balance": {
+        "label": "Balance",
+        "question": "What's the balance?",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "APR",
+        "question": "What's the APR?",
+        "suffix": "%"
+      },
+      "minPayment": {
+        "label": "Min. payment",
+        "question": "What's the minimum payment?",
+        "prefix": "$"
+      },
+      "extraMonthly": {
+        "label": "Extra monthly payment",
+        "question": "How much extra can you pay each month?",
+        "prefix": "$",
+        "hint": "Applied after every minimum, to one debt at a time. When a debt is paid off, its minimum is added to the extra."
+      }
+    },
+    "addDebt": "Add a debt",
+    "removeDebt": "Remove",
+    "removeDebtAria": "Remove {{name}}",
+    "debtHeading": "Debt {{n}}",
+    "maxDebtsNote": "This demo compares up to {{max}} debts."
+  },
+  "results": {
+    "heading": "Snowball vs avalanche",
+    "primaryLabel": "Faster method",
+    "invalidMessage": "Fix the highlighted fields to see a comparison.",
+    "unableMessage": "Unable to compare these inputs.",
+    "labels": {
+      "snowballMonths": "Snowball payoff time",
+      "avalancheMonths": "Avalanche payoff time",
+      "snowballInterest": "Snowball interest",
+      "avalancheInterest": "Avalanche interest",
+      "interestSaved": "Interest difference",
+      "monthsSaved": "Time difference",
+      "snowballDate": "Snowball debt-free",
+      "avalancheDate": "Avalanche debt-free",
+      "snowballOrder": "Snowball payoff order",
+      "avalancheOrder": "Avalanche payoff order"
+    },
+    "focus": {
+      "compare": "Compare both",
+      "snowball": "Snowball",
+      "avalanche": "Avalanche",
+      "aria": "Which method to highlight"
+    },
+    "headlineAvalancheSaves": "Paying the highest APR first (avalanche) could save {{interest}} in interest and get you debt-free {{months}} sooner than snowball.",
+    "headlineAvalancheInterestOnly": "Both methods take {{duration}}. Avalanche could save {{interest}} in interest.",
+    "headlineSnowballFaster": "Paying the smallest balance first (snowball) could get you debt-free {{months}} sooner. Compare interest below — avalanche often costs less.",
+    "headlineSame": "Snowball and avalanche finish in the same time ({{duration}}) at the same estimated interest ({{interest}}).",
+    "headlineNever": "With these payments, the debts would not be paid off. The minimums plus extra never cover the interest.",
+    "headlineOneSided": "{{method}} could finish in {{duration}}; the other method would not pay the debts off with these payments.",
+    "headlineFocusSnowball": "Paying the smallest balance first, you could be debt-free in {{duration}}.",
+    "headlineFocusAvalanche": "Paying the highest APR first, you could be debt-free in {{duration}}.",
+    "payoffAround": "around {{date}}",
+    "orderItem": "{{name}} — {{when}}",
+    "chartAria": "Remaining total balance over time for snowball and avalanche",
+    "chartSnowball": "Snowball",
+    "chartAvalanche": "Avalanche",
+    "growingWarning": "At least one minimum is below that debt’s monthly interest, so that balance will grow until it is the focus of the extra payment.",
+    "cappedWarning": "The estimate reached the {{years}}-year cap without paying the debts off.",
+    "summaryMessage": "Snowball pays the smallest starting balance first; avalanche pays the highest APR first. Freed minimums roll to the next debt. Estimates assume a constant APR and that you pay on time every month. They are not a payoff plan, a loan offer, or a guarantee of savings or timing.",
+    "tipAvalanche": "Avalanche usually costs less interest because more of each extra dollar goes to the most expensive debt first. Snowball pays off a smaller account sooner, which some people find easier to stick with. The better fit depends on what you can sustain — this is not a recommendation.",
+    "tipSame": "With these numbers, both methods produce the same payoff time and interest. Try changing a balance, APR, or the extra payment to see them diverge.",
+    "tipNever": "If a minimum does not cover interest, that balance grows until extra payments are applied to it. Raising the extra payment or the minimum can change the picture. This is an estimate, not advice.",
+    "cappedTime": "Would not pay off in {{years}} yrs"
+  },
+  "cta": {
+    "label": "Open the Achieve Debt Optimizer",
+    "href": "https://www.achieve.com/achieve-debt-optimizer",
+    "note": "Opens Achieve’s Debt Optimizer, a separate tool on achieve.com. This calculator’s figures are illustrative estimates only — not a plan, offer, or guarantee of savings."
+  },
+  "footer": {
+    "note": "Illustrative comparison only. It does not include fees, missed payments, rate changes, or tax effects, and it is not a payoff plan, offer, or guarantee. The Debt Optimizer is a separate Achieve product; this page does not claim results from it."
+  },
+  "aliases": {
+    "snowball": {
+      "title": "Debt snowball calculator",
+      "intro": "The snowball method puts every extra dollar toward your smallest balance first, then rolls that payment onto the next-smallest. This page starts there — switch to Compare or Avalanche anytime. Figures are illustrative estimates, not a promise of savings."
+    },
+    "avalanche": {
+      "title": "Debt avalanche calculator",
+      "intro": "The avalanche method puts every extra dollar toward your highest APR first, then rolls that payment onto the next-highest. This page starts there — switch to Compare or Snowball anytime. Figures are illustrative estimates, not a promise of savings."
+    }
+  }
+}

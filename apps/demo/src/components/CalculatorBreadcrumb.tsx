@@ -7,12 +7,21 @@ import { useBrand } from "./BrandProvider";
 
 const SITE_URL = "https://loan-calculators-public.vercel.app";
 
+/** SEO alias routes that share a landing card but want their own crumb title. */
+const BREADCRUMB_ALIASES: Record<string, { cardId: string; title: string }> = {
+  "debt-snowball": { cardId: "debt-snowball-avalanche", title: "Debt snowball calculator" },
+  "debt-avalanche": { cardId: "debt-snowball-avalanche", title: "Debt avalanche calculator" },
+};
+
 /** Resolve section + title for a calculator slug from the landing registry (site.json) — single source of truth. */
 export function breadcrumbFor(slug: string) {
   const site = getSiteContent();
-  const card = site.cards.find((c) => c.id === slug || c.href === `/${slug}`);
+  const alias = BREADCRUMB_ALIASES[slug];
+  const resolved = alias?.cardId ?? slug;
+  const card = site.cards.find((c) => c.id === resolved || c.href === `/${resolved}` || c.id === slug || c.href === `/${slug}`);
   const section = card?.section ? site.sections?.find((s) => s.id === card.section) : undefined;
-  return { card, section };
+  const title = alias?.title ?? card?.title ?? slug;
+  return { card, section, title };
 }
 
 /**
@@ -22,9 +31,8 @@ export function breadcrumbFor(slug: string) {
  */
 export function CalculatorBreadcrumb({ slug }: { slug: string }) {
   const { brand } = useBrand();
-  const { card, section } = breadcrumbFor(slug);
+  const { card, section, title } = breadcrumbFor(slug);
   const home = withBrandQuery("/", brand);
-  const title = card?.title ?? slug;
 
   const jsonLd = {
     "@context": "https://schema.org",

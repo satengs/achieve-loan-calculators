@@ -7,6 +7,7 @@ import {
   CarLoanCalculator,
   ConsolidationOptionsCalculator,
   DebtPayoffCalculator,
+  DebtSnowballAvalancheCalculator,
   DtiCalculator,
   HelocCalculator,
   HomeInsuranceCalculator,
@@ -51,6 +52,15 @@ export function BrandedLifeInsurance() {
 export function BrandedDebtPayoff({ rates }: RatesProp) {
   const { brand } = useBrand();
   return <DebtPayoffCalculator projectName={brand} rates={rates} />;
+}
+
+export function BrandedDebtSnowballAvalanche({
+  initialFocus,
+}: {
+  initialFocus?: "compare" | "snowball" | "avalanche";
+} = {}) {
+  const { brand } = useBrand();
+  return <DebtSnowballAvalancheCalculator projectName={brand} initialFocus={initialFocus} />;
 }
 
 export function BrandedConsolidationOptions({ rates }: RatesProp) {

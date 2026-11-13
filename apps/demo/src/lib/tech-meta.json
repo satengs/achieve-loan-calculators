@@ -128,6 +128,28 @@
         }
       ]
     },
+    "debt-snowball-avalanche": {
+      "title": "Debt snowball vs avalanche",
+      "component": "DebtSnowballAvalancheCalculator",
+      "calcModules": [
+        "packages/calculators/src/calc/snowball.ts"
+      ],
+      "rateKeys": [],
+      "tests": [
+        {
+          "file": "packages/calculators/src/calc/snowball.test.ts",
+          "describe": "sortDebts"
+        },
+        {
+          "file": "packages/calculators/src/calc/snowball.test.ts",
+          "describe": "simulateStrategy"
+        },
+        {
+          "file": "packages/calculators/src/calc/snowball.test.ts",
+          "describe": "compareStrategies / downsample / payoff date"
+        }
+      ]
+    },
     "consolidation-options": {
       "title": "Consolidation options",
       "component": "ConsolidationOptionsCalculator",

@@ -14,7 +14,7 @@ import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
 import { CTA } from "../components/CTA";
 import { Field, Fieldset, Segmented } from "../components/Field";
-import { ResultsPanel } from "../components/ResultsPanel";
+import { ResultsPanel, resultNoun } from "../components/ResultsPanel";
 import { RateNote } from "../components/RateNote";
 import { SelectField } from "../components/SelectField";
 import { resolveRate, type MarketRates } from "../rates/types";
@@ -365,7 +365,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
           headline={
             out ? (
               <>
-                Your estimated {String(computed.paymentLabel || "monthly payment").toLowerCase()} is{" "}
+                Your estimated {resultNoun(computed.paymentLabel || "monthly payment")} is{" "}
                 <span className="lc-headline-em">{out.payment}</span>
               </>
             ) : (
