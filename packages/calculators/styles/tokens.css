@@ -1303,9 +1303,12 @@
 }
 .lc-debt-row-grid {
   display: grid;
-  grid-template-columns: minmax(7rem, 1.4fr) repeat(3, minmax(5.5rem, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.65rem 0.75rem;
   min-width: 0;
+}
+.lc-debt-row-grid .lc-field:first-child {
+  grid-column: 1 / -1;
 }
 .lc-debt-row-grid .lc-field {
   margin: 0;
