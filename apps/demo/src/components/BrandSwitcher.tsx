@@ -5,6 +5,7 @@ import { useBrand } from "./BrandProvider";
 
 /**
  * Slim top-bar brand control: Achieve · FDR · bills.com
+ * No visible label; the radiogroup is named "Brand" via aria-label.
  */
 export function BrandSwitcher() {
   const { brand, setBrand } = useBrand();
@@ -12,13 +13,10 @@ export function BrandSwitcher() {
   return (
     <div className="lc-brand-bar">
       <div className="lc-brand-bar-inner">
-        <span className="lc-brand-bar-label" id="lc-brand-label">
-          Brand
-        </span>
         <div
           className="lc-brand-switcher"
           role="radiogroup"
-          aria-labelledby="lc-brand-label"
+          aria-label="Brand"
         >
           {BRAND_OPTIONS.map((opt) => {
             const selected = brand === opt.value;
