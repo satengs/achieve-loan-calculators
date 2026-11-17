@@ -1,0 +1,46 @@
+{
+  "id": "apr-blind-spot",
+  "locale": "en-US",
+  "currency": "USD",
+  "defaults": {
+    "balance": 5000,
+    "newSpending": 1000,
+    "apr": 22,
+    "payment": 150
+  },
+  "validation": {
+    "balance": {
+      "min": 0,
+      "max": 1000000,
+      "label": "Current balance",
+      "allowZero": true
+    },
+    "newSpending": {
+      "min": 0,
+      "max": 1000000,
+      "label": "New spending",
+      "allowZero": true
+    },
+    "apr": {
+      "min": 0,
+      "max": 99,
+      "label": "APR",
+      "allowZero": true
+    },
+    "payment": {
+      "min": 1,
+      "max": 1000000,
+      "label": "Monthly payment",
+      "allowZero": false
+    }
+  },
+  "features": {
+    "rateKey": "creditCard",
+    "maxMonths": 1200,
+    "chartPoints": 48
+  },
+  "cta": {
+    "enabled": true,
+    "preventDefault": true
+  }
+}

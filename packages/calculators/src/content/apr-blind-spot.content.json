@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "title": "APR blind spot calculator | Multi-brand demo",
+    "description": "See how much time and interest new card spending could add when you keep paying the same amount each month. Illustrative estimates only."
+  },
+  "header": {
+    "eyebrow": "Credit cards",
+    "title": "APR blind spot calculator",
+    "intro": "An APR tells you the yearly rate, not what a new purchase really costs. Add planned spending to a card balance and see how much longer payoff could take, and how much more interest you could pay, at the same monthly payment."
+  },
+  "demoBanner": {
+    "icon": "ℹ️",
+    "strong": "Illustrative only — not advice or an offer.",
+    "body": "Uses the balance, APR, and payment you enter. Fees, rate changes, minimum-payment rules, and other new charges are not modeled."
+  },
+  "form": {
+    "heading": "Your card",
+    "fields": {
+      "balance": {
+        "label": "Current balance",
+        "question": "What's your current card balance?",
+        "prefix": "$"
+      },
+      "newSpending": {
+        "label": "New spending to add",
+        "question": "How much new spending do you plan to add?",
+        "prefix": "$"
+      },
+      "apr": {
+        "label": "Card APR",
+        "question": "What's the card's APR?",
+        "suffix": "%"
+      },
+      "payment": {
+        "label": "Monthly payment",
+        "question": "How much do you pay each month?",
+        "prefix": "$"
+      }
+    }
+  },
+  "results": {
+    "heading": "What the new spending costs",
+    "primaryLabel": "Real cost of the new spending",
+    "invalidMessage": "Fix the highlighted fields to see an estimate.",
+    "neverHeadline": "At {{payment}} a month the balance would not go down. The payment needs to be more than one month's interest, about {{interest}}.",
+    "neverMessage": "Try a higher monthly payment or a lower balance to see a payoff time.",
+    "zeroSpendHeadline": "Without new spending, this balance could be paid off in {{duration}} with {{interest}} in interest.",
+    "headline": "At {{payment}} a month, adding {{spending}} could add {{months}} and {{interest}} in interest.",
+    "headlineSameTime": "At {{payment}} a month, adding {{spending}} could add {{interest}} in interest without changing the payoff month.",
+    "labels": {
+      "withoutTime": "Payoff without it",
+      "withTime": "Payoff with it",
+      "extraTime": "Extra time",
+      "extraInterest": "Extra interest",
+      "perDollar": "Each $1 spent costs",
+      "trueCost": "Real cost",
+      "keepDate": "Payment to keep your payoff date",
+      "withoutInterest": "Interest without new spending",
+      "withInterest": "Interest with new spending",
+      "withoutDate": "Paid off without it",
+      "withDate": "Paid off with it"
+    },
+    "perMonth": "{{amount}}/mo",
+    "payoffAround": "around {{date}}",
+    "chartAria": "Card balance over time with and without the new spending",
+    "chartWithout": "Without new spending",
+    "chartWith": "With new spending",
+    "tip": "The APR is the same on both lines. The extra cost comes from carrying a bigger balance for longer at the same payment. Paying about {{keep}} a month instead would keep your original payoff month.",
+    "tipNoKeep": "The APR is the same on both lines. The extra cost comes from carrying a bigger balance for longer at the same payment.",
+    "summaryMessage": "Assumes a fixed monthly payment, a constant APR, interest compounded monthly, and no charges beyond the new spending. Your actual payoff may differ.",
+    "cappedMessage": "The estimate reached the {{years}}-year cap without paying the balance off.",
+    "cappedTime": "Not paid off in {{years}} yrs"
+  },
+  "cta": {
+    "label": "See your options",
+    "href": "#",
+    "note": "Placeholder CTA — demo only, not a live application or offer."
+  },
+  "footer": {
+    "note": "Educational estimate only. Rates and examples are illustrative. Not a loan offer, advice, or a guarantee of savings or payoff timing."
+  }
+}

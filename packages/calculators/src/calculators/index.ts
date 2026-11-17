@@ -34,3 +34,5 @@ export { RefinanceCalculator } from "./RefinanceCalculator";
 export type { RefinanceCalculatorProps } from "./RefinanceCalculator";
 export { DebtSnowballAvalancheCalculator } from "./DebtSnowballAvalancheCalculator";
 export type { DebtSnowballAvalancheCalculatorProps, FocusMode } from "./DebtSnowballAvalancheCalculator";
+export { AprBlindSpotCalculator } from "./AprBlindSpotCalculator";
+export type { AprBlindSpotCalculatorProps } from "./AprBlindSpotCalculator";

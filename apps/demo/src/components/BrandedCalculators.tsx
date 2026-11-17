@@ -8,6 +8,7 @@ import {
   ConsolidationOptionsCalculator,
   DebtPayoffCalculator,
   DebtSnowballAvalancheCalculator,
+  AprBlindSpotCalculator,
   DtiCalculator,
   HelocCalculator,
   HomeInsuranceCalculator,
@@ -61,6 +62,11 @@ export function BrandedDebtSnowballAvalanche({
 } = {}) {
   const { brand } = useBrand();
   return <DebtSnowballAvalancheCalculator projectName={brand} initialFocus={initialFocus} />;
+}
+
+export function BrandedAprBlindSpot({ rates }: RatesProp) {
+  const { brand } = useBrand();
+  return <AprBlindSpotCalculator projectName={brand} rates={rates} />;
 }
 
 export function BrandedConsolidationOptions({ rates }: RatesProp) {

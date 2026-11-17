@@ -150,6 +150,34 @@
         }
       ]
     },
+    "apr-blind-spot": {
+      "title": "APR blind spot",
+      "component": "AprBlindSpotCalculator",
+      "calcModules": [
+        "packages/calculators/src/calc/aprBlindSpot.ts"
+      ],
+      "rateKeys": [
+        "creditCard"
+      ],
+      "tests": [
+        {
+          "file": "packages/calculators/src/calc/aprBlindSpot.test.ts",
+          "describe": "fixedPaymentSchedule"
+        },
+        {
+          "file": "packages/calculators/src/calc/aprBlindSpot.test.ts",
+          "describe": "levelPayment"
+        },
+        {
+          "file": "packages/calculators/src/calc/aprBlindSpot.test.ts",
+          "describe": "newSpendingCost"
+        },
+        {
+          "file": "packages/calculators/src/rates/rates.test.ts",
+          "describe": "resolveRate"
+        }
+      ]
+    },
     "consolidation-options": {
       "title": "Consolidation options",
       "component": "ConsolidationOptionsCalculator",

@@ -33,6 +33,15 @@
       "linkLabel": "Open calculator \u2192"
     },
     {
+      "id": "apr-blind-spot",
+      "href": "/apr-blind-spot",
+      "section": "debt",
+      "eyebrow": "Credit cards",
+      "title": "APR blind spot calculator",
+      "description": "See how much time and interest new card spending could add at the same monthly payment. Illustrative estimates, not a guarantee.",
+      "linkLabel": "Open calculator \u2192"
+    },
+    {
       "id": "consolidation-options",
       "href": "/consolidation-options",
       "section": "debt",

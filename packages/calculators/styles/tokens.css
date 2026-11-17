@@ -1407,10 +1407,10 @@
   border-radius: 2px;
   background: currentColor;
 }
-.lc-balance-chart-legend--snowball::before {
+.lc-balance-chart-legend li.lc-balance-chart-legend--snowball::before {
   background: var(--lc-text-muted, #5c708a);
 }
-.lc-balance-chart-legend--avalanche::before {
+.lc-balance-chart-legend li.lc-balance-chart-legend--avalanche::before {
   background: var(--lc-cta, #154199);
 }
 

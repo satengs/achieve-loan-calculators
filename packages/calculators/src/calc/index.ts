@@ -13,3 +13,4 @@ export * from "./savings";
 export * from "./budget";
 export * from "./loans";
 export * from "./snowball";
+export * from "./aprBlindSpot";
