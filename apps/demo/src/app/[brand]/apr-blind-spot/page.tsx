@@ -2,10 +2,13 @@ import { CalculatorTabs } from "@/components/CalculatorTabs";
 import { buildRateRows, getTechEntry } from "@/lib/tech";
 import { BrandedAprBlindSpot } from "@/components/BrandedCalculators";
 import { getMarketRates } from "@/lib/rates";
+import { getCalculatorContent } from "@loan-calculators/core";
+
+const content = getCalculatorContent("apr-blind-spot");
 
 export const metadata = {
-  title: "APR Blind Spot Calculator",
-  description: "See how much time and interest new card spending could add at the same monthly payment. Illustrative estimates only — not an offer or a guarantee.",
+  title: content.header.title,
+  description: content.meta.description,
 };
 
 /** Daily ISR: live market rates are fetched server-side and cached for 24h. */

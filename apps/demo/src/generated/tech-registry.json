@@ -2238,7 +2238,7 @@
     },
     "apr-blind-spot": {
       "slug": "apr-blind-spot",
-      "title": "APR blind spot",
+      "title": "Holiday price tag",
       "component": "AprBlindSpotCalculator",
       "componentPath": "packages/calculators/src/calculators/AprBlindSpotCalculator.tsx",
       "calcModules": [
@@ -2248,11 +2248,11 @@
         "creditCard"
       ],
       "docPath": "docs/calculators/apr-blind-spot.md",
-      "docMarkdown": "# APR blind spot calculator\n\n- **Route:** `/apr-blind-spot` · **Component:** `AprBlindSpotCalculator` (export from `@loan-calculators/core`, props `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n\n## Purpose\nShow what new spending on a credit card really costs when the monthly payment stays the same. An APR states a yearly rate, but it does not show how many extra months, or how many extra interest dollars, a new purchase adds to payoff. The calculator compares paying off the current balance alone with paying off the balance plus the new spending, at the same APR and the same fixed payment, and reports the difference in time and interest, the real cost of the purchase, and the payment that would keep the original payoff month. Figures are illustrative estimates only.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `balance` | Current balance | number | 5,000 | 0–1,000,000 | required, ≥0 |\n| `newSpending` | New spending to add | number | 1,000 | 0–1,000,000 | required, ≥0 |\n| `apr` | Card APR | number | live `creditCard` rate, else 22 | 0–99 | required, ≥0 |\n| `payment` | Monthly payment | number | 150 | 1–1,000,000 | required, >0 |\n\nAchieve shows the CMS `question` sentences as labels; FDR and bills show the short `label`. Each field is on its own row.\n\n## Outputs\n- Sentence headline: how much time and interest the new spending could add at the same payment (or, when the payment does not cover a month's interest, that the balance would not go down and roughly how much the payment must exceed).\n- Real cost of the new spending (`newSpending + extraInterest`) as the primary value and mobile sticky value.\n- Payoff time with and without the new spending; extra time; extra interest.\n- Cost per dollar spent (real cost ÷ new spending).\n- Payment needed to keep the original payoff month.\n- Interest with and without the new spending; approximate payoff calendar month for each (computed on the client from the current month).\n- Balance-over-time chart with both lines.\n\nAchieve uses the presentation results card (headline, micro-stats, chart, tip). FDR and bills use the default labelled results layout with the same figures and chart. Language uses “could”; nothing is a guarantee.\n\n## Formulas\nMonthly rate `r = APR/100/12`. Both schedules use the same APR and payment `P`; only the starting balance differs (`B` vs `B + S`, where `S` is the new spending).\n\n**Monthly step:** `interest = balance × r`, then `balance = balance + interest − min(P, balance + interest)`, repeated until the balance is ≤ $0.005 or the month cap (`maxMonths`, default 1,200) is reached. Amounts are not rounded mid-schedule.\n\n**Never pays off:** if `P ≤ balance × r` in the first month the balance cannot fall, so the schedule is flagged `neverPaysOff` and no payoff time is shown.\n\n**Differences:** `extraMonths = months(B + S) − months(B)` and `extraInterest = interest(B + S) − interest(B)`.\n\n**Real cost:** `trueCost = S + extraInterest`, and `costPerDollar = trueCost / S`.\n\n**Payment to keep the payoff month:** the level payment that retires `B + S` in the original `n = months(B)`: `P* = (B + S) × r / (1 − (1 + r)^−n)`, or `(B + S) / n` at 0% APR.\n\n```\nr = APR / 100 / 12\ntrueCost = S + (interest(B + S) − interest(B))\nP* = (B + S) × r / (1 − (1 + r)^−n)\n```\n\n### Worked example (defaults)\n$5,000 balance, $1,000 of new spending, 22% APR, $150 a month. Monthly rate is 1.8333%. Without the new spending the balance is paid off in 52 months with $2,798.05 in interest. With it, payoff takes 73 months with $4,913.45 in interest. The new spending adds 21 months (1 year and 9 months) and $2,115.40 in interest, so the $1,000 really costs about $3,115.40, or about $3.12 per dollar spent. Paying about $179.97 a month (shown rounded up to $180) would keep the original 52-month payoff. These figures are illustrative, not a promise.\n\n## Data sources / APIs\n`creditCard` from the shared rates layer (Federal Reserve G.19 credit card plan rate, all accounts; FRED series `TERMCBCCALLNS`, https://fred.stlouisfed.org/series/TERMCBCCALLNS) prefills the APR. If the live rate is unavailable the config default (22%) is used and the rate note says so. The user can always overwrite the APR.\n\n## Config vs content\n- `src/config/apr-blind-spot.config.json`: `defaults` (balance, newSpending, apr fallback, payment), `validation` (min/max/label/allowZero per field, enforced by `validateRange`), `features` (`rateKey: creditCard`, `maxMonths` 1200, `chartPoints` 48), `cta` (`enabled`, `preventDefault`). Numbers and limits only.\n- `src/content/apr-blind-spot.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner`, `form` (labels, Achieve questions, prefix/suffix), `results` (headline templates with `{{payment}}`, `{{spending}}`, `{{months}}`, `{{interest}}`, labels, tip, warnings, chart legend), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens via `BrandTheme`. Achieve uses the presentation results layout; FDR and bills keep the default labelled layout.\n\n## Assumptions & limitations\n- APR is constant and interest compounds monthly on the full balance; there is no grace period, promotional rate, penalty APR, or balance-transfer fee.\n- The new spending is added today, all at once; no other charges are added later.\n- The monthly payment is fixed (not a card's declining minimum payment) and paid on time every month.\n- Annual fees, late fees, and statement-cycle timing are not modeled.\n- Illustrative estimate only — not advice, an offer, or a guarantee of savings or payoff timing.\n\n## Tests\n`aprBlindSpot.test.ts`: `fixedPaymentSchedule` (hand-computed 3-month case at 12%, agreement with `simulateFixedPayment`, never-pays-off when the payment equals monthly interest, zero balance and 0% APR, null on invalid input); `levelPayment` (standard amortization value, 0% and zero-balance cases, a level payment retires the balance in exactly n months); `newSpendingCost` (worked example above, zero new spending adds nothing, a higher APR makes the same purchase cost more, NaN deltas when only the larger balance never pays off, null on invalid input). `resolveRate` covers the live-rate prefill.\n",
+      "docMarkdown": "# Holiday price tag calculator\n\n- **Route:** `/apr-blind-spot` (route and slug keep the original “APR blind spot” name; public title is “Holiday price tag calculator”) · **Component:** `AprBlindSpotCalculator` (export from `@loan-calculators/core`, props `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)\n\n## Purpose\nShow the real price tag of holiday spending put on a credit card when the monthly payment stays the same. An APR states a yearly rate, but it does not show how many extra months, or how many extra interest dollars, the holidays add to payoff. The calculator compares paying off the current balance alone with paying off the balance plus the holiday spending, at the same APR and the same fixed payment, and reports the difference in time and interest, the real holiday price tag (spending + extra interest), and the payment that would keep the original payoff month. Figures are illustrative estimates only.\n\n## Inputs\n| Key | Label | Type | Default | Min–max | Validation |\n|---|---|---|---|---|---|\n| `balance` | Current balance | number | 5,000 | 0–1,000,000 | required, ≥0 |\n| `newSpending` | Holiday spending | number | 1,000 | 0–1,000,000 | required, ≥0 |\n| `apr` | Card APR | number | live `creditCard` rate, else 22 | 0–99 | required, ≥0 |\n| `payment` | Monthly payment | number | 150 | 1–1,000,000 | required, >0 |\n\nAchieve shows the CMS `question` sentences as labels; FDR and bills show the short `label`. Each field is on its own row.\n\n## Outputs\n- Sentence headline: what the holiday spending could really cost and how much longer payoff could take at the same payment (e.g. “Your $1,000 holiday could really cost $3,115, and take 1 year and 9 months longer to pay off at $150 a month.”) (or, when the payment does not cover a month's interest, that the balance would not go down and roughly how much the payment must exceed).\n- Real holiday price tag (`newSpending + extraInterest`) as the primary value, a micro-stat, and the mobile sticky value.\n- Payoff time with and without the holiday spending; extra time; extra interest.\n- Cost per holiday dollar (price tag ÷ holiday spending).\n- Payment needed to keep the original payoff month.\n- Interest with and without the holiday spending; approximate payoff calendar month for each (computed on the client from the current month).\n- Balance-over-time chart with both lines.\n\nAchieve uses the presentation results card (headline, micro-stats, chart, tip). FDR and bills use the default labelled results layout with the same figures and chart. Language uses “could”; nothing is a guarantee.\n\n## Formulas\nMonthly rate `r = APR/100/12`. Both schedules use the same APR and payment `P`; only the starting balance differs (`B` vs `B + S`, where `S` is the holiday spending).\n\n**Monthly step:** `interest = balance × r`, then `balance = balance + interest − min(P, balance + interest)`, repeated until the balance is ≤ $0.005 or the month cap (`maxMonths`, default 1,200) is reached. Amounts are not rounded mid-schedule.\n\n**Never pays off:** if `P ≤ balance × r` in the first month the balance cannot fall, so the schedule is flagged `neverPaysOff` and no payoff time is shown.\n\n**Differences:** `extraMonths = months(B + S) − months(B)` and `extraInterest = interest(B + S) − interest(B)`.\n\n**Real holiday price tag:** `trueCost = S + extraInterest`, and `costPerDollar = trueCost / S`.\n\n**Payment to keep the payoff month:** the level payment that retires `B + S` in the original `n = months(B)`: `P* = (B + S) × r / (1 − (1 + r)^−n)`, or `(B + S) / n` at 0% APR.\n\n```\nr = APR / 100 / 12\ntrueCost = S + (interest(B + S) − interest(B))\nP* = (B + S) × r / (1 − (1 + r)^−n)\n```\n\n### Worked example (defaults)\n$5,000 balance, $1,000 of holiday spending, 22% APR, $150 a month. Monthly rate is 1.8333%. Without the holiday spending the balance is paid off in 52 months with $2,798.05 in interest. With it, payoff takes 73 months with $4,913.45 in interest. The holiday spending adds 21 months (1 year and 9 months) and $2,115.40 in interest, so the $1,000 holiday really costs about $3,115.40, or about $3.12 per dollar spent. Paying about $179.97 a month (shown rounded up to $180) would keep the original 52-month payoff. These figures are illustrative, not a promise.\n\n## Data sources / APIs\n`creditCard` from the shared rates layer (Federal Reserve G.19 credit card plan rate, all accounts; FRED series `TERMCBCCALLNS`, https://fred.stlouisfed.org/series/TERMCBCCALLNS) prefills the APR. If the live rate is unavailable the config default (22%) is used and the rate note says so. The user can always overwrite the APR.\n\n## Config vs content\n- `src/config/apr-blind-spot.config.json`: `defaults` (balance, newSpending, apr fallback, payment), `validation` (min/max/label/allowZero per field, enforced by `validateRange`), `features` (`rateKey: creditCard`, `maxMonths` 1200, `chartPoints` 48), `cta` (`enabled`, `preventDefault`). Numbers and limits only.\n- `src/content/apr-blind-spot.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner`, `form` (labels, Achieve questions, prefix/suffix), `meta` also feeds the page `<title>`/description; `results` (headline templates with `{{spending}}`, `{{trueCost}}`, `{{months}}`, `{{payment}}`, `{{interest}}`, labels, tip, warnings, chart legend), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens via `BrandTheme`. Achieve uses the presentation results layout; FDR and bills keep the default labelled layout.\n\n## Assumptions & limitations\n- APR is constant and interest compounds monthly on the full balance; there is no grace period, promotional rate, penalty APR, or balance-transfer fee.\n- The holiday spending is added today, all at once; no other charges are added later.\n- The monthly payment is fixed (not a card's declining minimum payment) and paid on time every month.\n- Annual fees, late fees, and statement-cycle timing are not modeled.\n- Illustrative estimate only — not advice, an offer, or a guarantee of savings or payoff timing.\n\n## Tests\n`aprBlindSpot.test.ts`: `fixedPaymentSchedule` (hand-computed 3-month case at 12%, agreement with `simulateFixedPayment`, never-pays-off when the payment equals monthly interest, zero balance and 0% APR, null on invalid input); `levelPayment` (standard amortization value, 0% and zero-balance cases, a level payment retires the balance in exactly n months); `newSpendingCost` (worked example above, zero new spending adds nothing, a higher APR makes the same purchase cost more, NaN deltas when only the larger balance never pays off, null on invalid input). `resolveRate` covers the live-rate prefill.\n",
       "doc": {
-        "intro": "# APR blind spot calculator\n\n- **Route:** `/apr-blind-spot` · **Component:** `AprBlindSpotCalculator` (export from `@loan-calculators/core`, props `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)",
-        "lead": "Show what new spending on a credit card really costs when the monthly payment stays the same. An APR states a yearly rate, but it does not show how many extra months, or how many extra interest dollars, a new purchase adds to payoff. The calculator compares paying off the current balance alone with paying off the balance plus the new spending, at the same APR and the same fixed payment, and reports the difference in time and interest, the real cost of the purchase, and the payment that would keep the original payoff month. Figures are illustrative estimates only.",
-        "purpose": "Show what new spending on a credit card really costs when the monthly payment stays the same. An APR states a yearly rate, but it does not show how many extra months, or how many extra interest dollars, a new purchase adds to payoff. The calculator compares paying off the current balance alone with paying off the balance plus the new spending, at the same APR and the same fixed payment, and reports the difference in time and interest, the real cost of the purchase, and the payment that would keep the original payoff month. Figures are illustrative estimates only.",
+        "intro": "# Holiday price tag calculator\n\n- **Route:** `/apr-blind-spot` (route and slug keep the original “APR blind spot” name; public title is “Holiday price tag calculator”) · **Component:** `AprBlindSpotCalculator` (export from `@loan-calculators/core`, props `projectName: \"achieve\" | \"fdr\" | \"bills\"`, `rates?: MarketRates`)",
+        "lead": "Show the real price tag of holiday spending put on a credit card when the monthly payment stays the same. An APR states a yearly rate, but it does not show how many extra months, or how many extra interest dollars, the holidays add to payoff. The calculator compares paying off the current balance alone with paying off the balance plus the holiday spending, at the same APR and the same fixed payment, and reports the difference in time and interest, the real holiday price tag (spending + extra interest), and the payment that would keep the original payoff month. Figures are illustrative estimates only.",
+        "purpose": "Show the real price tag of holiday spending put on a credit card when the monthly payment stays the same. An APR states a yearly rate, but it does not show how many extra months, or how many extra interest dollars, the holidays add to payoff. The calculator compares paying off the current balance alone with paying off the balance plus the holiday spending, at the same APR and the same fixed payment, and reports the difference in time and interest, the real holiday price tag (spending + extra interest), and the payment that would keep the original payoff month. Figures are illustrative estimates only.",
         "formulas": [
           {
             "label": "Formula",
@@ -2279,11 +2279,11 @@
             "expr": "extraInterest = interest(B + S) − interest(B)"
           },
           {
-            "label": "Real cost",
+            "label": "Real holiday price tag",
             "expr": "trueCost = S + extraInterest"
           },
           {
-            "label": "Real cost",
+            "label": "Real holiday price tag",
             "expr": "costPerDollar = trueCost / S"
           },
           {
@@ -2299,35 +2299,35 @@
             "expr": "r = APR / 100 / 12\ntrueCost = S + (interest(B + S) − interest(B))\nP* = (B + S) × r / (1 − (1 + r)^−n)"
           }
         ],
-        "formulaNotes": "Monthly rate `r = APR/100/12`. Both schedules use the same APR and payment `P`; only the starting balance differs (`B` vs `B + S`, where `S` is the new spending).\n\n**Monthly step:** `interest = balance × r`, then `balance = balance + interest − min(P, balance + interest)`, repeated until the balance is ≤ $0.005 or the month cap (`maxMonths`, default 1,200) is reached. Amounts are not rounded mid-schedule.\n\n**Never pays off:** if `P ≤ balance × r` in the first month the balance cannot fall, so the schedule is flagged `neverPaysOff` and no payoff time is shown.\n\n**Differences:** `extraMonths = months(B + S) − months(B)` and `extraInterest = interest(B + S) − interest(B)`.\n\n**Real cost:** `trueCost = S + extraInterest`, and `costPerDollar = trueCost / S`.\n\n**Payment to keep the payoff month:** the level payment that retires `B + S` in the original `n = months(B)`: `P* = (B + S) × r / (1 − (1 + r)^−n)`, or `(B + S) / n` at 0% APR.\n\n```\nr = APR / 100 / 12\ntrueCost = S + (interest(B + S) − interest(B))\nP* = (B + S) × r / (1 − (1 + r)^−n)\n```",
+        "formulaNotes": "Monthly rate `r = APR/100/12`. Both schedules use the same APR and payment `P`; only the starting balance differs (`B` vs `B + S`, where `S` is the holiday spending).\n\n**Monthly step:** `interest = balance × r`, then `balance = balance + interest − min(P, balance + interest)`, repeated until the balance is ≤ $0.005 or the month cap (`maxMonths`, default 1,200) is reached. Amounts are not rounded mid-schedule.\n\n**Never pays off:** if `P ≤ balance × r` in the first month the balance cannot fall, so the schedule is flagged `neverPaysOff` and no payoff time is shown.\n\n**Differences:** `extraMonths = months(B + S) − months(B)` and `extraInterest = interest(B + S) − interest(B)`.\n\n**Real holiday price tag:** `trueCost = S + extraInterest`, and `costPerDollar = trueCost / S`.\n\n**Payment to keep the payoff month:** the level payment that retires `B + S` in the original `n = months(B)`: `P* = (B + S) × r / (1 − (1 + r)^−n)`, or `(B + S) / n` at 0% APR.\n\n```\nr = APR / 100 / 12\ntrueCost = S + (interest(B + S) − interest(B))\nP* = (B + S) × r / (1 − (1 + r)^−n)\n```",
         "workedExample": [
-          "$5,000 balance, $1,000 of new spending, 22% APR, $150 a month.",
+          "$5,000 balance, $1,000 of holiday spending, 22% APR, $150 a month.",
           "Monthly rate is 1.8333%.",
-          "Without the new spending the balance is paid off in 52 months with $2,798.05 in interest.",
+          "Without the holiday spending the balance is paid off in 52 months with $2,798.05 in interest.",
           "With it, payoff takes 73 months with $4,913.45 in interest.",
-          "The new spending adds 21 months (1 year and 9 months) and $2,115.40 in interest, so the $1,000 really costs about $3,115.40, or about $3.12 per dollar spent.",
+          "The holiday spending adds 21 months (1 year and 9 months) and $2,115.40 in interest, so the $1,000 holiday really costs about $3,115.40, or about $3.12 per dollar spent.",
           "Paying about $179.97 a month (shown rounded up to $180) would keep the original 52-month payoff.",
           "These figures are illustrative, not a promise."
         ],
         "outputs": [
-          "Sentence headline: how much time and interest the new spending could add at the same payment (or, when the payment does not cover a month's interest, that the balance would not go down and roughly how much the payment must exceed).",
-          "Real cost of the new spending (`newSpending + extraInterest`) as the primary value and mobile sticky value.",
-          "Payoff time with and without the new spending; extra time; extra interest.",
-          "Cost per dollar spent (real cost ÷ new spending).",
+          "Sentence headline: what the holiday spending could really cost and how much longer payoff could take at the same payment (e.g. “Your $1,000 holiday could really cost $3,115, and take 1 year and 9 months longer to pay off at $150 a month.”) (or, when the payment does not cover a month's interest, that the balance would not go down and roughly how much the payment must exceed).",
+          "Real holiday price tag (`newSpending + extraInterest`) as the primary value, a micro-stat, and the mobile sticky value.",
+          "Payoff time with and without the holiday spending; extra time; extra interest.",
+          "Cost per holiday dollar (price tag ÷ holiday spending).",
           "Payment needed to keep the original payoff month.",
-          "Interest with and without the new spending; approximate payoff calendar month for each (computed on the client from the current month).",
+          "Interest with and without the holiday spending; approximate payoff calendar month for each (computed on the client from the current month).",
           "Balance-over-time chart with both lines."
         ],
         "outputsNote": "Achieve uses the presentation results card (headline, micro-stats, chart, tip). FDR and bills use the default labelled results layout with the same figures and chart. Language uses “could”; nothing is a guarantee.",
         "assumptions": [
           "APR is constant and interest compounds monthly on the full balance; there is no grace period, promotional rate, penalty APR, or balance-transfer fee.",
-          "The new spending is added today, all at once; no other charges are added later.",
+          "The holiday spending is added today, all at once; no other charges are added later.",
           "The monthly payment is fixed (not a card's declining minimum payment) and paid on time every month.",
           "Annual fees, late fees, and statement-cycle timing are not modeled.",
           "Illustrative estimate only — not advice, an offer, or a guarantee of savings or payoff timing."
         ],
         "dataSources": "`creditCard` from the shared rates layer (Federal Reserve G.19 credit card plan rate, all accounts; FRED series `TERMCBCCALLNS`, https://fred.stlouisfed.org/series/TERMCBCCALLNS) prefills the APR. If the live rate is unavailable the config default (22%) is used and the rate note says so. The user can always overwrite the APR.",
-        "configVsContent": "- `src/config/apr-blind-spot.config.json`: `defaults` (balance, newSpending, apr fallback, payment), `validation` (min/max/label/allowZero per field, enforced by `validateRange`), `features` (`rateKey: creditCard`, `maxMonths` 1200, `chartPoints` 48), `cta` (`enabled`, `preventDefault`). Numbers and limits only.\n- `src/content/apr-blind-spot.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner`, `form` (labels, Achieve questions, prefix/suffix), `results` (headline templates with `{{payment}}`, `{{spending}}`, `{{months}}`, `{{interest}}`, labels, tip, warnings, chart legend), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens via `BrandTheme`. Achieve uses the presentation results layout; FDR and bills keep the default labelled layout.",
+        "configVsContent": "- `src/config/apr-blind-spot.config.json`: `defaults` (balance, newSpending, apr fallback, payment), `validation` (min/max/label/allowZero per field, enforced by `validateRange`), `features` (`rateKey: creditCard`, `maxMonths` 1200, `chartPoints` 48), `cta` (`enabled`, `preventDefault`). Numbers and limits only.\n- `src/content/apr-blind-spot.content.json`: text only (CMS-ready): `meta`, `header`, `demoBanner`, `form` (labels, Achieve questions, prefix/suffix), `meta` also feeds the page `<title>`/description; `results` (headline templates with `{{spending}}`, `{{trueCost}}`, `{{months}}`, `{{payment}}`, `{{interest}}`, labels, tip, warnings, chart legend), `cta`, `footer`. Rendered as React text — never HTML.\n- **Rethemeing per brand:** no per-calculator brand config. `projectName` selects tokens via `BrandTheme`. Achieve uses the presentation results layout; FDR and bills keep the default labelled layout.",
         "tests": "`aprBlindSpot.test.ts`: `fixedPaymentSchedule` (hand-computed 3-month case at 12%, agreement with `simulateFixedPayment`, never-pays-off when the payment equals monthly interest, zero balance and 0% APR, null on invalid input); `levelPayment` (standard amortization value, 0% and zero-balance cases, a level payment retires the balance in exactly n months); `newSpendingCost` (worked example above, zero new spending adds nothing, a higher APR makes the same purchase cost more, NaN deltas when only the larger balance never pays off, null on invalid input). `resolveRate` covers the live-rate prefill."
       },
       "inputs": [
@@ -2345,7 +2345,7 @@
         },
         {
           "key": "newSpending",
-          "label": "New spending to add",
+          "label": "Holiday spending",
           "type": "number",
           "default": 1000,
           "min": 0,
@@ -2383,13 +2383,13 @@
       "contentPath": "packages/calculators/src/content/apr-blind-spot.content.json",
       "content": {
         "meta": {
-          "title": "APR blind spot calculator | Multi-brand demo",
-          "description": "See how much time and interest new card spending could add when you keep paying the same amount each month. Illustrative estimates only."
+          "title": "Holiday price tag calculator | Multi-brand demo",
+          "description": "See what holiday spending on a credit card could really cost once interest is added, at the same monthly payment. Illustrative estimates only."
         },
         "header": {
           "eyebrow": "Credit cards",
-          "title": "APR blind spot calculator",
-          "intro": "An APR tells you the yearly rate, not what a new purchase really costs. Add planned spending to a card balance and see how much longer payoff could take, and how much more interest you could pay, at the same monthly payment."
+          "title": "Holiday price tag calculator",
+          "intro": "Holiday spending on a card costs more than the receipt once interest adds up. See how much longer payoff could take, and what the holidays could really cost, at the same monthly payment."
         },
         "demoBanner": {
           "icon": "ℹ️",
@@ -2405,8 +2405,8 @@
               "prefix": "$"
             },
             "newSpending": {
-              "label": "New spending to add",
-              "question": "How much new spending do you plan to add?",
+              "label": "Holiday spending",
+              "question": "How much do you plan to spend on the holidays?",
               "prefix": "$"
             },
             "apr": {
@@ -2422,35 +2422,35 @@
           }
         },
         "results": {
-          "heading": "What the new spending costs",
-          "primaryLabel": "Real cost of the new spending",
+          "heading": "What the holidays really cost",
+          "primaryLabel": "Real holiday price tag",
           "invalidMessage": "Fix the highlighted fields to see an estimate.",
           "neverHeadline": "At {{payment}} a month the balance would not go down. The payment needs to be more than one month's interest, about {{interest}}.",
           "neverMessage": "Try a higher monthly payment or a lower balance to see a payoff time.",
-          "zeroSpendHeadline": "Without new spending, this balance could be paid off in {{duration}} with {{interest}} in interest.",
-          "headline": "At {{payment}} a month, adding {{spending}} could add {{months}} and {{interest}} in interest.",
-          "headlineSameTime": "At {{payment}} a month, adding {{spending}} could add {{interest}} in interest without changing the payoff month.",
+          "zeroSpendHeadline": "With no holiday spending, this balance could be paid off in {{duration}} with {{interest}} in interest.",
+          "headline": "Your {{spending}} holiday could really cost {{trueCost}}, and take {{months}} longer to pay off at {{payment}} a month.",
+          "headlineSameTime": "Your {{spending}} holiday could really cost {{trueCost}} at {{payment}} a month, without changing your payoff month.",
           "labels": {
             "withoutTime": "Payoff without it",
             "withTime": "Payoff with it",
             "extraTime": "Extra time",
             "extraInterest": "Extra interest",
-            "perDollar": "Each $1 spent costs",
-            "trueCost": "Real cost",
+            "perDollar": "Each holiday $1 costs",
+            "trueCost": "Real holiday price tag",
             "keepDate": "Payment to keep your payoff date",
-            "withoutInterest": "Interest without new spending",
-            "withInterest": "Interest with new spending",
+            "withoutInterest": "Interest without the holidays",
+            "withInterest": "Interest with the holidays",
             "withoutDate": "Paid off without it",
             "withDate": "Paid off with it"
           },
           "perMonth": "{{amount}}/mo",
           "payoffAround": "around {{date}}",
-          "chartAria": "Card balance over time with and without the new spending",
-          "chartWithout": "Without new spending",
-          "chartWith": "With new spending",
-          "tip": "The APR is the same on both lines. The extra cost comes from carrying a bigger balance for longer at the same payment. Paying about {{keep}} a month instead would keep your original payoff month.",
-          "tipNoKeep": "The APR is the same on both lines. The extra cost comes from carrying a bigger balance for longer at the same payment.",
-          "summaryMessage": "Assumes a fixed monthly payment, a constant APR, interest compounded monthly, and no charges beyond the new spending. Your actual payoff may differ.",
+          "chartAria": "Card balance over time with and without the holiday spending",
+          "chartWithout": "Without holiday spending",
+          "chartWith": "With holiday spending",
+          "tip": "The APR is the same on both lines. The holiday costs more because a bigger balance takes longer to pay off at the same payment. Paying about {{keep}} a month instead would keep your original payoff month.",
+          "tipNoKeep": "The APR is the same on both lines. The holiday costs more because a bigger balance takes longer to pay off at the same payment.",
+          "summaryMessage": "Assumes a fixed monthly payment, a constant APR, interest compounded monthly, and no charges beyond the holiday spending. Your actual payoff may differ.",
           "cappedMessage": "The estimate reached the {{years}}-year cap without paying the balance off.",
           "cappedTime": "Not paid off in {{years}} yrs"
         },
@@ -2484,7 +2484,7 @@
           "newSpending": {
             "min": 0,
             "max": 1000000,
-            "label": "New spending",
+            "label": "Holiday spending",
             "allowZero": true
           },
           "apr": {

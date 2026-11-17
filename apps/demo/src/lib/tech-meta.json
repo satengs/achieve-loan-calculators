@@ -151,7 +151,7 @@
       ]
     },
     "apr-blind-spot": {
-      "title": "APR blind spot",
+      "title": "Holiday price tag",
       "component": "AprBlindSpotCalculator",
       "calcModules": [
         "packages/calculators/src/calc/aprBlindSpot.ts"

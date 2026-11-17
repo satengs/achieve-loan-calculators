@@ -18,7 +18,7 @@
     "newSpending": {
       "min": 0,
       "max": 1000000,
-      "label": "New spending",
+      "label": "Holiday spending",
       "allowZero": true
     },
     "apr": {

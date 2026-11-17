@@ -117,9 +117,10 @@ export function AprBlindSpotCalculator({ projectName = "achieve", rates }: AprBl
       spending: whole(v.newSpending),
       months: spanPhrase(computed.extraMonths),
       interest: whole(computed.extraInterest),
+      trueCost: whole(computed.trueCost),
     };
     const tpl = computed.extraMonths > 0 ? results.headline : results.headlineSameTime;
-    return richTemplate(String(tpl), vars, ["months", "interest"]);
+    return richTemplate(String(tpl), vars, ["trueCost", "months", "interest"]);
   })();
 
   const stats = [

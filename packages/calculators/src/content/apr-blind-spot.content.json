@@ -1,12 +1,12 @@
 {
   "meta": {
-    "title": "APR blind spot calculator | Multi-brand demo",
-    "description": "See how much time and interest new card spending could add when you keep paying the same amount each month. Illustrative estimates only."
+    "title": "Holiday price tag calculator | Multi-brand demo",
+    "description": "See what holiday spending on a credit card could really cost once interest is added, at the same monthly payment. Illustrative estimates only."
   },
   "header": {
     "eyebrow": "Credit cards",
-    "title": "APR blind spot calculator",
-    "intro": "An APR tells you the yearly rate, not what a new purchase really costs. Add planned spending to a card balance and see how much longer payoff could take, and how much more interest you could pay, at the same monthly payment."
+    "title": "Holiday price tag calculator",
+    "intro": "Holiday spending on a card costs more than the receipt once interest adds up. See how much longer payoff could take, and what the holidays could really cost, at the same monthly payment."
   },
   "demoBanner": {
     "icon": "ℹ️",
@@ -22,8 +22,8 @@
         "prefix": "$"
       },
       "newSpending": {
-        "label": "New spending to add",
-        "question": "How much new spending do you plan to add?",
+        "label": "Holiday spending",
+        "question": "How much do you plan to spend on the holidays?",
         "prefix": "$"
       },
       "apr": {
@@ -39,35 +39,35 @@
     }
   },
   "results": {
-    "heading": "What the new spending costs",
-    "primaryLabel": "Real cost of the new spending",
+    "heading": "What the holidays really cost",
+    "primaryLabel": "Real holiday price tag",
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
     "neverHeadline": "At {{payment}} a month the balance would not go down. The payment needs to be more than one month's interest, about {{interest}}.",
     "neverMessage": "Try a higher monthly payment or a lower balance to see a payoff time.",
-    "zeroSpendHeadline": "Without new spending, this balance could be paid off in {{duration}} with {{interest}} in interest.",
-    "headline": "At {{payment}} a month, adding {{spending}} could add {{months}} and {{interest}} in interest.",
-    "headlineSameTime": "At {{payment}} a month, adding {{spending}} could add {{interest}} in interest without changing the payoff month.",
+    "zeroSpendHeadline": "With no holiday spending, this balance could be paid off in {{duration}} with {{interest}} in interest.",
+    "headline": "Your {{spending}} holiday could really cost {{trueCost}}, and take {{months}} longer to pay off at {{payment}} a month.",
+    "headlineSameTime": "Your {{spending}} holiday could really cost {{trueCost}} at {{payment}} a month, without changing your payoff month.",
     "labels": {
       "withoutTime": "Payoff without it",
       "withTime": "Payoff with it",
       "extraTime": "Extra time",
       "extraInterest": "Extra interest",
-      "perDollar": "Each $1 spent costs",
-      "trueCost": "Real cost",
+      "perDollar": "Each holiday $1 costs",
+      "trueCost": "Real holiday price tag",
       "keepDate": "Payment to keep your payoff date",
-      "withoutInterest": "Interest without new spending",
-      "withInterest": "Interest with new spending",
+      "withoutInterest": "Interest without the holidays",
+      "withInterest": "Interest with the holidays",
       "withoutDate": "Paid off without it",
       "withDate": "Paid off with it"
     },
     "perMonth": "{{amount}}/mo",
     "payoffAround": "around {{date}}",
-    "chartAria": "Card balance over time with and without the new spending",
-    "chartWithout": "Without new spending",
-    "chartWith": "With new spending",
-    "tip": "The APR is the same on both lines. The extra cost comes from carrying a bigger balance for longer at the same payment. Paying about {{keep}} a month instead would keep your original payoff month.",
-    "tipNoKeep": "The APR is the same on both lines. The extra cost comes from carrying a bigger balance for longer at the same payment.",
-    "summaryMessage": "Assumes a fixed monthly payment, a constant APR, interest compounded monthly, and no charges beyond the new spending. Your actual payoff may differ.",
+    "chartAria": "Card balance over time with and without the holiday spending",
+    "chartWithout": "Without holiday spending",
+    "chartWith": "With holiday spending",
+    "tip": "The APR is the same on both lines. The holiday costs more because a bigger balance takes longer to pay off at the same payment. Paying about {{keep}} a month instead would keep your original payoff month.",
+    "tipNoKeep": "The APR is the same on both lines. The holiday costs more because a bigger balance takes longer to pay off at the same payment.",
+    "summaryMessage": "Assumes a fixed monthly payment, a constant APR, interest compounded monthly, and no charges beyond the holiday spending. Your actual payoff may differ.",
     "cappedMessage": "The estimate reached the {{years}}-year cap without paying the balance off.",
     "cappedTime": "Not paid off in {{years}} yrs"
   },

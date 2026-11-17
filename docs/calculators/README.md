@@ -8,7 +8,7 @@ One doc per calculator: purpose, reference, inputs/outputs, formulas with worked
 |---|---|---|---|---|
 | [Debt payoff calculator](debt-payoff.md) | `/debt-payoff` | `DebtPayoffCalculator` | creditCard | https://www.achieve.com/tools/debt-payoff-calculator |
 | [Debt snowball vs avalanche calculator](debt-snowball-avalanche.md) | `/debt-snowball-avalanche` (aliases `/debt-snowball`, `/debt-avalanche`) | `DebtSnowballAvalancheCalculator` | — | — |
-| [APR blind spot calculator](apr-blind-spot.md) | `/apr-blind-spot` | `AprBlindSpotCalculator` | creditCard | https://primodex.github.io/apr-blind-spot/ (concept only: payoff time/interest added by new card spending at a fixed payment; own code and copy) |
+| [Holiday price tag calculator](apr-blind-spot.md) | `/apr-blind-spot` | `AprBlindSpotCalculator` | creditCard | https://primodex.github.io/apr-blind-spot/ (concept only: payoff time/interest added by new card spending at a fixed payment; own code and copy) |
 | [Consolidation options estimator](consolidation-options.md) | `/consolidation-options` | `ConsolidationOptionsCalculator` | personalLoan24, prime, creditCard | https://www.achieve.com/ (homepage “CONSOLIDATION OPTIONS — What’s your debt amount?” slider) |
 | [Debt-to-income (DTI) calculator](dti.md) | `/dti` | `DtiCalculator` | — | https://www.achieve.com/tools/debt-income-ratio-calculator |
 | [HELOC calculator (extended for Achieve parity)](heloc.md) | `/heloc` | `HelocCalculator (extended)` | prime | https://www.achieve.com/tools/heloc-payment-calculator |
