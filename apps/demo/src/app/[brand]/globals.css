@@ -937,7 +937,11 @@ code.lc-tt-ov-value {
 
 .lc-tt-props code {
   white-space: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+
+.lc-tt-props tbody th code {
+  white-space: nowrap;
 }
 
 .lc-tt-props td:last-child {

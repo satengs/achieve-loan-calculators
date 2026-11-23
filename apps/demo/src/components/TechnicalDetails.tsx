@@ -8,7 +8,7 @@ import { DEMO_CONFIG } from "@/config/demo.config";
 import { BRAND_OPTIONS } from "@/lib/brand";
 import { contrastVsWhite, isColor } from "@/lib/contrast";
 import type { TechEntry, TechRateRow } from "@/lib/tech";
-import { EXTRA_DEFAULT_KEYS, EXTRA_PROPS, NO_BREAKDOWN, NO_RATES, SHARED_PROPS, usageSnippet, type PropDoc } from "@/lib/props-doc";
+import { EXTRA_DEFAULT_KEYS, EXTRA_PROPS, HIDDEN_DEFAULT_KEYS, NO_BREAKDOWN, NO_RATES, SHARED_PROPS, usageSnippet, type PropDoc } from "@/lib/props-doc";
 import { useBrand } from "./BrandProvider";
 
 const gh = (path: string) => `${DEMO_CONFIG.githubRepo}/blob/${DEMO_CONFIG.githubBranch}/${path}`;
@@ -257,14 +257,17 @@ export function TechnicalDetails({ tech, rateRows }: { tech: TechEntry; rateRows
   const importSnippet = usageSnippet(
     tech.component,
     brand,
-    tech.inputs.map((i) => [i.key, i.default] as [string, unknown]),
+    tech.inputs.filter((i) => !HIDDEN_DEFAULT_KEYS.has(i.key)).map((i) => [i.key, i.default] as [string, unknown]),
   );
   const calcProps: PropDoc[] = [
     ...EXTRA_PROPS["*"],
     ...(NO_RATES.has(tech.component) ? [] : EXTRA_PROPS.rates),
     ...(EXTRA_PROPS[tech.component] ?? []),
   ];
-  const defaultKeys = [...tech.inputs.map((i) => i.key), ...(EXTRA_DEFAULT_KEYS[tech.component] ?? [])];
+  const defaultKeys = [
+    ...tech.inputs.map((i) => i.key).filter((k) => !HIDDEN_DEFAULT_KEYS.has(k)),
+    ...(EXTRA_DEFAULT_KEYS[tech.component] ?? []),
+  ];
   const { doc } = tech;
 
   const formulaGroups = useMemo(() => {

@@ -52,6 +52,9 @@ export const EXTRA_DEFAULT_KEYS: Record<string, string[]> = {
   DebtSnowballAvalancheCalculator: ["debts"],
 };
 
+/** Config defaults that are not prefillable inputs (UI-only presets). */
+export const HIDDEN_DEFAULT_KEYS = new Set(["termPreset"]);
+
 /** Calculators where showBreakdown has nothing to hide (no table / breakdown section). */
 export const NO_BREAKDOWN = new Set(["CarInsuranceCalculator", "HomeInsuranceCalculator", "DtiCalculator", "RetirementCalculator"]);
 
