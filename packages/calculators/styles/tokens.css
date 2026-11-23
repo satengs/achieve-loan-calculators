@@ -39,7 +39,7 @@
   margin-bottom: 0.3rem;
 }
 
-.lc-header h1 {
+.lc-header :is(h1, .lc-title) {
   font-size: clamp(1.5rem, 2.5vw, 2rem);
   font-weight: 700;
   margin: 0 0 0.3rem;
@@ -160,8 +160,8 @@
   padding: 1rem;
 }
 
-.lc-form h2,
-.lc-results h2 {
+.lc-form > :is(h2, h3, h4),
+.lc-results > :is(h2, h3, h4) {
   font-size: 1.125rem;
   margin: 0 0 0.65rem;
   color: var(--lc-text);
@@ -308,7 +308,7 @@
   color: var(--lc-text);
 }
 
-.lc-results h2 {
+.lc-results > :is(h2, h3, h4) {
   color: var(--lc-text);
 }
 
@@ -432,7 +432,7 @@
   margin-top: 1rem;
 }
 
-.lc-amort-card h2 {
+.lc-amort-card > :is(h2, h3, h4) {
   font-size: 1.125rem;
   margin: 0 0 0.5rem;
 }
@@ -718,7 +718,7 @@
 
 /* ── FDR (freedomdebtrelief.com) brand-scoped treatments ──
  * Values sourced from FDR computed styles; see docs/BRANDS.md. Achieve/bills untouched. */
-[data-project="fdr"] .lc-header h1 {
+[data-project="fdr"] .lc-header :is(h1, .lc-title) {
   font-weight: 500; /* FDR h2 "Get rid of debt": font-medium, tracking -0.01em */
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -732,8 +732,8 @@
   color: var(--lc-text-muted);
 }
 
-[data-project="fdr"] .lc-form h2,
-[data-project="fdr"] .lc-results h2,
+[data-project="fdr"] .lc-form > :is(h2, h3, h4),
+[data-project="fdr"] .lc-results > :is(h2, h3, h4),
 [data-project="fdr"] .lc-landing-section > h2 {
   font-weight: 500; /* "How much do you owe?" font-medium */
 }
@@ -770,7 +770,7 @@
 
 /* ── bills.com brand-scoped treatments ──
  * Values sourced from bills.com computed styles; see docs/BRANDS.md. Achieve/FDR untouched. */
-[data-project="bills"] .lc-header h1 {
+[data-project="bills"] .lc-header :is(h1, .lc-title) {
   font-weight: 700; /* hero / section headings are bold */
   color: var(--lc-heading);
 }
@@ -1069,7 +1069,7 @@
   line-height: 1.2;
 }
 
-[data-project="achieve"] .lc-header h1 {
+[data-project="achieve"] .lc-header :is(h1, .lc-title) {
   font-size: 1.5rem;
   font-weight: 500;
   line-height: 1.3;
@@ -1080,7 +1080,7 @@
 }
 
 @media (min-width: 860px) {
-  [data-project="achieve"] .lc-header h1 {
+  [data-project="achieve"] .lc-header :is(h1, .lc-title) {
     font-size: 2rem;
     line-height: 1.2;
     letter-spacing: -0.01em;
@@ -1420,7 +1420,7 @@
   gap: 0.85rem 1.1rem;
   margin: 0.65rem 0 0.25rem;
 }
-.lc-payoff-orders h3 {
+.lc-payoff-orders :is(h3, h4, h5) {
   margin: 0 0 0.35rem;
   font-size: 0.82rem;
   font-weight: 650;
@@ -1465,4 +1465,76 @@
 [data-project="achieve"] .lc-debt-add {
   border-color: var(--lc-border-accent, #d2e2fe);
   color: var(--lc-cta, #3300ff);
+}
+
+/* ── variant="compact" ──
+ * Tighter single-column card for narrow editorial columns (mid-article slots).
+ * Plain 1px borders in every brand, no sticky panels, smaller header. Kept last so it
+ * wins over the brand rules above at equal specificity. */
+.lc-page--compact {
+  max-width: 40rem;
+  padding: 0.75rem 0 1rem;
+}
+
+.lc-page--compact .lc-header,
+[data-project] .lc-page--compact .lc-header {
+  margin-bottom: 0.65rem;
+}
+
+.lc-page--compact .lc-header :is(h1, .lc-title),
+[data-project] .lc-page--compact .lc-header :is(h1, .lc-title) {
+  font-size: 1.3rem;
+  line-height: 1.25;
+  margin: 0 0 0.25rem;
+}
+
+.lc-page--compact .lc-header p {
+  font-size: 0.9375rem;
+}
+
+.lc-page--compact .lc-demo-banner {
+  margin-bottom: 0.65rem;
+}
+
+.lc-page--compact .lc-layout,
+[data-project] .lc-page--compact .lc-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lc-page--compact .lc-results,
+.lc-page--compact .lc-results--presentation {
+  position: static;
+}
+
+.lc-page--compact .lc-estimate-sticky {
+  display: none;
+}
+
+.lc-page--compact .lc-card,
+[data-project] .lc-page--compact .lc-card {
+  padding: 0.85rem;
+  border-width: 1px;
+  border-radius: var(--lc-radius-lg);
+  box-shadow: none;
+}
+
+.lc-page--compact .lc-form > :is(h2, h3, h4),
+.lc-page--compact .lc-results > :is(h2, h3, h4),
+.lc-page--compact .lc-amort-card > :is(h2, h3, h4) {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+}
+
+.lc-page--compact .lc-field {
+  margin-bottom: 0.55rem;
+}
+
+.lc-page--compact .lc-amort-card {
+  margin-top: 0.75rem;
+}
+
+.lc-page--compact .lc-footer-note {
+  margin-top: 0.75rem;
 }

@@ -12,26 +12,53 @@ import {
 } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
-import { CTA } from "../components/CTA";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel, resultNoun } from "../components/ResultsPanel";
 import { RateNote } from "../components/RateNote";
 import { SelectField } from "../components/SelectField";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
-import { copyLabel, resultsVariant } from "./common";
+import { CalculatorCta, copyLabel, resultsVariant, useCalculatorSetup } from "./common";
 
-export type HelocCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type HelocCalculatorInputs = {
+  homeValue: number;
+  mortgageBalance: number;
+  maxCltv: number;
+  creditLimit: number;
+  drawAmount: number;
+  creditBand: string;
+  apr: number;
+  payMode: "interest-only" | "amortizing" | "draw-repay";
+  termYears: number;
+  drawYears: number;
+  repayYears: number;
+};
+/** Payload passed to `onCalculate`. */
+export type HelocCalculatorResult = {
+  payMode: "interest-only" | "amortizing" | "draw-repay";
+  monthlyPayment: number;
+  repayPayment: number | null;
+  totalInterest: number | null;
+  creditLimit: number;
+  derivedCreditLimit: number;
+  drawAmount: number;
+  unusedLine: number;
+  apr: number;
+  ratios: ReturnType<typeof equityRatios>;
+};
+
+export type HelocCalculatorProps = CalculatorBaseProps<HelocCalculatorInputs, HelocCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live market rates injected by the host. Uses `prime` (APR default = prime + band margin). */
   rates?: MarketRates;
 };
 
-export function HelocCalculator({ projectName = "achieve", rates }: HelocCalculatorProps) {
+export function HelocCalculator({ projectName = "achieve", rates, ...options }: HelocCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const content = getCalculatorContent("heloc");
-  const config = getCalculatorConfig("heloc");
+  const { content, config } = useCalculatorSetup("heloc", options.defaults);
+  const host = options.defaults ?? {};
   const money = useMemo(() => moneyFn(config), [config]);
   const fields = content.form.fields as Record<string, any>;
   const results = content.results as Record<string, any>;
@@ -41,15 +68,26 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
   const [homeValue, setHomeValue] = useState(String(config.defaults.homeValue ?? 450000));
   const [mortgage, setMortgage] = useState(String(config.defaults.mortgageBalance ?? 280000));
   const [maxCltv, setMaxCltv] = useState(String(config.defaults.maxCltv ?? 85));
-  const [creditLimit, setCreditLimit] = useState(String(config.defaults.creditLimit ?? 102500));
-  const [limitManual, setLimitManual] = useState(false);
+  // Host-set home value / mortgage / CLTV cap without an explicit limit derives the limit (as typing would).
+  const [creditLimit, setCreditLimit] = useState(() => {
+    if (host.creditLimit == null && (host.homeValue != null || host.mortgageBalance != null || host.maxCltv != null)) {
+      const limit = derivedCreditLimit(
+        Number(config.defaults.homeValue),
+        Number(config.defaults.mortgageBalance),
+        Number(config.defaults.maxCltv),
+      );
+      if (Number.isFinite(limit) && limit >= 0) return String(Math.round(limit * 100) / 100);
+    }
+    return String(config.defaults.creditLimit ?? 102500);
+  });
+  const [limitManual, setLimitManual] = useState(host.creditLimit != null);
   const [draw, setDraw] = useState(String(config.defaults.drawAmount ?? 50000));
   const feats = (config.features || {}) as Record<string, any>;
   const margins = (feats.primeMarginByBand || {}) as Record<string, number>;
   const [creditBand, setCreditBand] = useState(String(config.defaults.creditBand ?? "good"));
   const primeLive = resolveRate(rates, "prime", Number(feats.fallbackPrime ?? 7));
   const rate = resolveRate(rates, "prime", Number(config.defaults.apr ?? 8.5), (p) => p + (margins[creditBand] ?? 0));
-  const [apr, setApr] = useState(String(rate.value));
+  const [apr, setApr] = useState(String(host.apr ?? rate.value));
   const [drawYears, setDrawYears] = useState(String(config.defaults.drawYears ?? 5));
   const [repayYears, setRepayYears] = useState(String(config.defaults.repayYears ?? 15));
   const onBand = (b: string) => {
@@ -123,6 +161,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
         message: String(results.invalidMessage || ""),
         paymentLabel: String(results.paymentLabelInterestOnly || "Estimated monthly interest"),
         out: null as null | Record<string, string>,
+        data: null as HelocCalculatorResult | null,
       };
     }
 
@@ -135,7 +174,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
 
     if (isDR) {
       const dr = helocDrawRepay(drawV.value, aprV.value, drawYV.value, repayV.value);
-      if (!dr) return { err: {} as Record<string, string>, message: String(results.unableMessage || ""), paymentLabel: "", out: null };
+      if (!dr) return { err: {} as Record<string, string>, message: String(results.unableMessage || ""), paymentLabel: "", out: null, data: null };
       monthly = dr.drawPayment;
       repayPayment = dr.repayPayment;
       totalInterest = dr.totalInterest;
@@ -149,7 +188,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
       paymentLabel = String(results.paymentLabelInterestOnly || "Estimated monthly interest");
     } else {
       const result = amortize(drawV.value, aprV.value, months);
-      if (!result) return { err: {} as Record<string, string>, message: String(results.unableMessage || ""), paymentLabel: "", out: null };
+      if (!result) return { err: {} as Record<string, string>, message: String(results.unableMessage || ""), paymentLabel: "", out: null, data: null };
       monthly = result.payment;
       totalInterest = result.totalInterest;
       modeLabel = String(results.modeLabels?.amortizing || "Amortizing P&I ({{years}} yr)").replace(
@@ -174,7 +213,8 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
         ? String(results.summaryInterestOnly || "")
         : String(results.summaryAmortizing || "");
 
-    const message = template
+    const demoPrefix = options.showDemoBanner && results.summaryDemoPrefix ? `${results.summaryDemoPrefix} ` : "";
+    const message = demoPrefix + template
       .replace("{{modeLabel}}", modeLabel)
       .replace("{{years}}", String(yearsV.value))
       .replace("{{months}}", String(months))
@@ -184,6 +224,18 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
       err: { home: "", mort: "", maxCltv: "", limit: "", draw: "", apr: "", term: "", drawYears: "", repayYears: "" } as Record<string, string>,
       message,
       paymentLabel,
+      data: {
+        payMode: payMode as HelocCalculatorResult["payMode"],
+        monthlyPayment: monthly,
+        repayPayment: Number.isFinite(repayPayment) ? repayPayment : null,
+        totalInterest: Number.isFinite(totalInterest) ? totalInterest : null,
+        creditLimit: limitV.value,
+        derivedCreditLimit: derived,
+        drawAmount: drawV.value,
+        unusedLine: unused,
+        apr: aprV.value,
+        ratios,
+      },
       out: {
         payment: money(monthly),
         limit: money(limitV.value),
@@ -216,8 +268,10 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
     money,
     results,
     msgs,
+    options.showDemoBanner,
   ]);
 
+  useOnCalculate<HelocCalculatorResult>(options.onCalculate, computed.data);
   const out = computed.out;
   const err = computed.err;
 
@@ -227,12 +281,13 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="heloc"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <Field
             id="home-value"
             label={copyLabel(fields.homeValue, "Home value", brand)}
@@ -384,7 +439,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
             { label: labels.cltv || "CLTV", value: out?.cltv || PLACEHOLDER },
           ]}
           summary={
-            out
+            out && options.showBreakdown !== false
               ? [
                   { label: labels.grossEquity || "Home equity", value: out.gross },
                   { label: labels.drawAmount || "Draw amount", value: out.draw },
@@ -397,15 +452,7 @@ export function HelocCalculator({ projectName = "achieve", rates }: HelocCalcula
               : []
           }
           message={computed.message}
-          cta={
-            <CTA
-              label={content.cta.label}
-              href={content.cta.href}
-              note={content.cta.note}
-              enabled={config.cta?.enabled !== false}
-              preventDefault={config.cta?.preventDefault !== false}
-            />
-          }
+          cta={<CalculatorCta id="heloc" />}
         />
       </div>
     </CalculatorShell>

@@ -8,6 +8,7 @@ import { DEMO_CONFIG } from "@/config/demo.config";
 import { BRAND_OPTIONS } from "@/lib/brand";
 import { contrastVsWhite, isColor } from "@/lib/contrast";
 import type { TechEntry, TechRateRow } from "@/lib/tech";
+import { EXTRA_DEFAULT_KEYS, EXTRA_PROPS, NO_BREAKDOWN, NO_RATES, SHARED_PROPS, usageSnippet, type PropDoc } from "@/lib/props-doc";
 import { useBrand } from "./BrandProvider";
 
 const gh = (path: string) => `${DEMO_CONFIG.githubRepo}/blob/${DEMO_CONFIG.githubBranch}/${path}`;
@@ -18,6 +19,7 @@ const SECTIONS = [
   { id: "how", label: "How it works" },
   { id: "formulas", label: "Formulas" },
   { id: "io", label: "Inputs & outputs" },
+  { id: "props", label: "Props" },
   { id: "data", label: "Live data" },
   { id: "content", label: "Content JSON" },
   { id: "config", label: "Config JSON" },
@@ -252,7 +254,17 @@ export function TechnicalDetails({ tech, rateRows }: { tech: TechEntry; rateRows
   const tokens = BRAND_TOKENS[brand];
   const cssVars = tokensToCssVars(tokens);
   const brandLabel = BRAND_OPTIONS.find((b) => b.value === brand)?.label ?? brand;
-  const importSnippet = `import { ${tech.component} } from "@loan-calculators/core";\nimport "@loan-calculators/core/styles.css";\n\nexport default function Page() {\n  return <${tech.component} projectName="${brand}" />;\n}`;
+  const importSnippet = usageSnippet(
+    tech.component,
+    brand,
+    tech.inputs.map((i) => [i.key, i.default] as [string, unknown]),
+  );
+  const calcProps: PropDoc[] = [
+    ...EXTRA_PROPS["*"],
+    ...(NO_RATES.has(tech.component) ? [] : EXTRA_PROPS.rates),
+    ...(EXTRA_PROPS[tech.component] ?? []),
+  ];
+  const defaultKeys = [...tech.inputs.map((i) => i.key), ...(EXTRA_DEFAULT_KEYS[tech.component] ?? [])];
   const { doc } = tech;
 
   const formulaGroups = useMemo(() => {
@@ -460,7 +472,65 @@ export function TechnicalDetails({ tech, rateRows }: { tech: TechEntry; rateRows
               </ul>
             </Section>
 
-            {/* 5 · Live data */}
+            {/* 5 · Props */}
+            <Section id="props" title="Props" kicker="v1 configuration API">
+              <p className="lc-tt-note">
+                Every calculator in <code>@loan-calculators/core</code> takes the shared{" "}
+                <code>CalculatorBaseProps&lt;Inputs, Result&gt;</code>. Types:{" "}
+                <code>{tech.component}Props</code>, <code>{tech.component}Inputs</code> (for <code>defaults</code>),{" "}
+                <code>{tech.component}Result</code> (for <code>onCalculate</code>).
+              </p>
+              <div className="lc-tt-scroll">
+                <table className="lc-tt-table lc-tt-stack lc-tt-props">
+                  <thead>
+                    <tr>
+                      <th scope="col">Prop</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Default</th>
+                      <th scope="col">Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...calcProps, ...SHARED_PROPS].map((p) => (
+                      <tr key={p.name}>
+                        <th scope="row" data-label="Prop">
+                          <code>{p.name}</code>
+                          <span className="lc-tt-opts">{p.group}</span>
+                        </th>
+                        <td data-label="Type"><code>{p.type}</code></td>
+                        <td data-label="Default"><code>{p.default}</code></td>
+                        <td data-label="Description">
+                          {p.description}
+                          {p.name === "defaults" ? (
+                            <span className="lc-tt-opts">
+                              Keys: {defaultKeys.join(" · ")}
+                            </span>
+                          ) : null}
+                          {p.name === "showBreakdown" && NO_BREAKDOWN.has(tech.component) ? (
+                            <span className="lc-tt-opts">No breakdown section on this calculator; accepted for API symmetry.</span>
+                          ) : null}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="lc-tt-code lc-tt-snippet">
+                <div className="lc-tt-code-head">
+                  <div className="lc-tt-code-meta">
+                    <span className="lc-tt-code-title">Usage</span>
+                  </div>
+                  <div className="lc-tt-code-actions">
+                    <CopyButton text={importSnippet} label="usage snippet" />
+                  </div>
+                </div>
+                <pre className="lc-tt-pre lc-tt-pre-plain" tabIndex={0}>
+                  <code>{importSnippet}</code>
+                </pre>
+              </div>
+            </Section>
+
+            {/* 6 · Live data */}
             <Section id="data" title="Live data">
               {rateRows.length === 0 ? (
                 <p className="lc-tt-empty">
@@ -512,17 +582,17 @@ export function TechnicalDetails({ tech, rateRows }: { tech: TechEntry; rateRows
               </p>
             </Section>
 
-            {/* 6 · Content JSON */}
+            {/* 7 · Content JSON */}
             <Section id="content" title="Content JSON" kicker="copy & labels (CMS-ready)">
               <JsonViewer value={tech.content} path={tech.contentPath} title={fileName(tech.contentPath)} />
             </Section>
 
-            {/* 7 · Config JSON */}
+            {/* 8 · Config JSON */}
             <Section id="config" title="Config JSON" kicker="defaults, validation, features">
               <JsonViewer value={tech.config} path={tech.configPath} title={fileName(tech.configPath)} />
             </Section>
 
-            {/* 8 · Brand tokens */}
+            {/* 9 · Brand tokens */}
             <Section id="tokens" title="Brand tokens" kicker={brandLabel}>
               <p className="lc-tt-note">
                 <code>BRAND_TOKENS.{brand}</code> → CSS variables via <code>BrandTheme</code>. Contrast is measured against white
@@ -557,26 +627,13 @@ export function TechnicalDetails({ tech, rateRows }: { tech: TechEntry; rateRows
               </dl>
             </Section>
 
-            {/* 9 · Code & tests */}
+            {/* 10 · Code & tests */}
             <Section id="code" title="Code & tests">
-              <div className="lc-tt-code lc-tt-snippet">
-                <div className="lc-tt-code-head">
-                  <div className="lc-tt-code-meta">
-                    <span className="lc-tt-code-title">Usage</span>
-                  </div>
-                  <div className="lc-tt-code-actions">
-                    <CopyButton text={importSnippet} label="import snippet" />
-                  </div>
-                </div>
-                <pre className="lc-tt-pre lc-tt-pre-plain" tabIndex={0}>
-                  <code>{importSnippet}</code>
-                </pre>
-              </div>
-
               <h3 className="lc-tt-h3">Source files</h3>
               <ul className="lc-tt-files">
                 {[
                   { kind: "Component", path: tech.componentPath },
+                  { kind: "Shared props", path: "packages/calculators/src/shell/options.tsx" },
                   ...tech.calcModules.map((m) => ({ kind: "Calc module", path: m })),
                   { kind: "Content", path: tech.contentPath },
                   { kind: "Config", path: tech.configPath },

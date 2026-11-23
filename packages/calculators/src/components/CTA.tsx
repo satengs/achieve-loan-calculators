@@ -4,6 +4,7 @@ type CTAProps = {
   note?: string;
   enabled?: boolean;
   preventDefault?: boolean;
+  onClick?: () => void;
 };
 
 const SAFE_HREF = /^(#|\/|https?:\/\/|mailto:)/i;
@@ -14,6 +15,7 @@ export function CTA({
   note,
   enabled = true,
   preventDefault = true,
+  onClick,
 }: CTAProps) {
   if (!enabled) return null;
   const safeHref = SAFE_HREF.test(href) ? href : "#";
@@ -26,6 +28,7 @@ export function CTA({
         role="button"
         onClick={(e) => {
           if (preventDefault) e.preventDefault();
+          onClick?.();
         }}
       >
         {label}

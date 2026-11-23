@@ -187,7 +187,8 @@
         "cta": {
           "label": "Check your rate",
           "href": "#",
-          "note": "Placeholder CTA — not a live application. Checking a rate may use a soft inquiry depending on the lender."
+          "note": "Checking a rate may use a soft inquiry depending on the lender.",
+          "demoNote": "Placeholder CTA — not a live application."
         },
         "amortization": {
           "heading": "Amortization snapshot",
@@ -203,7 +204,8 @@
           "noScheduleRow": "No schedule."
         },
         "footer": {
-          "note": "This calculator is a self-contained demo styled to resemble public Achieve.com visual patterns. It does not constitute a loan offer, quote, or guarantee of savings or approval. Sample default APR is for demonstration only."
+          "note": "This calculator does not constitute a loan offer, quote, or guarantee of savings or approval. Sample default APR is for demonstration only.",
+          "demoNote": "This calculator is a self-contained demo styled to resemble public Achieve.com visual patterns."
         },
         "validationMessages": {
           "termMin": "Term must be at least 1 month.",
@@ -297,9 +299,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 10
+      "testCount": 24
     },
     "mortgage": {
       "slug": "mortgage",
@@ -565,10 +595,11 @@
         "cta": {
           "label": "Explore home loan options",
           "href": "#",
-          "note": "Placeholder CTA — not a live application or rate lock."
+          "note": "",
+          "demoNote": "Placeholder CTA — not a live application or rate lock."
         },
         "footer": {
-          "note": "PITI = Principal, Interest, Taxes, and Insurance (plus HOA if entered). Tax/insurance/HOA are user-entered estimates. This demo does not include PMI, closing costs, or escrow nuances. Not a loan offer."
+          "note": "PITI = Principal, Interest, Taxes, and Insurance (plus HOA if entered). Tax/insurance/HOA are user-entered estimates. This estimate does not include PMI, closing costs, or escrow nuances. Not a loan offer."
         },
         "validationMessages": {
           "downNegative": "Down payment cannot be negative and must be a number.",
@@ -684,9 +715,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 10
+      "testCount": 24
     },
     "heloc": {
       "slug": "heloc",
@@ -995,20 +1054,23 @@
           "emptyPlaceholder": "—",
           "invalidMessage": "Fix the highlighted fields to see an estimate.",
           "unableMessage": "Unable to calculate with these inputs.",
-          "summaryInterestOnly": "Sample / demo only — not an offer. {{modeLabel}} · IO period {{years}} yr (context){{limitNote}}",
-          "summaryAmortizing": "Sample / demo only — not an offer. {{modeLabel}} · {{months}} payments{{limitNote}}",
+          "summaryInterestOnly": "{{modeLabel}} · IO period {{years}} yr (context){{limitNote}}",
+          "summaryAmortizing": "{{modeLabel}} · {{months}} payments{{limitNote}}",
           "limitNoteManual": " · credit limit manually set",
           "limitNoteDerived": " · limit derived at {{maxCltv}} max CLTV (≈ {{derivedLimit}})",
           "paymentLabelDrawRepay": "Est. payment during draw (interest-only)",
-          "summaryDrawRepay": "Sample / demo only — not an offer. {{modeLabel}}{{limitNote}}"
+          "summaryDrawRepay": "{{modeLabel}}{{limitNote}}",
+          "summaryDemoPrefix": "Sample / demo only — not an offer."
         },
         "cta": {
           "label": "Explore home equity options",
           "href": "#",
-          "note": "Placeholder CTA — not a live application or rate quote."
+          "note": "",
+          "demoNote": "Placeholder CTA — not a live application or rate quote."
         },
         "footer": {
-          "note": "HELOC estimates are demo-only. LTV = mortgage ÷ home value; CLTV = (mortgage + draw) ÷ home value. Remaining equity here = home value − mortgage − draw (simplified). Not a loan offer or compliance guarantee."
+          "note": "LTV = mortgage ÷ home value; CLTV = (mortgage + draw) ÷ home value. Remaining equity here = home value − mortgage − draw (simplified). Not a loan offer or compliance guarantee.",
+          "demoNote": "HELOC estimates are demo-only."
         },
         "validationMessages": {
           "drawExceedsLimit": "Draw amount cannot exceed the credit limit.",
@@ -1133,9 +1195,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 5
+      "testCount": 19
     },
     "life-insurance": {
       "slug": "life-insurance",
@@ -1414,10 +1504,12 @@
         "cta": {
           "label": "Learn about coverage options",
           "href": "#",
-          "note": "Placeholder CTA — not a quote, application, or guarantee of insurability."
+          "note": "",
+          "demoNote": "Placeholder CTA — not a quote, application, or guarantee of insurability."
         },
         "footer": {
-          "note": "This tool does not sell insurance, quote real premiums, or guarantee issue. The premium shown is an illustrative estimate from a demo rate table. Achieve-styled demo for product exploration only."
+          "note": "This tool does not sell insurance, quote real premiums, or guarantee issue. The premium shown is an illustrative estimate from a demo rate table.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         }
       },
       "configPath": "packages/calculators/src/config/life-insurance.config.json",
@@ -1544,9 +1636,37 @@
             "clamps outside the table; empty table → 1",
             "rate per $1k = age × term × tobacco; unknown age → null"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 14
+      "testCount": 28
     },
     "debt-payoff": {
       "slug": "debt-payoff",
@@ -1790,10 +1910,12 @@
         "cta": {
           "label": "See your options",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         },
         "table": {
           "heading": "Scenario comparison",
@@ -1931,9 +2053,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 13
+      "testCount": 27
     },
     "debt-snowball-avalanche": {
       "slug": "debt-snowball-avalanche",
@@ -2232,9 +2382,37 @@
             "downsample keeps first, last, and at most the cap",
             "payoffCalendarMonth adds months across a year boundary"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 14
+      "testCount": 28
     },
     "apr-blind-spot": {
       "slug": "apr-blind-spot",
@@ -2457,7 +2635,8 @@
         "cta": {
           "label": "See your options",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
           "note": "Educational estimate only. Rates and examples are illustrative. Not a loan offer, advice, or a guarantee of savings or payoff timing."
@@ -2552,9 +2731,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 14
+      "testCount": 28
     },
     "consolidation-options": {
       "slug": "consolidation-options",
@@ -2777,10 +2984,12 @@
         "cta": {
           "label": "Compare your options",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         },
         "table": {
           "heading": "Options at a glance",
@@ -2938,9 +3147,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 4
+      "testCount": 18
     },
     "dti": {
       "slug": "dti",
@@ -3115,10 +3352,12 @@
         "cta": {
           "label": "Explore ways to lower DTI",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         }
       },
       "configPath": "packages/calculators/src/config/dti.config.json",
@@ -3181,9 +3420,37 @@
             "card minimum estimate",
             "needle angle: 0% left, 50% up, 100% right, 35% on the good/fair boundary"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 5
+      "testCount": 19
     },
     "car-insurance": {
       "slug": "car-insurance",
@@ -3506,10 +3773,12 @@
         "cta": {
           "label": "Compare insurance quotes",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "This tool does not sell insurance or provide quotes. Achieve-styled demo for product exploration only."
+          "note": "This tool does not sell insurance or provide quotes.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         }
       },
       "configPath": "packages/calculators/src/config/car-insurance.config.json",
@@ -3682,9 +3951,37 @@
             "per-thousand base and lookup",
             "life premium per $1,000"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 5
+      "testCount": 19
     },
     "budget": {
       "slug": "budget",
@@ -4022,10 +4319,12 @@
         "cta": {
           "label": "Get budgeting tips",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         },
         "sections": {
           "income": "Income",
@@ -4192,9 +4491,37 @@
             "totals, leftover, and 50/30/20 targets",
             "zero income → NaN percents; negatives → null"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 2
+      "testCount": 16
     },
     "savings": {
       "slug": "savings",
@@ -4409,10 +4736,12 @@
         "cta": {
           "label": "Explore savings accounts",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         },
         "table": {
           "heading": "Year-by-year",
@@ -4540,9 +4869,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 14
+      "testCount": 28
     },
     "retirement": {
       "slug": "retirement",
@@ -4709,10 +5066,12 @@
         "cta": {
           "label": "Talk to a planner",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         }
       },
       "configPath": "packages/calculators/src/config/retirement.config.json",
@@ -4854,9 +5213,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 18
+      "testCount": 32
     },
     "home-insurance": {
       "slug": "home-insurance",
@@ -5146,10 +5533,12 @@
         "cta": {
           "label": "Compare home insurance",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "This tool does not sell insurance or provide quotes. Achieve-styled demo for product exploration only."
+          "note": "This tool does not sell insurance or provide quotes.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         }
       },
       "configPath": "packages/calculators/src/config/home-insurance.config.json",
@@ -5293,9 +5682,37 @@
             "per-thousand base and lookup",
             "life premium per $1,000"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 5
+      "testCount": 19
     },
     "loan": {
       "slug": "loan",
@@ -5444,10 +5861,12 @@
         "cta": {
           "label": "Check your rate",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         },
         "table": {
           "heading": "Year-by-year schedule",
@@ -5532,9 +5951,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 6
+      "testCount": 20
     },
     "auto-lease": {
       "slug": "auto-lease",
@@ -5795,10 +6242,12 @@
         "cta": {
           "label": "See lease offers",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         }
       },
       "configPath": "packages/calculators/src/config/auto-lease.config.json",
@@ -5901,9 +6350,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 5
+      "testCount": 19
     },
     "student-loan": {
       "slug": "student-loan",
@@ -6077,10 +6554,12 @@
         "cta": {
           "label": "Explore repayment options",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         },
         "table": {
           "heading": "Year-by-year schedule",
@@ -6156,9 +6635,37 @@
             "invalid → null",
             "capitalized interest"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 4
+      "testCount": 18
     },
     "car-loan": {
       "slug": "car-loan",
@@ -6394,10 +6901,12 @@
         "cta": {
           "label": "Check auto loan rates",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         },
         "table": {
           "heading": "Year-by-year schedule",
@@ -6512,9 +7021,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 7
+      "testCount": 21
     },
     "refinance": {
       "slug": "refinance",
@@ -6747,10 +7284,12 @@
         "cta": {
           "label": "See refinance options",
           "href": "#",
-          "note": "Placeholder CTA — demo only, not a live application or offer."
+          "note": "",
+          "demoNote": "Placeholder CTA — demo only, not a live application or offer."
         },
         "footer": {
-          "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+          "note": "Not financial, tax, legal, or insurance advice.",
+          "demoNote": "Achieve-styled demo for product exploration only."
         }
       },
       "configPath": "packages/calculators/src/config/refinance.config.json",
@@ -6835,9 +7374,37 @@
             "uses live value with transform",
             "falls back when missing or non-finite"
           ]
+        },
+        {
+          "file": "packages/calculators/src/shell/options.test.tsx",
+          "describe": "unified config props (all 19 calculators)",
+          "count": 9,
+          "titles": [
+            "covers every exported calculator",
+            "package defaults — h2 title, no demo banner, header/CTA/disclaimer on, full variant",
+            "showDemoBanner shows the demo banner and demo-only notes",
+            "showHeader / title / subtitle / headingLevel",
+            "showCta / ctaLabel / ctaHref",
+            "showDisclaimer hides the legal footnote",
+            "showBreakdown={false} hides breakdown sections",
+            "defaults prefill the initial inputs",
+            "variant="
+          ]
+        },
+        {
+          "file": "packages/calculators/src/shell/interactions.test.tsx",
+          "describe": "onInteract / onCalculate / onCtaClick (all 19 calculators)",
+          "count": 5,
+          "titles": [
+            "fires onCalculate on mount and on input change, not on unrelated re-renders",
+            "CTA click fires onInteract(cta_click) then onCtaClick",
+            "invalid input does not fire onCalculate, valid input fires once",
+            "segmented / radio controls report control events",
+            "host ctaHref navigates (no preventDefault); default placeholder CTA prevents navigation"
+          ]
         }
       ],
-      "testCount": 8
+      "testCount": 22
     }
   }
 }

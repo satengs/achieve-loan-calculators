@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { consolidationOptions, simulateMinimumPayments, type ConsolidationOptionConfig } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { Breakdown, SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { DataTable } from "../components/DataTable";
 import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
@@ -15,7 +16,12 @@ import { CalculatorCta, interpolate, months, optionsFrom, payoffTime, pct, useCa
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type ConsolidationOptionsCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type ConsolidationOptionsCalculatorInputs = Record<(typeof KEYS)[number], number> & { creditBand: string };
+/** Payload passed to `onCalculate`. */
+export type ConsolidationOptionsCalculatorResult = { list: NonNullable<ReturnType<typeof consolidationOptions>>; minimum: NonNullable<ReturnType<typeof simulateMinimumPayments>>; ranges: Record<string, [number, number]> };
+
+export type ConsolidationOptionsCalculatorProps = CalculatorBaseProps<ConsolidationOptionsCalculatorInputs, ConsolidationOptionsCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live rates: personalLoan24, prime, creditCard. */
   rates?: MarketRates;
@@ -24,9 +30,9 @@ export type ConsolidationOptionsCalculatorProps = {
 const KEYS = ["debtAmount", "plTermMonths", "heTermMonths", "programCostPct", "programMonths"] as const;
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
-export function ConsolidationOptionsCalculator({ projectName = "achieve", rates }: ConsolidationOptionsCalculatorProps) {
+export function ConsolidationOptionsCalculator({ projectName = "achieve", rates, ...options }: ConsolidationOptionsCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("consolidation-options");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("consolidation-options", options.defaults);
   const inputs = useNumberInputs(config, KEYS);
   const [band, setBand] = useState(String(config.defaults.creditBand ?? "good"));
   const table = (content.table || {}) as Record<string, any>;
@@ -60,6 +66,7 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
     if (!list || !minimum) return null;
     return { list, minimum, ranges: { "personal-loan": plRange, "home-equity": heRange } as Record<string, [number, number]> };
   }, [inputs.ok, inputs.values, band, plRate.value, primeRate.value, cardRate.value, pl, he, mins, features.program]);
+  useOnCalculate<ConsolidationOptionsCalculatorResult>(options.onCalculate, computed);
 
   const range = (lo: number, hi: number) => (Math.round(lo) === Math.round(hi) ? whole(lo) : `${whole(lo)}–${whole(hi)}`);
   const unavailable = (o: { id: string }) => {
@@ -85,18 +92,33 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
       ]
     : [];
 
+  const caveatsNote =
+    computed && Array.isArray(caveats.items) && options.showDisclaimer !== false ? (
+      <div className="lc-note lc-caveats">
+        <p>
+          <strong>{String(caveats.heading || "")}</strong>
+        </p>
+        <ul>
+          {caveats.items.map((item, i) => (
+            <li key={i}>{String(item)}</li>
+          ))}
+        </ul>
+      </div>
+    ) : null;
+
   return (
     <CalculatorShell
       projectName={brand}
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="consolidation-options"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <SliderField
             layout={brand === "achieve" ? "row" : "stack"}
             id="co-debtAmount"
@@ -147,22 +169,14 @@ export function ConsolidationOptionsCalculator({ projectName = "achieve", rates 
           cta={<CalculatorCta id="consolidation-options" />}
         />
       </div>
-      <div className="lc-card lc-amort-card">
-        <h2>{table.heading}</h2>
-        <DataTable caption={table.heading} columns={table.columns || []} rows={rows} emptyText={String(results.invalidMessage)} />
-        {computed && Array.isArray(caveats.items) ? (
-          <div className="lc-note lc-caveats">
-            <p>
-              <strong>{String(caveats.heading || "")}</strong>
-            </p>
-            <ul>
-              {caveats.items.map((item, i) => (
-                <li key={i}>{String(item)}</li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-      </div>
+      <Breakdown>
+        <div className="lc-card lc-amort-card">
+          <SectionHeading>{table.heading}</SectionHeading>
+          <DataTable caption={table.heading} columns={table.columns || []} rows={rows} emptyText={String(results.invalidMessage)} />
+          {caveatsNote}
+        </div>
+      </Breakdown>
+      {options.showBreakdown === false ? caveatsNote : null}
     </CalculatorShell>
   );
 }

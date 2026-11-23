@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "test": "node --import tsx --test src/calc/*.test.ts src/rates/*.test.ts",
+    "test": "node --import tsx --test src/calc/*.test.ts src/rates/*.test.ts src/shell/*.test.tsx",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build": "tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs"
   },
@@ -28,8 +28,10 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@types/jsdom": "^30.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "jsdom": "^26.1.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "tsx": "^4.23.15",

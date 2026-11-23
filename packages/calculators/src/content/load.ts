@@ -92,8 +92,10 @@ export type CalculatorContent = {
   demoBanner: { icon?: string; strong: string; body: string };
   form: { heading: string; fields: Record<string, unknown> };
   results: Record<string, unknown>;
-  cta: { label: string; href: string; note: string };
-  footer: { note: string };
+  /** `note` = real disclosure (shown with showDisclaimer); `demoNote` = placeholder notice (showDemoBanner only). */
+  cta: { label: string; href: string; note?: string; demoNote?: string };
+  /** `note` = compliance/legal footnote (showDisclaimer); `demoNote` = demo-only line (showDemoBanner). */
+  footer: { note: string; demoNote?: string };
   amortization?: Record<string, unknown>;
   table?: Record<string, unknown>;
   [key: string]: unknown;

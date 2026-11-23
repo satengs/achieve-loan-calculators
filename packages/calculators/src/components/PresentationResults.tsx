@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SectionHeading } from "../shell/options";
 import { MicroStats, type MicroStat } from "./MicroStats";
 import { TipCallout } from "./TipCallout";
 
@@ -44,7 +45,7 @@ export function PresentationResults({
         <strong className="lc-estimate-sticky-value">{stickyValue}</strong>
       </div>
       <section className="lc-card lc-results lc-results--presentation" aria-live="polite" aria-atomic="true">
-        <h2 className="lc-presentation-headline">{headline}</h2>
+        <SectionHeading className="lc-presentation-headline">{headline}</SectionHeading>
         <MicroStats items={stats} />
         {chart}
         <TipCallout>{tip}</TipCallout>

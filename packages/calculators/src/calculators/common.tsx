@@ -6,13 +6,37 @@ import type { YearRow } from "../calc/loans";
 import { CTA } from "../components/CTA";
 import { DataTable } from "../components/DataTable";
 import type { ProjectName } from "../brand/types";
-import { getCalculatorConfig, getCalculatorContent, type CalculatorId } from "../content/load";
+import {
+  getCalculatorConfig,
+  getCalculatorContent,
+  type CalculatorConfig,
+  type CalculatorId,
+} from "../content/load";
+import { Breakdown, SectionHeading, useCalculatorOptions } from "../shell/options";
 import { moneyFn } from "./utils";
 
+/** Config with host `defaults` merged in; `hostDefaults` also wins over live-rate initial values. */
+export type ConfigWithHostDefaults = CalculatorConfig & { hostDefaults?: Record<string, unknown> };
+
+/** Merge host-page `defaults` over CMS config defaults (undefined values ignored). */
+export function withHostDefaults(config: CalculatorConfig, defaults?: object): ConfigWithHostDefaults {
+  if (!defaults) return config;
+  const host = Object.fromEntries(Object.entries(defaults).filter(([, v]) => v !== undefined));
+  if (!Object.keys(host).length) return config;
+  const primitive = Object.fromEntries(
+    Object.entries(host).filter(([, v]) => ["string", "number", "boolean"].includes(typeof v)),
+  ) as CalculatorConfig["defaults"];
+  return { ...config, defaults: { ...config.defaults, ...primitive }, hostDefaults: host };
+}
+
 /** Shared content/config/formatter wiring for calculator components. */
-export function useCalculatorSetup(id: CalculatorId) {
+export function useCalculatorSetup(id: CalculatorId, defaults?: object) {
   const content = getCalculatorContent(id);
-  const config = useMemo(() => getCalculatorConfig(id), [id]);
+  // Host `defaults` only seed initial state, so a new object identity each render is harmless;
+  // key on its JSON so the memoized config stays stable.
+  const defaultsKey = defaults ? JSON.stringify(defaults) : "";
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const config = useMemo(() => withHostDefaults(getCalculatorConfig(id), defaults), [id, defaultsKey]);
   const money = useMemo(() => moneyFn(config), [config]);
   const whole = (n: number) => money(n, { maximumFractionDigits: 0, minimumFractionDigits: 0 });
   const fields = content.form.fields as Record<string, any>;
@@ -44,16 +68,43 @@ export function payoffTime(r: { months: number; capped: boolean }, cappedTemplat
 export const pct = (n: number, d = 1) => formatPercent(n, d);
 export { interpolate };
 
-export function CalculatorCta({ id }: { id: CalculatorId }) {
+/**
+ * Built-in CTA. Honors showCta / ctaLabel / ctaHref / onCtaClick / onInteract from the shell.
+ * A host `ctaHref` navigates normally and drops the CMS placeholder note.
+ */
+export function CalculatorCta({
+  id,
+  label,
+  href,
+  note,
+}: {
+  id: CalculatorId;
+  /** Per-calculator defaults (still overridden by the host ctaLabel / ctaHref props). */
+  label?: string;
+  href?: string;
+  note?: string;
+}) {
   const content = getCalculatorContent(id);
   const config = getCalculatorConfig(id);
+  const opts = useCalculatorOptions();
+  if (!opts.showCta || config.cta?.enabled === false) return null;
+  const finalLabel = opts.ctaLabel ?? label ?? content.cta.label;
+  const finalHref = opts.ctaHref ?? href ?? content.cta.href;
+  const hostHref = opts.ctaHref !== undefined;
+  const notes = [
+    opts.showDemoBanner && !hostHref ? content.cta.demoNote : "",
+    opts.showDisclaimer ? (note ?? content.cta.note) : "",
+  ].filter(Boolean);
   return (
     <CTA
-      label={content.cta.label}
-      href={content.cta.href}
-      note={content.cta.note}
-      enabled={config.cta?.enabled !== false}
-      preventDefault={config.cta?.preventDefault !== false}
+      label={finalLabel}
+      href={finalHref}
+      note={notes.join(" ") || undefined}
+      preventDefault={hostHref ? false : config.cta?.preventDefault !== false}
+      onClick={() => {
+        opts.onInteract?.({ type: "cta_click", calculator: opts.calculator || id, label: finalLabel, href: finalHref });
+        opts.onCtaClick?.();
+      }}
     />
   );
 }
@@ -71,14 +122,16 @@ export function YearScheduleCard({
   money: (n: number) => string;
 }) {
   return (
-    <div className="lc-card lc-amort-card">
-      <h2>{heading}</h2>
-      <DataTable
-        caption={heading}
-        columns={columns}
-        rows={rows.map((r) => [String(r.year), money(r.payment), money(r.principal), money(r.interest), money(r.balance)])}
-      />
-    </div>
+    <Breakdown>
+      <div className="lc-card lc-amort-card">
+        <SectionHeading>{heading}</SectionHeading>
+        <DataTable
+          caption={heading}
+          columns={columns}
+          rows={rows.map((r) => [String(r.year), money(r.payment), money(r.principal), money(r.interest), money(r.balance)])}
+        />
+      </div>
+    </Breakdown>
   );
 }
 

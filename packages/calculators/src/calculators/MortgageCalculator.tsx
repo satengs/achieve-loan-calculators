@@ -4,25 +4,48 @@ import { useMemo, useState } from "react";
 import { amortize, convertDownPaymentMode, downPaymentAndLoan, validateRange } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
-import { CTA } from "../components/CTA";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { RateNote } from "../components/RateNote";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
-import { copyLabel, resultsVariant } from "./common";
+import { CalculatorCta, copyLabel, resultsVariant, useCalculatorSetup } from "./common";
 
-export type MortgageCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type MortgageCalculatorInputs = {
+  homePrice: number;
+  downPaymentMode: "percent" | "dollars";
+  downPayment: number;
+  loanAmount: number;
+  apr: number;
+  termYears: number;
+  taxMonthly: number;
+  insMonthly: number;
+  hoaMonthly: number;
+};
+/** Payload passed to `onCalculate`. */
+export type MortgageCalculatorResult = {
+  loanAmount: number;
+  downPayment: number;
+  monthlyPrincipalInterest: number;
+  monthlyPiti: number;
+  totalInterest: number;
+  termMonths: number;
+  apr: number;
+  amortization: NonNullable<ReturnType<typeof amortize>>;
+};
+
+export type MortgageCalculatorProps = CalculatorBaseProps<MortgageCalculatorInputs, MortgageCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live market rates injected by the host (mortgage30 / mortgage15 by default term). */
   rates?: MarketRates;
 };
 
-export function MortgageCalculator({ projectName = "achieve", rates }: MortgageCalculatorProps) {
+export function MortgageCalculator({ projectName = "achieve", rates, ...options }: MortgageCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const content = getCalculatorContent("mortgage");
-  const config = getCalculatorConfig("mortgage");
+  const { content, config } = useCalculatorSetup("mortgage", options.defaults);
+  const host = options.defaults ?? {};
   const money = useMemo(() => moneyFn(config), [config]);
   const fields = content.form.fields as Record<string, any>;
   const results = content.results as Record<string, any>;
@@ -32,11 +55,22 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
   const [homePrice, setHomePrice] = useState(String(config.defaults.homePrice ?? 400000));
   const [dpMode, setDpMode] = useState(String(config.defaults.downPaymentMode ?? "percent"));
   const [downPayment, setDownPayment] = useState(String(config.defaults.downPayment ?? 20));
-  const [loanAmount, setLoanAmount] = useState(String(config.defaults.loanAmount ?? 320000));
-  const [loanManual, setLoanManual] = useState(false);
+  // A host-set price / down payment without an explicit loan amount derives the loan (as typing would).
+  const [loanAmount, setLoanAmount] = useState(() => {
+    if (host.loanAmount == null && (host.homePrice != null || host.downPayment != null || host.downPaymentMode != null)) {
+      const d = downPaymentAndLoan(
+        Number(config.defaults.homePrice),
+        Number(config.defaults.downPayment),
+        config.defaults.downPaymentMode === "dollars" ? "dollars" : "percent",
+      );
+      if (Number.isFinite(d.loanAmount) && d.loanAmount >= 0) return String(Math.round(d.loanAmount * 100) / 100);
+    }
+    return String(config.defaults.loanAmount ?? 320000);
+  });
+  const [loanManual, setLoanManual] = useState(host.loanAmount != null);
   const rateKey = Number(config.defaults.termYears) === 15 ? "mortgage15" : "mortgage30";
   const rate = resolveRate(rates, rateKey, Number(config.defaults.apr ?? 6.5));
-  const [apr, setApr] = useState(String(rate.value));
+  const [apr, setApr] = useState(String(host.apr ?? rate.value));
   const [termYears, setTermYears] = useState(String(config.defaults.termYears ?? 30));
   const [tax, setTax] = useState(String(config.defaults.taxMonthly ?? 350));
   const [ins, setIns] = useState(String(config.defaults.insMonthly ?? 150));
@@ -80,6 +114,7 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
         },
         message: String(results.invalidMessage || ""),
         out: null as null | Record<string, string>,
+        data: null as MortgageCalculatorResult | null,
       };
     }
 
@@ -88,13 +123,14 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
         err: { homePrice: "", down: "", loan: msgs.loanZero || "Loan amount must be greater than zero.", apr: "", term: "", tax: "", ins: "", hoa: "" },
         message: String(results.zeroLoanMessage || ""),
         out: null,
+        data: null,
       };
     }
 
     const months = Math.round(yearsV.value * 12);
     const result = amortize(loanV.value, aprV.value, months);
     if (!result) {
-      return { err: {}, message: String(results.unableMessage || ""), out: null };
+      return { err: {}, message: String(results.unableMessage || ""), out: null, data: null };
     }
     const downDollars = Math.max(0, priceV.value - loanV.value);
     const piti = result.payment + taxV.value + insV.value + hoaV.value;
@@ -104,6 +140,16 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
       message: String(results.summaryTemplate || "")
         .replace("{{years}}", String(yearsV.value))
         .replace("{{months}}", String(months)),
+      data: {
+        loanAmount: loanV.value,
+        downPayment: downDollars,
+        monthlyPrincipalInterest: result.payment,
+        monthlyPiti: piti,
+        totalInterest: result.totalInterest,
+        termMonths: months,
+        apr: aprV.value,
+        amortization: result,
+      },
       out: {
         pi: money(result.payment),
         piti: money(piti),
@@ -118,6 +164,7 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
     };
   }, [homePrice, downPayment, dpMode, loanAmount, apr, termYears, tax, ins, hoa, config, money, results, msgs]);
 
+  useOnCalculate<MortgageCalculatorResult>(options.onCalculate, computed.data);
   const out = computed.out;
   const err = computed.err;
   const termPresets = (config.termPresets || [15, 20, 30]).map(String);
@@ -128,12 +175,13 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="mortgage"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <Field
             id="home-price"
             label={copyLabel(fields.homePrice, "Home price", brand)}
@@ -251,7 +299,7 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
             { label: labels.downPayment || "Down payment", value: out?.down || PLACEHOLDER },
           ]}
           summary={
-            out
+            out && options.showBreakdown !== false
               ? [
                   { label: labels.breakdownPi || "P&I", value: out.bdPi },
                   { label: labels.breakdownTax || "Property tax", value: out.bdTax },
@@ -261,15 +309,7 @@ export function MortgageCalculator({ projectName = "achieve", rates }: MortgageC
               : []
           }
           message={computed.message}
-          cta={
-            <CTA
-              label={content.cta.label}
-              href={content.cta.href}
-              note={content.cta.note}
-              enabled={config.cta?.enabled !== false}
-              preventDefault={config.cta?.preventDefault !== false}
-            />
-          }
+          cta={<CalculatorCta id="mortgage" />}
         />
       </div>
     </CalculatorShell>

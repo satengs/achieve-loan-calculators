@@ -98,9 +98,11 @@
   "cta": {
     "label": "Learn about coverage options",
     "href": "#",
-    "note": "Placeholder CTA — not a quote, application, or guarantee of insurability."
+    "note": "",
+    "demoNote": "Placeholder CTA — not a quote, application, or guarantee of insurability."
   },
   "footer": {
-    "note": "This tool does not sell insurance, quote real premiums, or guarantee issue. The premium shown is an illustrative estimate from a demo rate table. Achieve-styled demo for product exploration only."
+    "note": "This tool does not sell insurance, quote real premiums, or guarantee issue. The premium shown is an illustrative estimate from a demo rate table.",
+    "demoNote": "Achieve-styled demo for product exploration only."
   }
 }

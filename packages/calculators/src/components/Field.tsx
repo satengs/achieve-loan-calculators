@@ -11,6 +11,8 @@ type FieldProps = {
   onChange: (value: string) => void;
   inputMode?: "decimal" | "numeric" | "text";
   describedBy?: string;
+  /** Logical input key reported to `onInteract` (data-lc-field). */
+  fieldKey?: string;
 };
 
 export function Field({
@@ -23,6 +25,7 @@ export function Field({
   value,
   onChange,
   inputMode = "decimal",
+  fieldKey,
 }: FieldProps) {
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
@@ -48,6 +51,7 @@ export function Field({
           inputMode={inputMode}
           id={id}
           name={id}
+          data-lc-field={fieldKey}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoComplete="off"

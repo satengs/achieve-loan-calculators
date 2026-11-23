@@ -99,9 +99,11 @@
   "cta": {
     "label": "Compare home insurance",
     "href": "#",
-    "note": "Placeholder CTA — demo only, not a live application or offer."
+    "note": "",
+    "demoNote": "Placeholder CTA — demo only, not a live application or offer."
   },
   "footer": {
-    "note": "This tool does not sell insurance or provide quotes. Achieve-styled demo for product exploration only."
+    "note": "This tool does not sell insurance or provide quotes.",
+    "demoNote": "Achieve-styled demo for product exploration only."
   }
 }

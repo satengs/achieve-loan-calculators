@@ -5,21 +5,42 @@ import { lifeCoverageEstimate, lifePremiumEstimate, lifePremiumRatePer1000, vali
 import { SelectField } from "../components/SelectField";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
-import { CTA } from "../components/CTA";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
-import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
-import { resultsVariant } from "./common";
+import { CalculatorCta, resultsVariant, useCalculatorSetup } from "./common";
 
-export type LifeInsuranceCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type LifeInsuranceCalculatorInputs = {
+  annualIncome: number;
+  yearsReplace: number;
+  totalDebts: number;
+  finalExpenses: number;
+  educationFund: number;
+  existingCoverage: number;
+  liquidAssets: number;
+  termYears: number;
+  ageBand: string;
+  tobacco: "yes" | "no";
+};
+/** Payload passed to `onCalculate`. */
+export type LifeInsuranceCalculatorResult = {
+  coverage: ReturnType<typeof lifeCoverageEstimate>;
+  ratePer1000: ReturnType<typeof lifePremiumRatePer1000>;
+  premium: ReturnType<typeof lifePremiumEstimate> | null;
+  termYears: number;
+  ageBand: string;
+  tobacco: boolean;
+};
+
+export type LifeInsuranceCalculatorProps = CalculatorBaseProps<LifeInsuranceCalculatorInputs, LifeInsuranceCalculatorResult> & {
   projectName?: ProjectName | string;
 };
 
-export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuranceCalculatorProps) {
+export function LifeInsuranceCalculator({ projectName = "achieve", ...options }: LifeInsuranceCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const content = getCalculatorContent("life-insurance");
-  const config = getCalculatorConfig("life-insurance");
+  const { content, config } = useCalculatorSetup("life-insurance", options.defaults);
   const roundWhole = config.features?.currencyRoundToWhole !== false;
   const money = useMemo(
     () => moneyFn(config),
@@ -64,7 +85,7 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
       values[f.key] = v.value;
     }
     if (!ok) {
-      return { err, message: String(results.invalidMessage || ""), out: null as null | Record<string, string> };
+      return { err, message: String(results.invalidMessage || ""), out: null as null | Record<string, string>, result: null };
     }
     const est = lifeCoverageEstimate({
       annualIncome: values.annualIncome,
@@ -84,6 +105,7 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
     return {
       err,
       message: String(results.summaryMessage || ""),
+      result: { coverage: est, ratePer1000, premium, termYears: Number(termYears), ageBand, tobacco: tobacco === "yes" },
       out: {
         net: fmt(est.netNeed),
         gross: fmt(est.grossNeed),
@@ -100,6 +122,7 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [annualIncome, yearsReplace, totalDebts, finalExpenses, educationFund, existingCoverage, liquidAssets, termYears, ageBand, tobacco, feats, config, results]);
 
+  useOnCalculate<LifeInsuranceCalculatorResult>(options.onCalculate, computed.result);
   const out = computed.out;
   const err = computed.err;
   const presets = (config.termPresets || [10, 20, 30]).map(String);
@@ -110,16 +133,18 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="life-insurance"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           {fieldDefs.map((f) => (
             <Field
               key={f.id}
               id={f.id}
+              fieldKey={f.key}
               label={f.field?.label || f.key}
               hint={f.field?.hint}
               prefix={f.field?.prefix}
@@ -174,8 +199,12 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
           summary={
             out
               ? [
-                  { label: labels.finalExpenses || "Final expenses", value: out.final },
-                  { label: labels.education || "Education / goals", value: out.edu },
+                  ...(options.showBreakdown === false
+                    ? []
+                    : [
+                        { label: labels.finalExpenses || "Final expenses", value: out.final },
+                        { label: labels.education || "Education / goals", value: out.edu },
+                      ]),
                   { label: labels.selectedTerm || "Selected term", value: out.term },
                   { label: labels.premiumMonthly || "Illustrative premium (monthly)", value: out.premiumMonthly },
                   { label: labels.premiumAnnual || "Illustrative premium (annual)", value: out.premiumAnnual },
@@ -183,15 +212,7 @@ export function LifeInsuranceCalculator({ projectName = "achieve" }: LifeInsuran
               : []
           }
           message={computed.message}
-          cta={
-            <CTA
-              label={content.cta.label}
-              href={content.cta.href}
-              note={content.cta.note}
-              enabled={config.cta?.enabled !== false}
-              preventDefault={config.cta?.preventDefault !== false}
-            />
-          }
+          cta={<CalculatorCta id="life-insurance" />}
         />
       </div>
     </CalculatorShell>

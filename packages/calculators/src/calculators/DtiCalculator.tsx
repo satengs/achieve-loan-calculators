@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { dtiBand, dtiRatio, estimatedCardMinimum } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { MoreOptions } from "../components/MoreOptions";
 import { DtiGauge } from "../components/DtiGauge";
 import { ResultsPanel } from "../components/ResultsPanel";
@@ -11,13 +12,18 @@ import { CalculatorCta, pct, useCalculatorSetup, resultsVariant } from "./common
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type DtiCalculatorProps = { projectName?: ProjectName | string };
+/** Prefillable inputs for `defaults`. */
+export type DtiCalculatorInputs = Record<(typeof KEYS)[number], number>;
+/** Payload passed to `onCalculate`. */
+export type DtiCalculatorResult = { ratio: number; band: NonNullable<ReturnType<typeof dtiBand>>; debts: number; at35: number; headroom: number };
+
+export type DtiCalculatorProps = CalculatorBaseProps<DtiCalculatorInputs, DtiCalculatorResult> & { projectName?: ProjectName | string };
 
 const KEYS = ["monthlyIncome", "monthlyDebts", "cardBalance", "cardMinPct"] as const;
 
-export function DtiCalculator({ projectName = "achieve" }: DtiCalculatorProps) {
+export function DtiCalculator({ projectName = "achieve", ...options }: DtiCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("dti");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("dti", options.defaults);
   const inputs = useNumberInputs(config, KEYS);
   const bands = (results.bands || {}) as Record<string, { label: string; body: string }>;
   const goodMax = Number(features.bands?.goodMax ?? 35);
@@ -34,6 +40,7 @@ export function DtiCalculator({ projectName = "achieve" }: DtiCalculatorProps) {
     const at35 = v.monthlyIncome * (goodMax / 100);
     return { ratio, band, debts, at35, headroom: at35 - debts };
   }, [inputs.ok, inputs.values, goodMax, fairMax]);
+  useOnCalculate<DtiCalculatorResult>(options.onCalculate, computed);
 
   const band = computed ? bands[computed.band] : null;
   return (
@@ -42,12 +49,13 @@ export function DtiCalculator({ projectName = "achieve" }: DtiCalculatorProps) {
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="dti"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <NumberFields idPrefix="dti" keys={["monthlyIncome", "monthlyDebts", "cardBalance"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <MoreOptions>
             <NumberFields idPrefix="dti" keys={["cardMinPct"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />

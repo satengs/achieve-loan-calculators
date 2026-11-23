@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { futureValue, realValue } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { Breakdown, SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { DataTable } from "../components/DataTable";
 import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
@@ -14,7 +15,12 @@ import { CalculatorCta, optionsFrom, pct, useCalculatorSetup, resultsVariant } f
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type SavingsCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type SavingsCalculatorInputs = Record<(typeof KEYS)[number], number> & { compounding: number };
+/** Payload passed to `onCalculate`. */
+export type SavingsCalculatorResult = NonNullable<ReturnType<typeof futureValue>> & { real: number };
+
+export type SavingsCalculatorProps = CalculatorBaseProps<SavingsCalculatorInputs, SavingsCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live rates: savings (national average), inflationYoY (CPI). */
   rates?: MarketRates;
@@ -22,9 +28,9 @@ export type SavingsCalculatorProps = {
 
 const KEYS = ["initial", "monthly", "rate", "years", "contributionGrowth", "inflation"] as const;
 
-export function SavingsCalculator({ projectName = "achieve", rates }: SavingsCalculatorProps) {
+export function SavingsCalculator({ projectName = "achieve", rates, ...options }: SavingsCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels } = useCalculatorSetup("savings");
+  const { content, config, whole, fields, results, labels } = useCalculatorSetup("savings", options.defaults);
   const rate = resolveRate(rates, "savings", Number(config.defaults.rate));
   const infl = resolveRate(rates, "inflationYoY", Number(config.defaults.inflation));
   const inputs = useNumberInputs(config, KEYS, { rate: rate.value, inflation: infl.value });
@@ -45,12 +51,13 @@ export function SavingsCalculator({ projectName = "achieve", rates }: SavingsCal
     if (!fv) return null;
     return { ...fv, real: realValue(fv.balance, v.inflation, v.years) };
   }, [inputs.ok, inputs.values, compounding]);
+  useOnCalculate<SavingsCalculatorResult>(options.onCalculate, computed);
 
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell projectName={brand} calculator="savings" content={content} options={options}>
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <NumberFields idPrefix="sv" keys={["initial", "monthly", "rate"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="rate (national average savings rate)" />
           <NumberFields idPrefix="sv" keys={["years"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
@@ -75,15 +82,17 @@ export function SavingsCalculator({ projectName = "achieve", rates }: SavingsCal
           cta={<CalculatorCta id="savings" />}
         />
       </div>
-      <div className="lc-card lc-amort-card">
-        <h2>{table.heading}</h2>
-        <DataTable
-          caption={table.heading}
-          columns={table.columns || []}
-          rows={(computed?.rows || []).map((r) => [String(r.year), whole(r.contributions), whole(r.interest), whole(r.balance)])}
-          emptyText={String(results.invalidMessage)}
-        />
-      </div>
+      <Breakdown>
+        <div className="lc-card lc-amort-card">
+          <SectionHeading>{table.heading}</SectionHeading>
+          <DataTable
+            caption={table.heading}
+            columns={table.columns || []}
+            rows={(computed?.rows || []).map((r) => [String(r.year), whole(r.contributions), whole(r.interest), whole(r.balance)])}
+            emptyText={String(results.invalidMessage)}
+          />
+        </div>
+      </Breakdown>
     </CalculatorShell>
   );
 }

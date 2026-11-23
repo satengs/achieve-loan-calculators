@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { amortize, carLoanAmount, yearlySchedule } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { Fieldset, Segmented } from "../components/Field";
 import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
@@ -13,7 +14,12 @@ import { CalculatorCta, useCalculatorSetup, YearScheduleCard, resultsVariant } f
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type CarLoanCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type CarLoanCalculatorInputs = Record<(typeof KEYS)[number], number> & { termMonths: number };
+/** Payload passed to `onCalculate`. */
+export type CarLoanCalculatorResult = NonNullable<ReturnType<typeof carLoanAmount>> & { a: NonNullable<ReturnType<typeof amortize>>; totalCost: number };
+
+export type CarLoanCalculatorProps = CalculatorBaseProps<CarLoanCalculatorInputs, CarLoanCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live rates: auto48 (48-month new car loan average). */
   rates?: MarketRates;
@@ -21,9 +27,9 @@ export type CarLoanCalculatorProps = {
 
 const KEYS = ["price", "down", "apr", "tradeIn", "tradeOwed", "salesTax", "fees"] as const;
 
-export function CarLoanCalculator({ projectName = "achieve", rates }: CarLoanCalculatorProps) {
+export function CarLoanCalculator({ projectName = "achieve", rates, ...options }: CarLoanCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, money, whole, fields, results, labels } = useCalculatorSetup("car-loan");
+  const { content, config, money, whole, fields, results, labels } = useCalculatorSetup("car-loan", options.defaults);
   const rate = resolveRate(rates, "auto48", Number(config.defaults.apr));
   const inputs = useNumberInputs(config, KEYS, { apr: rate.value });
   const [term, setTerm] = useState(String(config.defaults.termMonths ?? "60"));
@@ -39,12 +45,13 @@ export function CarLoanCalculator({ projectName = "achieve", rates }: CarLoanCal
     if (!a) return null;
     return { ...amt, a, totalCost: a.totalPaid + v.down + Math.max(0, amt.tradeEquity) };
   }, [inputs.ok, inputs.values, term]);
+  useOnCalculate<CarLoanCalculatorResult>(options.onCalculate, computed);
 
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell projectName={brand} calculator="car-loan" content={content} options={options}>
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <NumberFields idPrefix="cl" keys={["price", "down", "apr"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="APR (48-month new car loan average at commercial banks)" />
           <Fieldset legend={fields.termMonths?.legend || "Loan term"}>

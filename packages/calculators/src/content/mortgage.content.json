@@ -96,10 +96,11 @@
   "cta": {
     "label": "Explore home loan options",
     "href": "#",
-    "note": "Placeholder CTA — not a live application or rate lock."
+    "note": "",
+    "demoNote": "Placeholder CTA — not a live application or rate lock."
   },
   "footer": {
-    "note": "PITI = Principal, Interest, Taxes, and Insurance (plus HOA if entered). Tax/insurance/HOA are user-entered estimates. This demo does not include PMI, closing costs, or escrow nuances. Not a loan offer."
+    "note": "PITI = Principal, Interest, Taxes, and Insurance (plus HOA if entered). Tax/insurance/HOA are user-entered estimates. This estimate does not include PMI, closing costs, or escrow nuances. Not a loan offer."
   },
   "validationMessages": {
     "downNegative": "Down payment cannot be negative and must be a number.",

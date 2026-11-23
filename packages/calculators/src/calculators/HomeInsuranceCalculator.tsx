@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { factorEstimate, lookupFactor, perThousandBase } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { MoreOptions } from "../components/MoreOptions";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { SelectField } from "../components/SelectField";
@@ -11,14 +12,19 @@ import { CalculatorCta, optionsFrom, useCalculatorSetup, resultsVariant } from "
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type HomeInsuranceCalculatorProps = { projectName?: ProjectName | string };
+/** Prefillable inputs for `defaults`. */
+export type HomeInsuranceCalculatorInputs = { dwelling: number; ratePerThousand: number } & Record<(typeof FACTOR_KEYS)[number] | "liability", string>;
+/** Payload passed to `onCalculate`. */
+export type HomeInsuranceCalculatorResult = NonNullable<ReturnType<typeof factorEstimate>>;
+
+export type HomeInsuranceCalculatorProps = CalculatorBaseProps<HomeInsuranceCalculatorInputs, HomeInsuranceCalculatorResult> & { projectName?: ProjectName | string };
 
 const FACTOR_KEYS = ["region", "homeAge", "construction", "deductible", "claims", "contents"] as const;
 const PRIMARY = ["region", "homeAge", "deductible"];
 
-export function HomeInsuranceCalculator({ projectName = "achieve" }: HomeInsuranceCalculatorProps) {
+export function HomeInsuranceCalculator({ projectName = "achieve", ...options }: HomeInsuranceCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("home-insurance");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("home-insurance", options.defaults);
   const inputs = useNumberInputs(config, ["dwelling", "ratePerThousand"]);
   const [sel, setSel] = useState<Record<string, string>>(() =>
     Object.fromEntries([...FACTOR_KEYS, "liability"].map((k) => [k, String(config.defaults[k] ?? "")])),
@@ -33,6 +39,7 @@ export function HomeInsuranceCalculator({ projectName = "achieve" }: HomeInsuran
     const f = FACTOR_KEYS.map((k) => lookupFactor(factors[k], sel[k]));
     return factorEstimate(base, f, [Number(liability[sel.liability] ?? 0)]);
   }, [inputs.ok, inputs.values, sel, factors, liability]);
+  useOnCalculate<HomeInsuranceCalculatorResult>(options.onCalculate, computed);
 
   const select = (k: string) => (
     <SelectField
@@ -46,10 +53,10 @@ export function HomeInsuranceCalculator({ projectName = "achieve" }: HomeInsuran
   );
 
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell projectName={brand} calculator="home-insurance" content={content} options={options}>
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <NumberFields idPrefix="hi" keys={["dwelling"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           {PRIMARY.map(select)}
           <MoreOptions>

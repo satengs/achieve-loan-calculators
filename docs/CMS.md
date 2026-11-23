@@ -27,8 +27,10 @@ Suggested content types:
 | `demoBanner` | JSON | `demoBanner.*` |
 | `form` | JSON | `form.*` |
 | `results` | JSON | `results.*` |
-| `ctaLabel` / `ctaHref` / `ctaNote` | Text | `cta.*` |
-| `footerNote` | Long text | `footer.note` |
+| `ctaLabel` / `ctaHref` / `ctaNote` | Text | `cta.*` (`cta.note` = real disclosure) |
+| `ctaDemoNote` | Text | `cta.demoNote` (placeholder notice; only with `showDemoBanner`) |
+| `footerNote` | Long text | `footer.note` (legal footnote; `showDisclaimer`) |
+| `footerDemoNote` | Text | `footer.demoNote` (demo-only line; only with `showDemoBanner`) |
 
 ### CalculatorConfig
 

@@ -29,6 +29,11 @@ import '@loan-calculators/core/styles.css';
 
 `projectName`: `"achieve" | "fdr" | "bills"`.
 
+Every calculator also takes the shared v1 configuration props (`showHeader`, `showDemoBanner`
+— off by default for package imports, `showBreakdown`, `showCta`, `showDisclaimer`, `title`,
+`subtitle`, `headingLevel`, `ctaLabel`, `ctaHref`, `onCtaClick`, `defaults`, `variant`,
+`onInteract`, `onCalculate`). See [docs/CONFIG-PROPS.md](docs/CONFIG-PROPS.md).
+
 ## Structure
 
 ```

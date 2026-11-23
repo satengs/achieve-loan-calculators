@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { budgetSummary, type BudgetCategory } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { Breakdown, SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { DataTable } from "../components/DataTable";
 import { Fieldset } from "../components/Field";
 import { MoreOptions } from "../components/MoreOptions";
@@ -12,13 +13,18 @@ import { CalculatorCta, pct, useCalculatorSetup, resultsVariant } from "./common
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type BudgetCalculatorProps = { projectName?: ProjectName | string };
+/** Prefillable inputs for `defaults`. */
+export type BudgetCalculatorInputs = Record<string, number>;
+/** Payload passed to `onCalculate`. */
+export type BudgetCalculatorResult = NonNullable<ReturnType<typeof budgetSummary>>;
+
+export type BudgetCalculatorProps = CalculatorBaseProps<BudgetCalculatorInputs, BudgetCalculatorResult> & { projectName?: ProjectName | string };
 
 const CATS: BudgetCategory[] = ["needs", "wants", "savings"];
 
-export function BudgetCalculator({ projectName = "achieve" }: BudgetCalculatorProps) {
+export function BudgetCalculator({ projectName = "achieve", ...options }: BudgetCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("budget");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("budget", options.defaults);
   const categories = features.categories as Record<BudgetCategory, string[]>;
   const targets = features.targets as Record<BudgetCategory, number>;
   const keys = useMemo(() => ["netIncome", "otherIncome", ...CATS.flatMap((c) => categories[c])], [categories]);
@@ -35,12 +41,13 @@ export function BudgetCalculator({ projectName = "achieve" }: BudgetCalculatorPr
       targets,
     );
   }, [inputs.ok, inputs.values, categories, targets]);
+  useOnCalculate<BudgetCalculatorResult>(options.onCalculate, computed);
 
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell projectName={brand} calculator="budget" content={content} options={options}>
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <Fieldset legend={sections.income}>
             <NumberFields idPrefix="bd" keys={["netIncome", "otherIncome"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           </Fieldset>
@@ -81,19 +88,21 @@ export function BudgetCalculator({ projectName = "achieve" }: BudgetCalculatorPr
           cta={<CalculatorCta id="budget" />}
         />
       </div>
-      <div className="lc-card lc-amort-card">
-        <h2>{table.heading}</h2>
-        <DataTable
-          caption={table.heading}
-          columns={table.columns || []}
-          rows={
-            computed
-              ? CATS.map((c) => [sections[c], whole(computed.byCat[c]), pct(computed.pctOfIncome[c], 0), `${targets[c]}%`, whole(computed.targetAmounts[c])])
-              : []
-          }
-          emptyText={String(results.invalidMessage)}
-        />
-      </div>
+      <Breakdown>
+        <div className="lc-card lc-amort-card">
+          <SectionHeading>{table.heading}</SectionHeading>
+          <DataTable
+            caption={table.heading}
+            columns={table.columns || []}
+            rows={
+              computed
+                ? CATS.map((c) => [sections[c], whole(computed.byCat[c]), pct(computed.pctOfIncome[c], 0), `${targets[c]}%`, whole(computed.targetAmounts[c])])
+                : []
+            }
+            emptyText={String(results.invalidMessage)}
+          />
+        </div>
+      </Breakdown>
     </CalculatorShell>
   );
 }

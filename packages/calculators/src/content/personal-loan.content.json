@@ -74,7 +74,8 @@
   "cta": {
     "label": "Check your rate",
     "href": "#",
-    "note": "Placeholder CTA — not a live application. Checking a rate may use a soft inquiry depending on the lender."
+    "note": "Checking a rate may use a soft inquiry depending on the lender.",
+    "demoNote": "Placeholder CTA — not a live application."
   },
   "amortization": {
     "heading": "Amortization snapshot",
@@ -90,7 +91,8 @@
     "noScheduleRow": "No schedule."
   },
   "footer": {
-    "note": "This calculator is a self-contained demo styled to resemble public Achieve.com visual patterns. It does not constitute a loan offer, quote, or guarantee of savings or approval. Sample default APR is for demonstration only."
+    "note": "This calculator does not constitute a loan offer, quote, or guarantee of savings or approval. Sample default APR is for demonstration only.",
+    "demoNote": "This calculator is a self-contained demo styled to resemble public Achieve.com visual patterns."
   },
   "validationMessages": {
     "termMin": "Term must be at least 1 month.",

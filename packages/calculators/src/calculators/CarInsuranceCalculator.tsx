@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { factorEstimate, lookupFactor } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { MoreOptions } from "../components/MoreOptions";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { SelectField } from "../components/SelectField";
@@ -11,15 +12,20 @@ import { CalculatorCta, optionsFrom, useCalculatorSetup, resultsVariant } from "
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type CarInsuranceCalculatorProps = { projectName?: ProjectName | string };
+/** Prefillable inputs for `defaults`. */
+export type CarInsuranceCalculatorInputs = { basePremium: number } & Record<(typeof FACTOR_KEYS)[number] | (typeof ADDON_KEYS)[number], string>;
+/** Payload passed to `onCalculate`. */
+export type CarInsuranceCalculatorResult = NonNullable<ReturnType<typeof factorEstimate>>;
+
+export type CarInsuranceCalculatorProps = CalculatorBaseProps<CarInsuranceCalculatorInputs, CarInsuranceCalculatorResult> & { projectName?: ProjectName | string };
 
 const FACTOR_KEYS = ["driverAge", "record", "vehicle", "coverage", "deductible", "mileage", "area"] as const;
 const ADDON_KEYS = ["roadside", "rental"] as const;
 const PRIMARY = ["driverAge", "record", "vehicle", "coverage"];
 
-export function CarInsuranceCalculator({ projectName = "achieve" }: CarInsuranceCalculatorProps) {
+export function CarInsuranceCalculator({ projectName = "achieve", ...options }: CarInsuranceCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("car-insurance");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("car-insurance", options.defaults);
   const inputs = useNumberInputs(config, ["basePremium"]);
   const [sel, setSel] = useState<Record<string, string>>(() =>
     Object.fromEntries([...FACTOR_KEYS, ...ADDON_KEYS].map((k) => [k, String(config.defaults[k] ?? "")])),
@@ -34,6 +40,7 @@ export function CarInsuranceCalculator({ projectName = "achieve" }: CarInsurance
     const adds = ADDON_KEYS.map((k) => (sel[k] === "yes" ? Number(addOnCosts[k] ?? 0) : 0));
     return factorEstimate(inputs.values.basePremium, f, adds);
   }, [inputs.ok, inputs.values, sel, factors, addOnCosts]);
+  useOnCalculate<CarInsuranceCalculatorResult>(options.onCalculate, computed);
 
   const select = (k: string) => (
     <SelectField
@@ -48,10 +55,10 @@ export function CarInsuranceCalculator({ projectName = "achieve" }: CarInsurance
   );
 
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell projectName={brand} calculator="car-insurance" content={content} options={options}>
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           {PRIMARY.map(select)}
           <MoreOptions>
             {FACTOR_KEYS.filter((k) => !PRIMARY.includes(k)).map(select)}

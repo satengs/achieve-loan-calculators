@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { leasePayment } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
@@ -12,7 +13,12 @@ import { CalculatorCta, useCalculatorSetup, resultsVariant } from "./common";
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type AutoLeaseCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type AutoLeaseCalculatorInputs = Record<(typeof KEYS)[number], number>;
+/** Payload passed to `onCalculate`. */
+export type AutoLeaseCalculatorResult = NonNullable<ReturnType<typeof leasePayment>>;
+
+export type AutoLeaseCalculatorProps = CalculatorBaseProps<AutoLeaseCalculatorInputs, AutoLeaseCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live rates: auto48 used as an APR proxy for the money factor. */
   rates?: MarketRates;
@@ -20,9 +26,9 @@ export type AutoLeaseCalculatorProps = {
 
 const KEYS = ["msrp", "price", "down", "tradeIn", "fees", "residualPct", "apr", "termMonths", "salesTax"] as const;
 
-export function AutoLeaseCalculator({ projectName = "achieve", rates }: AutoLeaseCalculatorProps) {
+export function AutoLeaseCalculator({ projectName = "achieve", rates, ...options }: AutoLeaseCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, money, whole, fields, results, labels } = useCalculatorSetup("auto-lease");
+  const { content, config, money, whole, fields, results, labels } = useCalculatorSetup("auto-lease", options.defaults);
   const rate = resolveRate(rates, "auto48", Number(config.defaults.apr));
   const inputs = useNumberInputs(config, KEYS, { apr: rate.value });
 
@@ -41,13 +47,14 @@ export function AutoLeaseCalculator({ projectName = "achieve", rates }: AutoLeas
       salesTaxPct: v.salesTax,
     });
   }, [inputs.ok, inputs.values]);
+  useOnCalculate<AutoLeaseCalculatorResult>(options.onCalculate, computed);
 
   const msg = !inputs.ok ? String(results.invalidMessage) : !computed ? String(results.invalidCap) : String(results.summaryMessage);
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell projectName={brand} calculator="auto-lease" content={content} options={options}>
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <NumberFields idPrefix="al" keys={["msrp", "price", "down", "termMonths", "residualPct", "apr"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="APR proxy (48-month new car loan average; lessor money factors differ)" />
           <MoreOptions>
@@ -66,7 +73,7 @@ export function AutoLeaseCalculator({ projectName = "achieve", rates }: AutoLeas
             { label: labels.financeTotal, value: computed ? whole(computed.totalFinanceCharge) : PLACEHOLDER },
           ]}
           summary={
-            computed
+            computed && options.showBreakdown !== false
               ? [
                   { label: labels.depreciation, value: money(computed.depreciation) },
                   { label: labels.finance, value: money(computed.finance) },

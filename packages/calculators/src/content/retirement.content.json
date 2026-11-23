@@ -55,9 +55,11 @@
   "cta": {
     "label": "Talk to a planner",
     "href": "#",
-    "note": "Placeholder CTA — demo only, not a live application or offer."
+    "note": "",
+    "demoNote": "Placeholder CTA — demo only, not a live application or offer."
   },
   "footer": {
-    "note": "Achieve-styled demo for product exploration only. Not financial, tax, legal, or insurance advice."
+    "note": "Not financial, tax, legal, or insurance advice.",
+    "demoNote": "Achieve-styled demo for product exploration only."
   }
 }

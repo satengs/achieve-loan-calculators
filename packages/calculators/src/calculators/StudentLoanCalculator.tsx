@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { capitalizedInterest, payoffWithExtra, yearlySchedule } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
@@ -12,7 +13,12 @@ import { CalculatorCta, months, useCalculatorSetup, YearScheduleCard, resultsVar
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type StudentLoanCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type StudentLoanCalculatorInputs = Record<(typeof KEYS)[number], number>;
+/** Payload passed to `onCalculate`. */
+export type StudentLoanCalculatorResult = NonNullable<ReturnType<typeof payoffWithExtra>> & { cap: number };
+
+export type StudentLoanCalculatorProps = CalculatorBaseProps<StudentLoanCalculatorInputs, StudentLoanCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Accepted for API symmetry; no keyless public series is wired for student loan rates. */
   rates?: MarketRates;
@@ -20,9 +26,9 @@ export type StudentLoanCalculatorProps = {
 
 const KEYS = ["balance", "apr", "termYears", "deferMonths", "extraMonthly"] as const;
 
-export function StudentLoanCalculator({ projectName = "achieve" }: StudentLoanCalculatorProps) {
+export function StudentLoanCalculator({ projectName = "achieve", rates: _rates, ...options }: StudentLoanCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, money, whole, fields, results, labels } = useCalculatorSetup("student-loan");
+  const { content, config, money, whole, fields, results, labels } = useCalculatorSetup("student-loan", options.defaults);
   const rate = resolveRate(undefined, "personalLoan24", Number(config.defaults.apr));
   const inputs = useNumberInputs(config, KEYS);
   const table = (content.table || {}) as Record<string, any>;
@@ -34,12 +40,13 @@ export function StudentLoanCalculator({ projectName = "achieve" }: StudentLoanCa
     const r = payoffWithExtra(v.balance + cap, v.apr, Math.round(v.termYears * 12), v.extraMonthly);
     return r ? { ...r, cap } : null;
   }, [inputs.ok, inputs.values]);
+  useOnCalculate<StudentLoanCalculatorResult>(options.onCalculate, computed);
 
   return (
-    <CalculatorShell projectName={brand} eyebrow={content.header.eyebrow} title={content.header.title} intro={content.header.intro} banner={content.demoBanner} footerNote={content.footer.note}>
+    <CalculatorShell projectName={brand} calculator="student-loan" content={content} options={options}>
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <NumberFields idPrefix="sl" keys={["balance", "apr"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />
           <RateNote rate={rate} subject="interest rate" noLiveSource />
           <NumberFields idPrefix="sl" keys={["termYears"]} fields={fields} inputs={inputs}  preferQuestion={brand === "achieve"} />

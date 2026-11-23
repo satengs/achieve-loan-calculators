@@ -119,20 +119,23 @@
     "emptyPlaceholder": "—",
     "invalidMessage": "Fix the highlighted fields to see an estimate.",
     "unableMessage": "Unable to calculate with these inputs.",
-    "summaryInterestOnly": "Sample / demo only — not an offer. {{modeLabel}} · IO period {{years}} yr (context){{limitNote}}",
-    "summaryAmortizing": "Sample / demo only — not an offer. {{modeLabel}} · {{months}} payments{{limitNote}}",
+    "summaryInterestOnly": "{{modeLabel}} · IO period {{years}} yr (context){{limitNote}}",
+    "summaryAmortizing": "{{modeLabel}} · {{months}} payments{{limitNote}}",
     "limitNoteManual": " · credit limit manually set",
     "limitNoteDerived": " · limit derived at {{maxCltv}} max CLTV (≈ {{derivedLimit}})",
     "paymentLabelDrawRepay": "Est. payment during draw (interest-only)",
-    "summaryDrawRepay": "Sample / demo only — not an offer. {{modeLabel}}{{limitNote}}"
+    "summaryDrawRepay": "{{modeLabel}}{{limitNote}}",
+    "summaryDemoPrefix": "Sample / demo only — not an offer."
   },
   "cta": {
     "label": "Explore home equity options",
     "href": "#",
-    "note": "Placeholder CTA — not a live application or rate quote."
+    "note": "",
+    "demoNote": "Placeholder CTA — not a live application or rate quote."
   },
   "footer": {
-    "note": "HELOC estimates are demo-only. LTV = mortgage ÷ home value; CLTV = (mortgage + draw) ÷ home value. Remaining equity here = home value − mortgage − draw (simplified). Not a loan offer or compliance guarantee."
+    "note": "LTV = mortgage ÷ home value; CLTV = (mortgage + draw) ÷ home value. Remaining equity here = home value − mortgage − draw (simplified). Not a loan offer or compliance guarantee.",
+    "demoNote": "HELOC estimates are demo-only."
   },
   "validationMessages": {
     "drawExceedsLimit": "Draw amount cannot exceed the credit limit.",

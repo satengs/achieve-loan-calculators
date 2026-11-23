@@ -4,16 +4,31 @@ import { useMemo, useState } from "react";
 import { amortize, applyOriginationFee, interpolate, toMonths, validateRange } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
-import { CTA } from "../components/CTA";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { Field, Fieldset, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { RateNote } from "../components/RateNote";
 import { resolveRate, type MarketRates } from "../rates/types";
-import { getCalculatorConfig, getCalculatorContent } from "../content/load";
 import { moneyFn, PLACEHOLDER } from "./utils";
-import { copyLabel, resultsVariant } from "./common";
+import { CalculatorCta, copyLabel, resultsVariant, useCalculatorSetup } from "./common";
 
-export type PersonalLoanCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type PersonalLoanCalculatorInputs = {
+  loanAmount: number;
+  apr: number;
+  termValue: number;
+  termUnit: "months" | "years";
+  originationFeePercent: number;
+};
+/** Payload passed to `onCalculate`. */
+export type PersonalLoanCalculatorResult = {
+  termMonths: number;
+  apr: number;
+  fee: ReturnType<typeof applyOriginationFee>;
+  amortization: NonNullable<ReturnType<typeof amortize>>;
+};
+
+export type PersonalLoanCalculatorProps = CalculatorBaseProps<PersonalLoanCalculatorInputs, PersonalLoanCalculatorResult> & {
   /** Brand theme key: achieve | fdr | bills */
   projectName?: ProjectName | string;
   /** Live market rates injected by the host (uses personalLoan24). */
@@ -22,10 +37,9 @@ export type PersonalLoanCalculatorProps = {
 
 type FieldKey = "loanAmount" | "apr" | "originationFee";
 
-export function PersonalLoanCalculator({ projectName = "achieve", rates }: PersonalLoanCalculatorProps) {
+export function PersonalLoanCalculator({ projectName = "achieve", rates, ...options }: PersonalLoanCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const content = getCalculatorContent("personal-loan");
-  const config = getCalculatorConfig("personal-loan");
+  const { content, config } = useCalculatorSetup("personal-loan", options.defaults);
   const money = useMemo(() => moneyFn(config), [config]);
   const fields = content.form.fields as Record<string, { label?: string; hint?: string; prefix?: string; suffix?: string; legend?: string; units?: Record<string, string>; presetLabels?: Record<string, string> }>;
   const results = content.results as Record<string, unknown>;
@@ -34,7 +48,7 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
 
   const [loanAmount, setLoanAmount] = useState(String(config.defaults.loanAmount ?? 15000));
   const rate = resolveRate(rates, "personalLoan24", Number(config.defaults.apr ?? 11.99));
-  const [apr, setApr] = useState(String(rate.value));
+  const [apr, setApr] = useState(String(options.defaults?.apr ?? rate.value));
   const [termValue, setTermValue] = useState(String(config.defaults.termValue ?? 36));
   const [termUnit, setTermUnit] = useState(String(config.defaults.termUnit ?? "months"));
   const [fee, setFee] = useState(String(config.defaults.originationFeePercent ?? 0));
@@ -64,6 +78,7 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
         invalid: true,
         message: String(results.invalidMessage || ""),
         out: null as null | Record<string, string>,
+        data: null as PersonalLoanCalculatorResult | null,
         schedule: [] as Array<{ month: number; payment: number; principal: number; interest: number; balance: number }>,
       };
     }
@@ -72,7 +87,7 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
     const feeInfo = applyOriginationFee(amountV.value, feeV.value, feeMode);
     const result = amortize(feeInfo.financedPrincipal, aprV.value, months);
     if (!result) {
-      return { errors: nextErrors, invalid: true, message: String(results.unableMessage || ""), out: null, schedule: [] };
+      return { errors: nextErrors, invalid: true, message: String(results.unableMessage || ""), out: null, data: null, schedule: [] };
     }
 
     const feeNote =
@@ -84,6 +99,7 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
       errors: nextErrors,
       invalid: false,
       message: interpolate(String(results.summaryTemplate || ""), { months, feeNote }),
+      data: { termMonths: months, apr: aprV.value, fee: feeInfo, amortization: result },
       out: {
         monthly: money(result.payment),
         interest: money(result.totalInterest),
@@ -111,9 +127,10 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
   ) {
     // defer via microtask-safe pattern: use derived errors directly below
   }
+  useOnCalculate<PersonalLoanCalculatorResult>(options.onCalculate, computed.data);
   const err = computed.errors;
   const out = computed.out;
-  const showAmort = config.features?.showAmortization !== false;
+  const showAmort = config.features?.showAmortization !== false && options.showBreakdown !== false;
   const showFee = config.features?.showOriginationFee !== false;
   const presets = (config.termPresets || [24, 36, 48, 60]).map(String);
 
@@ -123,12 +140,13 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="personal-loan"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form" aria-labelledby="pl-inputs">
-          <h2 id="pl-inputs">{content.form.heading}</h2>
+          <SectionHeading id="pl-inputs">{content.form.heading}</SectionHeading>
           <Field
             id="loan-amount"
             label={copyLabel(fields.loanAmount, "Loan amount", brand)}
@@ -235,21 +253,13 @@ export function PersonalLoanCalculator({ projectName = "achieve", rates }: Perso
               : []
           }
           message={computed.message}
-          cta={
-            <CTA
-              label={content.cta.label}
-              href={content.cta.href}
-              note={content.cta.note}
-              enabled={config.cta?.enabled !== false}
-              preventDefault={config.cta?.preventDefault !== false}
-            />
-          }
+          cta={<CalculatorCta id="personal-loan" />}
         />
       </div>
 
       {showAmort ? (
         <div className="lc-card lc-amort-card">
-          <h2>{amort.heading || "Amortization snapshot"}</h2>
+          <SectionHeading>{amort.heading || "Amortization snapshot"}</SectionHeading>
           {amort.intro ? <p className="lc-hint">{amort.intro}</p> : null}
           <div className="lc-table-wrap lc-amort-desktop">
             <table className="lc-table">

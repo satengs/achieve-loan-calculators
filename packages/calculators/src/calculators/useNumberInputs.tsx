@@ -16,14 +16,15 @@ export function useNumberInputs(
   keys: readonly string[],
   initial: Record<string, number | undefined> = {},
 ) {
-  const [state, setState] = useState<Record<string, string>>(() =>
-    Object.fromEntries(keys.map((k) => [k, String(initial[k] ?? config.defaults[k] ?? "")])),
-  );
+  // Host `defaults` (merged by useCalculatorSetup) win over `initial` (e.g. live rates) and config defaults.
+  const host = ((config as { hostDefaults?: Record<string, unknown> }).hostDefaults ?? {}) as Record<string, unknown>;
+  const seed = (k: string) => String(host[k] ?? initial[k] ?? config.defaults[k] ?? "");
+  const [state, setState] = useState<Record<string, string>>(() => Object.fromEntries(keys.map((k) => [k, seed(k)])));
   const set = useCallback((k: string, v: string) => setState((s) => ({ ...s, [k]: v })), []);
   // initial is often a default `{}` — omit from deps on purpose.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const reset = useCallback(() => {
-    setState(Object.fromEntries(keys.map((k) => [k, String(initial[k] ?? config.defaults[k] ?? "")])));
+    setState(Object.fromEntries(keys.map((k) => [k, seed(k)])));
   }, [keys, config]);
   const parsed = useMemo(() => {
     const values: Record<string, number> = {};
@@ -61,6 +62,7 @@ export function NumberFields({ idPrefix, keys, fields, inputs, errors, preferQue
           <Field
             key={k}
             id={`${idPrefix}-${k}`}
+            fieldKey={k}
             label={(preferQuestion && f.question) || f.label || k}
             hint={f.hint}
             prefix={f.prefix}

@@ -5,6 +5,7 @@ import { downsampleSeries, newSpendingCost, payoffCalendarMonth } from "../calc"
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { BalanceCompareChart } from "../components/BalanceCompareChart";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { RateNote } from "../components/RateNote";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { resolveRate, type MarketRates } from "../rates/types";
@@ -12,7 +13,12 @@ import { CalculatorCta, interpolate, months, resultsVariant, useCalculatorSetup 
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type AprBlindSpotCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type AprBlindSpotCalculatorInputs = Record<(typeof KEYS)[number], number>;
+/** Payload passed to `onCalculate`. */
+export type AprBlindSpotCalculatorResult = NonNullable<ReturnType<typeof newSpendingCost>>;
+
+export type AprBlindSpotCalculatorProps = CalculatorBaseProps<AprBlindSpotCalculatorInputs, AprBlindSpotCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live market rates injected by the host (creditCard). */
   rates?: MarketRates;
@@ -49,9 +55,9 @@ function richTemplate(tpl: string, vars: Record<string, string>, em: string[]): 
   });
 }
 
-export function AprBlindSpotCalculator({ projectName = "achieve", rates }: AprBlindSpotCalculatorProps) {
+export function AprBlindSpotCalculator({ projectName = "achieve", rates, ...options }: AprBlindSpotCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("apr-blind-spot");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("apr-blind-spot", options.defaults);
   const rate = resolveRate(rates, "creditCard", Number(config.defaults.apr));
   const inputs = useNumberInputs(config, KEYS, { apr: rate.value });
   const maxMonths = Math.max(1, Number(features.maxMonths) || 1200);
@@ -73,6 +79,7 @@ export function AprBlindSpotCalculator({ projectName = "achieve", rates }: AprBl
       maxMonths,
     );
   }, [inputs.ok, inputs.values, maxMonths]);
+  useOnCalculate<AprBlindSpotCalculatorResult>(options.onCalculate, computed);
 
   const v = inputs.values;
   const never = !!computed && (computed.without.neverPaysOff || computed.withSpending.neverPaysOff);
@@ -183,12 +190,13 @@ export function AprBlindSpotCalculator({ projectName = "achieve", rates }: AprBl
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="apr-blind-spot"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <NumberFields idPrefix="abs" keys={["balance", "newSpending", "apr"]} fields={fields} inputs={inputs} preferQuestion={preferQuestion} />
           <RateNote rate={rate} subject="card APR" />
           <NumberFields idPrefix="abs" keys={["payment"]} fields={fields} inputs={inputs} preferQuestion={preferQuestion} />
@@ -201,7 +209,13 @@ export function AprBlindSpotCalculator({ projectName = "achieve", rates }: AprBl
           headline={headline}
           stats={stats}
           items={items}
-          summary={brand === "achieve" ? summary : summary.filter((r) => r.label !== String(labels.keepDate))}
+          summary={
+            options.showBreakdown === false
+              ? []
+              : brand === "achieve"
+                ? summary
+                : summary.filter((r) => r.label !== String(labels.keepDate))
+          }
           tip={tip}
           chart={chart}
           message={message}

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { balanceAfterWaiting, programEstimate, simulateFixedPayment, simulateMinimumPayments } from "../calc";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { Breakdown, SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { DataTable } from "../components/DataTable";
 import { MoreOptions } from "../components/MoreOptions";
 import { RateNote } from "../components/RateNote";
@@ -14,7 +15,17 @@ import { CalculatorCta, copyLabel, interpolate, months, payoffTime, resultsVaria
 import { NumberFields, useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type DebtPayoffCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type DebtPayoffCalculatorInputs = Record<(typeof KEYS)[number], number>;
+/** Payload passed to `onCalculate`. */
+export type DebtPayoffCalculatorResult = {
+  min: NonNullable<ReturnType<typeof simulateMinimumPayments>>;
+  wait: NonNullable<ReturnType<typeof simulateMinimumPayments>> & { balance: number };
+  plan: ReturnType<typeof simulateFixedPayment>;
+  program: NonNullable<ReturnType<typeof programEstimate>>;
+};
+
+export type DebtPayoffCalculatorProps = CalculatorBaseProps<DebtPayoffCalculatorInputs, DebtPayoffCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live market rates injected by the host (creditCard). */
   rates?: MarketRates;
@@ -22,9 +33,9 @@ export type DebtPayoffCalculatorProps = {
 
 const KEYS = ["debtAmount", "apr", "planPayment", "minPrincipalPct", "minFloor", "programCostPct", "programMonths"] as const;
 
-export function DebtPayoffCalculator({ projectName = "achieve", rates }: DebtPayoffCalculatorProps) {
+export function DebtPayoffCalculator({ projectName = "achieve", rates, ...options }: DebtPayoffCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("debt-payoff");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("debt-payoff", options.defaults);
   const rate = resolveRate(rates, "creditCard", Number(config.defaults.apr));
   const inputs = useNumberInputs(config, KEYS, { apr: rate.value });
   const table = (content.table || {}) as Record<string, any>;
@@ -47,6 +58,7 @@ export function DebtPayoffCalculator({ projectName = "achieve", rates }: DebtPay
     if (!min || !wait || !program) return null;
     return { min, wait, plan, program };
   }, [inputs.ok, inputs.values, features.maxMonths, waitMonths]);
+  useOnCalculate<DebtPayoffCalculatorResult>(options.onCalculate, computed);
 
   const planErr = inputs.ok && computed && !computed.plan ? String(results.planInvalid || "") : "";
   const errors: Record<string, string> = { ...inputs.errors, planPayment: inputs.errors.planPayment || planErr };
@@ -71,12 +83,13 @@ export function DebtPayoffCalculator({ projectName = "achieve", rates }: DebtPay
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={tpl(content.header.intro)}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="debt-payoff"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <SliderField
             layout={brand === "achieve" ? "row" : "stack"}
             id="dp-debtAmount"
@@ -157,11 +170,13 @@ export function DebtPayoffCalculator({ projectName = "achieve", rates }: DebtPay
           cta={<CalculatorCta id="debt-payoff" />}
         />
       </div>
-      <div className="lc-card lc-amort-card">
-        <h2>{table.heading}</h2>
-        <DataTable caption={table.heading} columns={table.columns || []} rows={tableRows} emptyText={String(results.invalidMessage)} />
-        {computed && table.waitNote ? <p className="lc-note">{tpl(table.waitNote)}</p> : null}
-      </div>
+      <Breakdown>
+        <div className="lc-card lc-amort-card">
+          <SectionHeading>{table.heading}</SectionHeading>
+          <DataTable caption={table.heading} columns={table.columns || []} rows={tableRows} emptyText={String(results.invalidMessage)} />
+          {computed && table.waitNote ? <p className="lc-note">{tpl(table.waitNote)}</p> : null}
+        </div>
+      </Breakdown>
     </CalculatorShell>
   );
 }

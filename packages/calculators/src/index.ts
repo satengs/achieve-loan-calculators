@@ -61,6 +61,24 @@ export type {
   DebtSnowballAvalancheCalculatorProps,
   AprBlindSpotCalculatorProps,
 } from "./calculators";
+export type * from "./calculators";
+
+/* Unified v1 configuration props shared by every calculator. */
+export {
+  CALCULATOR_PROP_DEFAULTS,
+  resolveCalculatorOptions,
+  useCalculatorOptions,
+  SectionHeading,
+  Breakdown,
+} from "./shell/options";
+export type {
+  CalculatorBaseProps,
+  CalculatorInteractionEvent,
+  CalculatorHeadingLevel,
+  CalculatorVariant,
+  CalculatorShellOptions,
+  ResolvedCalculatorOptions,
+} from "./shell/options";
 
 export {
   CalculatorShell,

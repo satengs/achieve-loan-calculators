@@ -74,7 +74,8 @@
   "cta": {
     "label": "See your options",
     "href": "#",
-    "note": "Placeholder CTA — demo only, not a live application or offer."
+    "note": "",
+    "demoNote": "Placeholder CTA — demo only, not a live application or offer."
   },
   "footer": {
     "note": "Educational estimate only. Rates and examples are illustrative. Not a loan offer, advice, or a guarantee of savings or payoff timing."

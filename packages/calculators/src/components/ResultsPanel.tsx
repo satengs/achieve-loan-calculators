@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SectionHeading } from "../shell/options";
 import { PresentationResults } from "./PresentationResults";
 import type { MicroStat } from "./MicroStats";
 
@@ -107,7 +108,7 @@ export function ResultsPanel({
         <strong className="lc-estimate-sticky-value">{primaryValue}</strong>
       </div>
       <section className="lc-card lc-results" aria-live="polite" aria-atomic="true">
-        <h2>{heading}</h2>
+        <SectionHeading>{heading}</SectionHeading>
         <div className="lc-result-primary">
           <div className="lc-result-label">{primaryLabel}</div>
           <div className="lc-result-value">{primaryValue}</div>

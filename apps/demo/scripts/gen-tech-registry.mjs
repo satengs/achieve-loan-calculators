@@ -49,7 +49,8 @@ function countByDescribe(src) {
     const t = line.match(/^\s+(?:it|test)\(\s*["'`](.+?)["'`]/);
     if (t && current) {
       counts[current] += 1;
-      titles[current].push(t[1]);
+      // Per-calculator loops title tests `${calc.name}: …`; show the shared title.
+      titles[current].push(t[1].replace(/^\$\{[^}]+\}:\s*/, ""));
     }
   }
   return { counts, titles };

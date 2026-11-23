@@ -13,6 +13,7 @@ import {
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { BalanceCompareChart } from "../components/BalanceCompareChart";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, SubHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { Field, Segmented } from "../components/Field";
 import { ResultsPanel } from "../components/ResultsPanel";
 import { CalculatorCta, interpolate, months, resultsVariant, useCalculatorSetup } from "./common";
@@ -21,7 +22,18 @@ import { PLACEHOLDER } from "./utils";
 
 export type FocusMode = "compare" | "snowball" | "avalanche";
 
-export type DebtSnowballAvalancheCalculatorProps = {
+/** Prefillable inputs for `defaults`. `debts` replaces the CMS starter debt list. */
+export type DebtSnowballAvalancheCalculatorInputs = {
+  extraMonthly: number;
+  debts: Array<{ name?: string; balance?: number; apr?: number; minPayment?: number }>;
+};
+/** Payload passed to `onCalculate`. */
+export type DebtSnowballAvalancheCalculatorResult = StrategyCompare;
+
+export type DebtSnowballAvalancheCalculatorProps = CalculatorBaseProps<
+  DebtSnowballAvalancheCalculatorInputs,
+  DebtSnowballAvalancheCalculatorResult
+> & {
   projectName?: ProjectName | string;
   /** Preselect Compare, Snowball, or Avalanche (used by SEO alias routes). */
   initialFocus?: FocusMode;
@@ -101,16 +113,20 @@ export function DebtSnowballAvalancheCalculator({
   initialFocus = "compare",
   titleOverride,
   introOverride,
+  ...options
 }: DebtSnowballAvalancheCalculatorProps) {
   const brand = resolveProjectName(projectName);
   const { content, config, whole, fields, results, labels, features } = useCalculatorSetup(
     "debt-snowball-avalanche",
+    options.defaults,
   );
   const form = content.form as Record<string, any>;
   const maxDebts = Math.max(1, Number(features.maxDebts) || 8);
   const maxMonths = Math.max(1, Number(features.maxMonths) || 1200);
   const extra = useNumberInputs(config, EXTRA_KEYS);
-  const [rows, setRows] = useState<DebtRow[]>(() => rowsFromDefaults(features.defaultDebts as DefaultDebt[]));
+  const [rows, setRows] = useState<DebtRow[]>(() =>
+    rowsFromDefaults((options.defaults?.debts ?? features.defaultDebts) as DefaultDebt[]),
+  );
   const [nextId, setNextId] = useState(() => rows.length + 1);
   const [focus, setFocus] = useState<FocusMode>(initialFocus);
   const [from, setFrom] = useState<{ year: number; month: number } | null>(null);
@@ -150,6 +166,7 @@ export function DebtSnowballAvalancheCalculator({
     // debtKey captures the numeric inputs; debts is rebuilt each render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ok, extra.values.extraMonthly, maxMonths, debtKey]);
+  useOnCalculate<DebtSnowballAvalancheCalculatorResult>(options.onCalculate, computed);
 
   const aliases = (content as Record<string, any>).aliases || {};
   const alias = initialFocus !== "compare" ? aliases[initialFocus] : null;
@@ -337,7 +354,7 @@ export function DebtSnowballAvalancheCalculator({
   const chartSeries = (r: StrategyResult | undefined) =>
     r ? downsampleSeries(r.series, 48) : [];
 
-  const showOrders = computed && (focus === "compare" || !computed[focus].neverPaysOff);
+  const showOrders = computed && options.showBreakdown !== false && (focus === "compare" || !computed[focus].neverPaysOff);
   const emphasize = focus === "compare" ? "both" : focus;
 
   const showChart =
@@ -351,12 +368,13 @@ export function DebtSnowballAvalancheCalculator({
       eyebrow={content.header.eyebrow}
       title={title}
       intro={intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="debt-snowball-avalanche"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{content.form.heading}</h2>
+          <SectionHeading>{content.form.heading}</SectionHeading>
           <div className="lc-debt-list">
             {rows.map((row, i) => {
               const vr = rowResults[i];
@@ -480,7 +498,7 @@ export function DebtSnowballAvalancheCalculator({
                   >
                     {(focus === "compare" || focus === "snowball") && !computed.snowball.neverPaysOff ? (
                       <div>
-                        <h3>{String(labels.snowballOrder)}</h3>
+                        <SubHeading>{String(labels.snowballOrder)}</SubHeading>
                         <ol>
                           {computed.snowball.order.map((o) => (
                             <li key={`s-${o.id}`}>
@@ -495,7 +513,7 @@ export function DebtSnowballAvalancheCalculator({
                     ) : null}
                     {(focus === "compare" || focus === "avalanche") && !computed.avalanche.neverPaysOff ? (
                       <div>
-                        <h3>{String(labels.avalancheOrder)}</h3>
+                        <SubHeading>{String(labels.avalancheOrder)}</SubHeading>
                         <ol>
                           {computed.avalanche.order.map((o) => (
                             <li key={`a-${o.id}`}>

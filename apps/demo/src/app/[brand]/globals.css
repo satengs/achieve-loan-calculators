@@ -935,6 +935,19 @@ code.lc-tt-ov-value {
   margin-bottom: 0.15rem;
 }
 
+.lc-tt-props code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.lc-tt-props td:last-child {
+  min-width: 16rem;
+}
+
+.lc-tt-scroll + .lc-tt-snippet {
+  margin-top: 1rem;
+}
+
 .lc-tt-opts {
   display: block;
   font-size: 0.75rem;

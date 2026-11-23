@@ -9,6 +9,7 @@ import {
 import { interpolate } from "../calc/format";
 import { resolveProjectName, type ProjectName } from "../brand/types";
 import { CalculatorShell } from "../components/CalculatorShell";
+import { SectionHeading, useOnCalculate, type CalculatorBaseProps } from "../shell/options";
 import { DepletionChart } from "../components/DepletionChart";
 import { PresentationResults } from "../components/PresentationResults";
 import { RateNote } from "../components/RateNote";
@@ -18,7 +19,12 @@ import { CalculatorCta, useCalculatorSetup } from "./common";
 import { useNumberInputs } from "./useNumberInputs";
 import { PLACEHOLDER } from "./utils";
 
-export type RetirementCalculatorProps = {
+/** Prefillable inputs for `defaults`. */
+export type RetirementCalculatorInputs = Record<(typeof KEYS)[number], number> & { raiseWithInflation: boolean };
+/** Payload passed to `onCalculate`. */
+export type RetirementCalculatorResult = { drawdown: NonNullable<ReturnType<typeof retirementDrawdown>>; suggested: ReturnType<typeof withdrawalToLastUntil> | null };
+
+export type RetirementCalculatorProps = CalculatorBaseProps<RetirementCalculatorInputs, RetirementCalculatorResult> & {
   projectName?: ProjectName | string;
   /** Live rates: inflationYoY (CPI) drives the optional withdrawal raise. */
   rates?: MarketRates;
@@ -26,9 +32,9 @@ export type RetirementCalculatorProps = {
 
 const KEYS = ["startAge", "savings", "monthlyWithdrawal", "annualReturn"] as const;
 
-export function RetirementCalculator({ projectName = "achieve", rates }: RetirementCalculatorProps) {
+export function RetirementCalculator({ projectName = "achieve", rates, ...options }: RetirementCalculatorProps) {
   const brand = resolveProjectName(projectName);
-  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("retirement");
+  const { content, config, whole, fields, results, labels, features } = useCalculatorSetup("retirement", options.defaults);
   const infl = resolveRate(rates, "inflationYoY", Number(features.fallbackInflationPct ?? config.defaults.inflation ?? 3));
   const inputs = useNumberInputs(config, KEYS);
   const [raiseWithInflation, setRaiseWithInflation] = useState(Number(config.defaults.raiseWithInflation ?? 1) === 1);
@@ -64,6 +70,7 @@ export function RetirementCalculator({ projectName = "achieve", rates }: Retirem
         : null;
     return { drawdown, suggested };
   }, [inputs.ok, inputs.values, inflationPct, maxAge, tipWarnAge, tipTargetAge]);
+  useOnCalculate<RetirementCalculatorResult>(options.onCalculate, computed);
 
   const duration = computed ? formatDurationMonths(computed.drawdown.monthsLasted) : PLACEHOLDER;
   const stickyValue = computed
@@ -118,12 +125,13 @@ export function RetirementCalculator({ projectName = "achieve", rates }: Retirem
       eyebrow={content.header.eyebrow}
       title={content.header.title}
       intro={content.header.intro}
-      banner={content.demoBanner}
-      footerNote={content.footer.note}
+      calculator="retirement"
+      content={content}
+      options={options}
     >
       <div className="lc-layout">
         <section className="lc-card lc-form">
-          <h2>{formCopy.heading}</h2>
+          <SectionHeading>{formCopy.heading}</SectionHeading>
           <SliderField
             layout="row"
             id="rt-startAge"
