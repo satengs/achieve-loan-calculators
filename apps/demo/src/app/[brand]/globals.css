@@ -940,12 +940,24 @@ code.lc-tt-ov-value {
   overflow-wrap: break-word;
 }
 
-.lc-tt-props tbody th code {
-  white-space: nowrap;
+.lc-tt-props {
+  table-layout: fixed;
 }
 
-.lc-tt-props td:last-child {
-  min-width: 16rem;
+.lc-tt-props thead th:nth-child(1) {
+  width: 23%;
+}
+
+.lc-tt-props thead th:nth-child(2) {
+  width: 23%;
+}
+
+.lc-tt-props thead th:nth-child(3) {
+  width: 19%;
+}
+
+.lc-tt-props tbody th code {
+  white-space: nowrap;
 }
 
 .lc-tt-scroll + .lc-tt-snippet {

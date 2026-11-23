@@ -33,7 +33,8 @@ export const EXTRA_PROPS: Record<string, PropDoc[]> = {
   ],
   DebtSnowballAvalancheCalculator: [
     { group: "Calculator", name: "initialFocus", type: '"compare" | "snowball" | "avalanche"', default: '"compare"', description: "Preselected method (alias routes)." },
-    { group: "Calculator", name: "titleOverride / introOverride", type: "string", default: "—", description: "Legacy alias-route copy; prefer title / subtitle." },
+    { group: "Calculator", name: "titleOverride", type: "string", default: "—", description: "Legacy alias-route title; prefer title." },
+    { group: "Calculator", name: "introOverride", type: "string", default: "—", description: "Legacy alias-route intro; prefer subtitle." },
   ],
 };
 
